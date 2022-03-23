@@ -13,6 +13,7 @@ def index():
     if request.method == 'POST': # redirect from successful submission
         data = request.form["name"]
         # can add to database here
+        # figure out how to differentiate
         message = f'Successfully added {data}'
         return frontend.index(message)
     else:
