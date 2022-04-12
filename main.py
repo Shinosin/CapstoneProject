@@ -1,7 +1,7 @@
 from flask import Flask, request
 import frontend
 import storage
-#i changed smth
+
 app = Flask(__name__)
 
 @app.route('/')
