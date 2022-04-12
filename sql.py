@@ -1,3 +1,5 @@
+#sql statements for storage.py
+
 CREATE_STUDENT = '''
 CREATE TABLE IF NOT EXISTS student(
     student_id INTEGER,
@@ -45,6 +47,7 @@ CREATE TABLE IF NOT EXISTS cca(
 CREATE_ACTIVITY = '''
 CREATE TABLE IF NOT EXISTS activity(
     activity_id INTEGER,
+    activity_name TEXT,
     start_date TEXT,
     end_date TEXT,
     description TEXT,
