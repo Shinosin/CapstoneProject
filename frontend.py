@@ -25,7 +25,7 @@ def add_cca():
             "method": "POST"
         },
         form_data={
-            "name": ""
+            "cca_name": ""
         })
     
 def confirm_cca(cca_name):

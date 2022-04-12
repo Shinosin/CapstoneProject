@@ -22,7 +22,7 @@ def index():
 @app.route('/add_cca', methods=['POST', 'GET'])
 def add_cca():
     if "confirm" in request.args: # confirmation page
-        cca_name = request.form["name"]
+        cca_name = request.form["cca_name"]
         return frontend.confirm_cca(cca_name)
     else:
         return frontend.add_cca()
