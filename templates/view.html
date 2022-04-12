@@ -1,8 +1,13 @@
 <html>
     <head>
-
+        <title>View {{ entity }}</title>
+        <h1>View {{ entity }}</h1>
     </head>
     <body>
-
+        <table>
+            {% for name, value in data %}
+            <th>{{ name }}</th>
+            <tr>{{ value }}</tr>
+        </table>
     </body>
 </html>

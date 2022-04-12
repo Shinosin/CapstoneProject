@@ -38,6 +38,7 @@ def add_activity():
 @app.route('/view_student', methods=['POST', 'GET'])
 def view_student():
     return frontend.view_student()
+    # I WANT DATA SHIN IN DICTIONARY FORM THANK
 
 @app.route('/view_class', methods=['POST', 'GET'])
 def view_class():

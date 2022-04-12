@@ -12,8 +12,11 @@ def redirect(data):
                           form_data=data)
 
 #student and class
-def view_student():
-    return
+def view_student(data):
+    # display data
+    return render_template(view.html,
+                           entity="student",
+                          data=data)
 
 #cca
 def add_cca():
@@ -41,7 +44,9 @@ def confirm_cca(cca_name):
         })
 
 def view_cca():
-    return
+    return render_template(view.html,
+                           entity="cca",
+                          data=data)
 
 #activity
 def add_activity():
@@ -69,4 +74,6 @@ def confirm_activity(data):
     )
 
 def view_activity():
-    return    
+    return render_template(view.html,
+                           entity="activity",
+                          data=data)    
