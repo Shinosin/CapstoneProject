@@ -64,6 +64,11 @@ def display(): # display found data in appropriate format
     else:
         return 'failed'
 
+@app.route('/redirect', methods=['POST'])
+def redirect():
+    data = request.form
+    return frontend.redirect(data)
+
 # @app.route('/login', methods=['POST', 'GET'])
 # def login():
 #     if request.method == 'POST':

@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <title>Success</title>
+    </head>
+
+    <body>
+        <p>Successfully added the following data:</p>
+        <table>
+            {% for name, value in form_data.items() %}
+            <tr>
+                <th>{{ name }}</th>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <form action="/index" method="GET">
+            <input type="submit" value="Return to Homepage">
+        </form>
+    </body>
+</html>

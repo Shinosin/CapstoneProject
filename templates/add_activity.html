@@ -4,9 +4,54 @@
         <title>Add Activity</title>
     </head>
     <body>
-        {% if type == 'new'  %}
+        {% if page_type == "new"  %}
 
-        {% elif type == 'confirm' %}
+        <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+            <label for="activity_date">Date:</label>
+            <input
+                id="activity_date"
+                type="text"
+                name="activity_date"
+                value=""
+                >
+            <br>
+            <label for="activity_desc">Description:</label>
+            <input
+                id="activity_desc"
+                type="text"
+                name="activity_desc"
+                value=""
+                >
+
+            <input type="submit" value="Submit">
+        </form>
+            
+        {% elif page_type == "confirm" %}
+
+        <h2>Confirm details</h2>
+        <table>
+            {% for name, value in form_data.items() %}
+            <tr>
+                <th>{{ name }}</th>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <p>Is this correct?</p>
+        <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+            {% for name, value in form_data.items() %}
+            <input
+                type="hidden"
+                name="{{ name }}"
+                value="{{ value }}"
+                >
+            {% endfor %}
+            <input type="submit" value="Yes">
+        </form>
+
+        <form action="/add_activity" method="GET">
+            <input type="submit" value="No">
+        </form>
 
         {% endif %}
     </body>
