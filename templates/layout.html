@@ -16,6 +16,27 @@
     </head>
 
     <body>
+        <script>
+            /* When the user clicks on the button,
+            toggle between hiding and showing the dropdown content */
+            function myFunction() {
+              document.getElementById("myDropdown").classList.toggle("show");
+            }
+
+            // Close the dropdown if the user clicks outside of it
+            window.onclick = function(event) {
+              if (!event.target.matches('.nav-dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                  var openDropdown = dropdowns[i];
+                  if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                  }
+                }
+              }
+            }
+        </script>
 
         <nav class="bg-light border navbar navbar-expand-md navbar-light">
             <div class="container-fluid">
@@ -25,24 +46,26 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbar">
                     <!-- can add if statement here  -->
-                        <ul class="navbar-nav me-auto mt-2">
+                        <div class="navbar-nav me-auto mt-2">
                             <li class="nav-item"><a class="nav-link" href="/view_student">Student</a></li>
                             <li class="nav-item"><a class="nav-link" href="/view_class">Class</a></li>
                             <li class="nav-item"><a class="nav-link" href="/view_club">Club</a></li>
                             <li class="nav-item"><a class="nav-link" href="/view_activity">Activity</a></li>
-                        </ul>
-                        <ul class="navbar-nav ms-auto mt-2">
-                            <li class="nav-item"><div class="dropdown">
-                                <button class="nav-dropbtn">Profile <img src="https://img.icons8.com/ios/250/000000/home.png" alt="profile" width="20" height="20"></button>
-                                <div class="dropdown-content">
+                        </div>
+                        <div class="navbar-nav ms-auto mt-2">
+                            <li class="nav-item">
+                                <div class="nav-dropdown">
+                                <button onclick="myFunction()" class="nav-dropbtn">Profile <img src="https://super.so/icon/dark/chevron-down.svg" alt="profile" width="20" height="20"></button>
+                                <div id="myDropdown" class="dropdown-content">
                                     <a href="/profile">My Profile</a>
+                                    <a href="">My Class</a>
                                     <a href="">My Clubs</a>
                                     <a href="">My Activities</a>
                                     <a href="/logout">Log Out</a>
                                 </div>
                             </div></li>
 
-                        </ul>
+                        </div>
                 </div>
             </div>
         </nav>
