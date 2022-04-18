@@ -14,7 +14,7 @@ def redirect(data):
 #student and class
 def view_student(data):
     # display data
-    return render_template(view.html,
+    return render_template('view.html',
                            entity="student",
                           data=data)
 
@@ -43,8 +43,8 @@ def confirm_cca(cca_name):
             "cca_name": cca_name 
         })
 
-def view_cca():
-    return render_template(view.html,
+def view_cca(data):
+    return render_template('view.html',
                            entity="cca",
                           data=data)
 
@@ -73,7 +73,26 @@ def confirm_activity(data):
         form_data=data
     )
 
-def view_activity():
-    return render_template(view.html,
+def view_activity(data):
+    return render_template('view.html',
                            entity="activity",
                           data=data)    
+
+# membership - student-cca
+'''
+A form for students to enter a student name and cca name, to add a student into a cca.
+
+Arguments:
+- student_name: str
+- cca_name: str (dropdown)
+'''
+
+
+# participation - student-activity
+'''
+A form for students to enter a student name and activity name, to add a student into an activity
+
+Arguments:
+- student_name: str
+- activity_name: str (dropdown)
+'''
