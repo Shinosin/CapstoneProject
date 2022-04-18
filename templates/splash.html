@@ -1,11 +1,11 @@
-<html>
-   <head>
-       <title>Welcome</title>
-       <link href="/static/styles.css" rel="stylesheet">
-   </head> 
+{% extends "layout.html" %}
+{% block title %}
+Welcome Page
+{% endblock %}
 
-    <body>
-        <p>Welcome!</p>
-        <a href="/index">Continue as Guest</a>
-    </body>
-</html>
+{% block main %}
+<h1>Welcome!</h1>
+<p>Welcome!</p>
+<a href="/index">Continue as Guest</a>
+<a href="/login">Login</a>
+{% endblock %}
