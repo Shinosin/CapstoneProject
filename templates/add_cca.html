@@ -5,46 +5,48 @@ Add CCA
 
 {% block main %}
 <h1>Add CCA</h1>
-{% if page_type == "new"  %}
-
-<form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-    <label for="cca_name">Name:</label>
-    <input
-        id="cca_name"
-        type="text"
-        name="cca_name"
-        value=""
-        >
-
-    <input type="submit" value="Submit">
-</form>
+    {% if page_type == "new"  %}
     
-{% elif page_type == "confirm" %}
-
-<h2>Confirm details</h2>
-<table>
-    {% for name, value in form_data.items() %}
-    <tr>
-        <th>{{ name }}</th>
-        <td>{{ value }}</td>
-    </tr>
-    {% endfor %}
-</table>
-<p>Is this correct?</p>
-<form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-    {% for name, value in form_data.items() %}
-    <input
-        type="hidden"
-        name="{{ name }}"
-        value="{{ value }}"
-        >
-    {% endfor %}
-    <input type="submit" value="Yes">
-</form>
-
-<form action="/add_cca" method="GET">
-    <input type="submit" value="No">
-</form>
-
-{% endif %}
+    <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+        <label for="cca_name">Name:</label>
+        <input
+            id="cca_name"
+            type="text"
+            name="cca_name"
+            value=""
+            placeholder="Name of CCA"
+            autocomplete="off"
+            required
+            >
+    
+        <input type="submit" value="Submit">
+    </form>
+        
+    {% elif page_type == "confirm" %}
+    
+    <h2>Confirm details</h2>
+    <table>
+        {% for name, value in form_data.items() %}
+        <tr>
+            <th>{{ name }}</th>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p>Is this correct?</p>
+    <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+        {% for name, value in form_data.items() %}
+        <input
+            type="hidden"
+            name="{{ name }}"
+            value="{{ value }}"
+            >
+        {% endfor %}
+        <input type="submit" value="Yes">
+    </form>
+    
+    <form action="/add_cca" method="GET">
+        <input type="submit" value="No">
+    </form>
+    {% endif %}
 {% endblock %}
