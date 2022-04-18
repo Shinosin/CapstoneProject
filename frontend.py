@@ -48,7 +48,7 @@ Arguments:
 - cca_id: int
 - cca_name: str
 '''
-def add_cca() -> None:
+def add_cca(message="") -> None:
     return render_template(
         "add_cca.html",
         page_type="new",
@@ -58,19 +58,21 @@ def add_cca() -> None:
         },
         form_data={
             "cca_name": ""
-        })
+        },
+    message=message)
     
 def confirm_cca(cca_name:str) -> None:
     return render_template(
         "add_cca.html",
         page_type="confirm",
         form_meta={
-            "action": "/redirect",
+            "action": "/add_cca?verify",
             "method": "POST"
         },
         form_data={
             "cca_name": cca_name 
         })
+
 
 def view_cca(data:dict) -> None:
     return render_template('view.html',
@@ -105,7 +107,7 @@ def confirm_activity(data:dict) -> None:
         "add_activity.html",
         page_type="confirm",
         form_meta={
-            "action": "/redirect",
+            "action": "/add_activity?verify",
             "method": "POST"
         },
         form_data=data
@@ -125,7 +127,29 @@ Arguments:
 - student_name: str
 - cca_name: str (dropdown)
 '''
+def edit_membership(cca_names: list) -> None:
+    return render_template(
+            "student_cca.html",
+            page_type="new",
+            form_meta={
+                "action": "/edit_membership?confirm",
+                "method": "POST"
+            },
+            form_data={
+                "student_name": "",
+                "cca_name": ""
+            })
 
+def confirm_membership(data:dict) -> None:
+    return render_template(
+        "student_cca.html",
+        page_type="confirm",
+        form_meta={
+            "action": "/edit_membership?verify",
+            "method": "POST"
+        },
+        form_data=data
+    )
 
 # participation - student-activity
 '''
@@ -134,5 +158,28 @@ A form for students to enter a student name and activity name, to add a student 
 Arguments:
 - student_id: int
 - student_name: str
-- activity_name: str (dropdown)
+- activity_id: int (dropdown)
 '''
+def edit_participation(activity_ids: list) -> None:
+    return render_template(
+            "student_activity.html",
+            page_type="new",
+            form_meta={
+                "action": "/edit_participation?confirm",
+                "method": "POST"
+            },
+            form_data={
+                "student_name": "",
+                "activity_id": ""
+            })
+
+def confirm_participation(data:dict) -> None:
+    return render_template(
+        "student_activity.html",
+        page_type="confirm",
+        form_meta={
+            "action": "/edit_participation?verify",
+            "method": "POST"
+        },
+        form_data=data
+    )

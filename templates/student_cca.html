@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}
+Membership
+{% endblock %}
+
+{% block main %}
+<h1>Membership</h1>
+<p>Register a student into a CCA</p>
+
+    {% if page_type = 'new' %}
+    <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+        <label for="student_name">Student Name:</label>
+        <input
+            id="student_name"
+            type="text"
+            name="student_name"
+            value=""
+            >
+        <label for="cca_name">CCA Name:</label>
+        <select name="cca_name" id="cca_name">
+            {% for cca in cca_names %}
+            <option value="{{ cca }}">{{ cca }}</option>
+            {% endfor %}
+            <option value="None">None</option>
+        </select>
+        
+    </form>
+
+    {% elif page_type = 'confirm' %}
+    <h2>Confirm details</h2>
+        <table>
+            {% for name, value in form_data.items() %}
+            <tr>
+                <th>{{ name }}</th>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <p>Is this correct?</p>
+        <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+            {% for name, value in form_data.items() %}
+            <input
+                type="hidden"
+                name="{{ name }}"
+                value="{{ value }}"
+                >
+            {% endfor %}
+            <input type="submit" value="Yes">
+        </form>
+        
+        <form action="/edit_membership" method="GET">
+            <input type="submit" value="No">
+        </form>
+{% endblock %}
