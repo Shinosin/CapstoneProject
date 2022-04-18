@@ -22,7 +22,7 @@ def index():
 @app.route('/add_cca', methods=['POST', 'GET'])
 def add_cca():
     if "confirm" in request.args: # confirmation page
-        cca_name = request.form["name"]
+        cca_name = request.form["cca_name"]
         return frontend.confirm_cca(cca_name)
     else:
         return frontend.add_cca()
@@ -38,6 +38,7 @@ def add_activity():
 @app.route('/view_student', methods=['POST', 'GET'])
 def view_student():
     return frontend.view_student()
+    # I WANT DATA SHIN IN DICTIONARY FORM THANK
 
 @app.route('/view_class', methods=['POST', 'GET'])
 def view_class():
@@ -63,6 +64,11 @@ def display(): # display found data in appropriate format
         return f'Class: {search_key}'
     else:
         return 'failed'
+
+@app.route('/redirect', methods=['POST'])
+def redirect():
+    data = request.form
+    return frontend.redirect(data)
 
 # @app.route('/login', methods=['POST', 'GET'])
 # def login():

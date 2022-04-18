@@ -1,8 +1,53 @@
-<html>
-    <head>
+{% extends "layout.html" %}
+{% block title %}
+View {{ entity }}
+{% endblock %}
 
-    </head>
-    <body>
+{% block main %}
+<h1>View {{ entity }}</h1>
+<label for="search_key">Filter by: </label>
+<select name="search_key" id="search_key">
+    {% if entity == "student" %}
+    <option value="student_id">Student ID</option>
+    <option value="student_name">Student Name</option>
+    <option value="class">Class</option>
+    <option value="age">Age</option>
+    <option value="year_enrolled">Year Enrolled</option>
+    <option value="year_graduated">Year Graduated</option>
 
-    </body>
-</html>
+    {% elif entity == "class" %}
+    <option value="class_id">Class ID</option>
+    <option value="class_name">Class Name</option>
+    <option value="class_level">Class Level</option>
+
+    {% elif entity == "subject" %}
+    <option value="subject_code">Subject Code</option>
+    <option value="subject_name">Subject Name</option>
+    <option value="subject_level">Subject Level</option>
+
+    {% elif entity == "club" %}
+    <option value="club_id">Club ID</option>
+    <option value="club_name">Club Name</option>
+
+    {% elif entity == "activity" %}
+    <option value="activity_id">Activity ID</option>
+    <option value="activity_startdate">Activity Start Date</option>
+    <option value="activity_enddate">Activity End Date</option>
+    <option value="activity_desc">Activity Description</option>            
+    {% endif %}
+</select>
+
+<label for="search_value">Search: </label>
+<input
+    id="search_value"
+    type="text"
+    name="search_value"
+    value=""
+    >
+
+<table>
+    {% for name, value in data %}
+    <th>{{ name }}</th>
+    <tr>{{ value }}</tr>
+</table>
+{% endblock %}
