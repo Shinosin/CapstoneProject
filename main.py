@@ -32,7 +32,7 @@ def add_cca():
         return frontend.confirm_cca(cca_name) # cca_name: str
     elif 'verify' in request.args: # check with database
         cca_name = request.form.to_dict() # dict
-        if storage.database['cca'].insert(cca_name): # successfully inserted
+        if storage.database['ccas'].insert(cca_name): # successfully inserted
             return frontend.redirect(cca_name) # cca_name: dict
         else:
             return frontend.add_cca(message='Failed to add CCA, CCA already exists.')
@@ -119,6 +119,11 @@ def edit_participation():
 @app.route('/login', methods=['GET'])
 def login():
     return 'Not Implemented for Now.'
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    """Return user to welcome page"""
+    return frontend.splash()
 
 @app.route('/profile', methods=['GET'])
 def profile():

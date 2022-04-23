@@ -48,7 +48,7 @@ Arguments:
 - cca_id: int
 - cca_name: str
 '''
-def add_cca() -> None:
+def add_cca(message='') -> None:
     return render_template(
         "add_cca.html",
         page_type="new",
@@ -58,7 +58,9 @@ def add_cca() -> None:
         },
         form_data={
             "cca_name": ""
-        })
+        },
+        message=message
+    )
     
 def confirm_cca(cca_name:str) -> None:
     return render_template(

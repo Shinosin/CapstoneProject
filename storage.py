@@ -1,4 +1,6 @@
-import sql, sqlite3, csv
+import sql
+import sqlite3
+import csv
 
 class Table:
     def __init__(self, database:str, table:str, columns:list) -> None:
@@ -10,20 +12,13 @@ class Table:
         with sqlite3.connect('database.db') as conn:
             conn.row_factory = sqlite3.Row # turns output into dict
             cur = conn.cursor()
-            
-            if values == []:
-                cur.execute(sql_statement)
-            else:
-                cur.execute(sql_statement, tuple(values))
+            cur.execute(sql_statement, tuple(values))
 
             results = cur.fetchall()
-            if results == []:
-                return []
-            else:
-                list_of_dict = []
-                for record in results:
-                    list_of_dict.append(dict(record)) # convert Row object to dict
-                return list_of_dict             
+            list_of_dict = []
+            for record in results:
+                list_of_dict.append(dict(record)) # convert Row object to dict
+            return list_of_dict             
             # conn.close()
                 
     def import_csv(self, file:str) -> None: 
@@ -35,15 +30,15 @@ class Table:
         #generalised code
         sql_statement = 'SELECT ' + column + ' FROM ' + self.__table + ' WHERE'
         
-        keys = dict.keys() #column names
+        keys = record.keys() #column names
         valid_keys = [] #valid columns
         values = []
         
-        if column not in self.columns: #verify column in parameter 
+        if column not in self.__columns and column != '*': #verify column in parameter 
             return [] 
             
         for key in keys: #verify keys
-            if key in self.columns:
+            if key in self.__columns:
                 valid_keys.append(key)
 
         if valid_keys == []: #keys do not exist in the table
@@ -95,6 +90,7 @@ class Class(Table):
 
     def __init__(self, database:str) -> None:
         super().__init__(database, 'class', ['id', 'name', 'level'])
+        super().execute(sql.CREATE_CLASS)
 
     def insert(self, record:dict) -> bool:
         super().insert_one(record, sql.INSERT_CLASS)    
@@ -103,6 +99,7 @@ class CCA(Table):
     
     def __init__(self, database:str) -> None:
         super().__init__(database, 'cca', ['id', 'name'])
+        super().execute(sql.CREATE_CCA)
         
     def insert(self, record:dict) -> bool:
         super().insert_one(record, sql.INSERT_CCA)
@@ -111,6 +108,7 @@ class Activity(Table):
 
     def __init__(self, database:str) -> None:
         super().__init__(database, 'activity', ['id', 'name', 'start_date', 'end_date'])
+        super().execute(sql.CREATE_ACTIVITY)
 
     def insert(self, record:dict) -> bool:
         super().insert_one(record, sql.INSERT_ACTIVITY)
