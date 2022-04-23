@@ -65,7 +65,7 @@ def confirm_cca(cca_name:str) -> None:
         "add_cca.html",
         page_type="confirm",
         form_meta={
-            "action": "/redirect",
+            "action": "/add_cca?verify",
             "method": "POST"
         },
         form_data={
@@ -105,7 +105,7 @@ def confirm_activity(data:dict) -> None:
         "add_activity.html",
         page_type="confirm",
         form_meta={
-            "action": "/redirect",
+            "action": "/add_activity?verify",
             "method": "POST"
         },
         form_data=data

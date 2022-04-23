@@ -51,7 +51,7 @@ def add_activity():
         return frontend.confirm_activity(data)
     elif 'verify' in request.args:
         data = request.form.to_dict() # dict
-        if storage.database['activity'].insert(data): # successfully inserted
+        if storage.database['activities'].insert(data): # successfully inserted
             return frontend.redirect(data) # data: dict
         else:
             return frontend.add_activity(message='Failed to add Activity, Activity already exists.')
@@ -61,28 +61,60 @@ def add_activity():
 
 @app.route('/view_student', methods=['POST', 'GET'])
 def view_student():
-    if request.method == 'POST':
-        data = storage.database['students'].get_all()
+    if request.method == 'POST': # selected data
+        search_key = request.form['search_key']
+        search_value = request.form['search_value']
+        condition = {search_key: search_value} # dict
+        data = storage.database['students'].find(condition) # dict
         return frontend.view_student(data)
-    # I WANT DATA SHIN IN DICTIONARY FORM THANK
+    else: # all data
+        data = storage.database['students'].get_all() # dict
+        return frontend.view_student(data)
 
 @app.route('/view_class', methods=['POST', 'GET'])
 def view_class():
-    return frontend.view_class()
+    if request.method == 'POST': # selected data
+        search_key = request.form['search_key']
+        search_value = request.form['search_value']
+        condition = {search_key: search_value} # dict
+        data = storage.database['classes'].find(condition) # dict
+        return frontend.view_class(data)
+    else: # all data
+        data = storage.database['classes'].get_all() # dict
+        return frontend.view_class(data)
 
 @app.route('/view_cca', methods=['POST', 'GET'])
 def view_cca():
-    return frontend.view_cca()
+    if request.method == 'POST': # selected data
+        search_key = request.form['search_key']
+        search_value = request.form['search_value']
+        condition = {search_key: search_value} # dict
+        data = storage.database['ccas'].find(condition) # dict
+        return frontend.view_cca(data)
+    else: # all data
+        data = storage.database['ccas'].get_all() # dict
+        return frontend.view_cca(data)
 
 @app.route('/view_activity', methods=['POST', 'GET'])
 def view_activity():
-    return frontend.view_activity()
+    if request.method == 'POST': # selected data
+        search_key = request.form['search_key']
+        search_value = request.form['search_value']
+        condition = {search_key: search_value} # dict
+        data = storage.database['activities'].find(condition) # dict
+        return frontend.view_activity(data)
+    else: # all data
+        data = storage.database['activities'].get_all() # dict
+        return frontend.view_activity(data)
 
-@app.route('/redirect', methods=['POST'])
-def redirect():
-    data = request.form.to_dict()
-    return frontend.redirect(data)
+@app.route('/edit_membership', methods=['POST', 'GET'])
+def edit_membership():
+    return frontend.edit_membership()
 
+@app.route('/edit_participation', methods=['POST', 'GET'])
+def edit_participation():
+    return frontend.edit_partipcipation()
+        
 # Future Functions
 @app.route('/login', methods=['GET'])
 def login():
