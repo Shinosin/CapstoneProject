@@ -96,6 +96,32 @@ class Class(Table):
     def __init__(self, database:str) -> None:
         super().__init__(database, 'class', ['id', 'name', 'level'])
 
+    def find(self, record:dict, column='*') -> list: 
+        sql_statement = 'SELECT ' + column + ' FROM "class" WHERE'
+        
+        keys = dict.keys() #column names
+        valid_keys = [] #valid columns
+        values = []
+        
+        if column not in self.columns: #verify column in parameter 
+            return [] 
+            
+        for key in keys: #verify keys
+            if key in self.columns:
+                valid_keys.append(key)
+
+        if valid_keys == []: #keys do not exist in the table
+            return []
+
+        for key in valid_keys:
+            sql_statement += f' {key} = ? AND'
+            values += dict[key].upper()
+
+        sql_statement.strip(' AND')
+        sql_statement += ';' 
+        
+        return self.execute(sql_statement, values)
+
     def insert(self, record:dict) -> bool:
         super().insert_one(record, sql.INSERT_CLASS)    
     
