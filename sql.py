@@ -3,13 +3,13 @@
 ## sql create statements ##
 
 CREATE_STUDENT = '''
-CREATE TABLE IF NOT EXISTS student(
+CREATE TABLE IF NOT EXISTS student (
     id INTEGER,
     name TEXT,
     age INTEGER,
     year_enrolled INTEGER,
     graduating_year INTEGER,
-    student_class INTEGER
+    student_class INTEGER,
     PRIMARY KEY(id),
     FOREIGN KEY(student_class) REFERENCES class(id)
 );
@@ -62,8 +62,7 @@ CREATE_STUDENT_SUBJECT = '''
 CREATE TABLE IF NOT EXISTS student_subject(
     student_id INTEGER,
     subject_code INTEGER,
-    PRIMARY KEY (student_id),
-    PRIMARY KEY (subject_id),
+    PRIMARY KEY (student_id, subject_code),
     FOREIGN KEY (student_id) REFERENCES student(id),
     FOREIGN KEY (subject_code) REFERENCES subject(subject_code)
 );
@@ -74,8 +73,7 @@ CREATE TABLE IF NOT EXISTS student_cca(
     student_id INTEGER,
     cca_id INTEGER,
     role TEXT,
-    PRIMARY KEY (student_id),
-    PRIMARY KEY (cca_id),
+    PRIMARY KEY (student_id, cca_id),
     FOREIGN KEY (student_id) REFERENCES student(id),
     FOREIGN KEY (cca_id) REFERENCES cca(id)
 );
@@ -83,15 +81,15 @@ CREATE TABLE IF NOT EXISTS student_cca(
 
 CREATE_STUDENT_ACTIVITY = '''
 CREATE TABLE IF NOT EXISTS student_activity(
-    student_id INTEGER
-    activity_id INTEGER
-    category TEXT CHECK('ACHIEVEMENT', 'ENRICHMENT', 'LEADERSHIP', 'SERVICE'
+    student_id INTEGER,
+    activity_id INTEGER,
+    category TEXT CHECK (
+        category IN ('ACHIEVEMENT', 'ENRICHMENT', 'LEADERSHIP', 'SERVICE')
     ),
-    role TEXT DEFAULT 'PARTICIPANT'
-    award TEXT
-    hours INTEGER
-    PRIMARY KEY (student_id),
-    PRIMARY KEY (activity_id),
+    role TEXT DEFAULT 'PARTICIPANT',
+    award TEXT,
+    hours INTEGER,
+    PRIMARY KEY (student_id, activity_id),
     FOREIGN KEY (student_id) REFERENCES student(id),
     FOREIGN KEY (activity_id) REFERENCES activity(id)
 );
