@@ -1,29 +1,53 @@
 {% extends "layout.html" %}
+
 {% block title %}
 Index
 {% endblock %}
 
 {% block main %}
-<h1>Index</h1>
-<h2>View</h2>
-    <li>
-        <a href="/view_student">Student</a>
-    </li>
-    <li>
-        <a href="/view_class">Class</a>
-    </li>
-<h2>CCA</h2>
-    <li>
-        <a href="/add_cca">Add CCA</a>
-    </li>
-    <li>
-        <a href="/view_cca">View CCA</a>
-    </li>
- <h2>Activity</h2>
-    <li>
-       <a href="/add_activity">Add Activity</a>  
-    </li>
-    <li>
-        <a href="/view_activity">View Activity</a>
-    </li>
+
+    <div class="view">
+        <h1>Available Actions</h1><br>
+
+        <a href="/view_student">
+            <button class="action" type="button">STUDENT <img src="https://img.icons8.com/ios/250/000000/user.png" alt="student" width="50" height="50"></button>
+        </a>
+        <br><br>
+
+        <a href="/view_class">
+            <button class="action" type="button">CLASS <img src="https://img.icons8.com/ios/250/000000/classroom.png" alt="class" width="50" height="50"></button>
+        </a>
+        <br><br>
+
+        <div class="dropdown">
+            <button class="action" class="dropbtn">CLUB <img src="https://img.icons8.com/ios/250/000000/crowd.png" alt="club" width="50" height="50"></button>
+            <div class="dropdown-content">
+                <a href="/view_cca">View CCA</a>
+                <a href="/add_cca">New CCA</a>
+            </div>
+        </div>
+        <br><br>
+
+        <div class="dropdown">
+            <button class="action" class="dropbtn">ACTIVITY <img src="https://img.icons8.com/ios/250/000000/sports-mode.png" alt="activity" width="50" height="50"></button>
+            <div class="dropdown-content">
+                <a href="/view_activity">View Activities</a>
+                <a href="/add_activity">New Activity</a>
+            </div>
+        </div>
+        <br><br>
+
+    </div>
+    <br><br>
+
+    <div class="edit">
+        <a href="/edit_membership">
+            <button type="button">Membership</button>
+        </a>
+
+        <!-- <a href="">
+            <button type="button">Participation</button>
+        </a> -->
+    </div>
+
 {% endblock %}

@@ -8,12 +8,23 @@ class Table:
 
     def execute(self, sql_statement:str, values=[]) -> None:
         with sqlite3.connect('database.db') as conn:
+            conn.row_factory = sqlite3.Row # turns output into dict
             cur = conn.cursor()
+            
             if values == []:
                 cur.execute(sql_statement)
             else:
                 cur.execute(sql_statement, tuple(values))
-            #conn.close()
+
+            results = cur.fetchall()
+            if results == []:
+                return []
+            else:
+                list_of_dict = []
+                for record in results:
+                    list_of_dict.append(dict(record)) # convert Row object to dict
+                return list_of_dict             
+            # conn.close()
                 
     def import_csv(self, file:str) -> None: 
         with open(file, 'r') as f:
@@ -45,11 +56,11 @@ class Table:
         sql_statement.strip(' AND')
         sql_statement += ';' 
         
-        self.__execute(sql_statement, values)
+        return self.execute(sql_statement, values)
 
     def get_all(self) -> list:
         sql_statement = 'SELECT * FROM ' + self.__table
-        self.execute(sql_statement)
+        return self.execute(sql_statement)
 
     def insert_one(self, record:dict, sql:str) -> bool:  
         if self.find(record) == []: #empty list, record not in database
@@ -57,7 +68,7 @@ class Table:
                 if type(value) == str:
                     record[key] = value.upper()
                     
-            sql.execute(sql, record)
+            self.execute(sql, record)
             return True #inserted
         else:
             return False #did not insert
