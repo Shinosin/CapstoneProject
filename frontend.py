@@ -71,7 +71,7 @@ def confirm_cca(cca_name:str) -> None:
             "method": "POST"
         },
         form_data={
-            "cca_name": cca_name 
+            "name": cca_name 
         })
 
 def view_cca(data:dict) -> None:

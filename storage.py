@@ -8,11 +8,11 @@ class Table:
         self.__table = table
         self.__columns = columns
 
-    def execute(self, sql_statement:str, values=[]) -> None:
+    def execute(self, sql_statement:str, values={}) -> list:
         with sqlite3.connect('database.db') as conn:
             conn.row_factory = sqlite3.Row # turns output into dict
             cur = conn.cursor()
-            cur.execute(sql_statement, tuple(values))
+            cur.execute(sql_statement, values)
 
             results = cur.fetchall()
             list_of_dict = []
@@ -34,8 +34,8 @@ class Table:
         valid_keys = [] #valid columns
         values = []
         
-        if column not in self.__columns and column != '*': #verify column in parameter 
-            return [] 
+        if column != '*' and column not in self.__columns: #verify column in parameter 
+            return []
             
         for key in keys: #verify keys
             if key in self.__columns:
@@ -46,11 +46,10 @@ class Table:
 
         for key in valid_keys:
             sql_statement += f' {key} = ? AND'
-            values += dict[key].upper()
+            values.append(record[key].upper()) # database values are captitalised
 
-        sql_statement.strip(' AND')
+        sql_statement = sql_statement.strip(' AND')
         sql_statement += ';' 
-        
         return self.execute(sql_statement, values)
 
     def get_all(self) -> list:
@@ -61,7 +60,7 @@ class Table:
         if self.find(record) == []: #empty list, record not in database
             for key, value in record.items():
                 if type(value) == str:
-                    record[key] = value.upper()
+                    record[key] = value.upper() # database values are capitalised
                     
             self.execute(sql, record)
             return True #inserted
@@ -84,7 +83,7 @@ class Student(Table):
         super().execute(sql.CREATE_STUDENT_ACTIVITY)
 
     def insert(self, record:dict) -> bool:
-        super().insert_one(record, sql.INSERT_STUDENT)
+        return super().insert_one(record, sql.INSERT_STUDENT)
 
 class Class(Table):
 
@@ -93,7 +92,7 @@ class Class(Table):
         super().execute(sql.CREATE_CLASS)
 
     def insert(self, record:dict) -> bool:
-        super().insert_one(record, sql.INSERT_CLASS)    
+        return super().insert_one(record, sql.INSERT_CLASS)    
     
 class CCA(Table):
     
@@ -102,7 +101,7 @@ class CCA(Table):
         super().execute(sql.CREATE_CCA)
         
     def insert(self, record:dict) -> bool:
-        super().insert_one(record, sql.INSERT_CCA)
+        return super().insert_one(record, sql.INSERT_CCA)
 
 class Activity(Table):
 
@@ -111,7 +110,7 @@ class Activity(Table):
         super().execute(sql.CREATE_ACTIVITY)
 
     def insert(self, record:dict) -> bool:
-        super().insert_one(record, sql.INSERT_ACTIVITY)
+        return super().insert_one(record, sql.INSERT_ACTIVITY)
 
 database = {
     'students': Student('database.db'), 

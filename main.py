@@ -28,12 +28,14 @@ def add_cca():
     3. Verify with database if Club name already exists
     """
     if "confirm" in request.args: # confirmation page
-        cca_name = request.form["cca_name"] # str
+        cca_name = request.form["name"] # str
         return frontend.confirm_cca(cca_name) # cca_name: str
     elif 'verify' in request.args: # check with database
         cca_name = request.form.to_dict() # dict
         if storage.database['ccas'].insert(cca_name): # successfully inserted
-            return frontend.redirect(cca_name) # cca_name: dict
+            data = {}
+            data['cca_name'] = cca_name['name'] # for display
+            return frontend.redirect(data) # data: dict
         else:
             return frontend.add_cca(message='Failed to add CCA, CCA already exists.')
     else:
