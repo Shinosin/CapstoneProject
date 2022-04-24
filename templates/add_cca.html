@@ -8,16 +8,17 @@ Add CCA
 {% if page_type == "new"  %}
 
 <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-    <label for="cca_name">Name:</label>
+    <label for="name">Name:</label>
     <input
-        id="cca_name"
+        id="name"
         type="text"
-        name="cca_name"
+        name="name"
         value=""
         >
 
     <input type="submit" value="Submit">
 </form>
+<p>{{ message }}</p>
     
 {% elif page_type == "confirm" %}
 

@@ -4,7 +4,7 @@ View {{ entity }}
 {% endblock %}
 
 {% block main %}
-<h1>View {{ entity }}</h1>
+<h1>View {{ entity | title }}</h1>
 <label for="search_key">Filter by: </label>
 <select name="search_key" id="search_key">
     {% if entity == "student" %}
@@ -25,9 +25,9 @@ View {{ entity }}
     <option value="subject_name">Subject Name</option>
     <option value="subject_level">Subject Level</option>
 
-    {% elif entity == "club" %}
-    <option value="club_id">Club ID</option>
-    <option value="club_name">Club Name</option>
+    {% elif entity == "cca" %}
+    <option value="id">CCA ID</option>
+    <option value="name">CCA Name</option>
 
     {% elif entity == "activity" %}
     <option value="activity_id">Activity ID</option>
@@ -46,9 +46,17 @@ View {{ entity }}
     >
 
 <table>
-    {% for name, value in data %}
-    <th>{{ name }}</th>
-    <tr>{{ value }}</tr>
+    <tr>
+        {% for key in data[0].keys() %}
+        <th>{{ key }}</th>
+        {% endfor %}
+    </tr>
+    {% for record in data %}
+    <tr>
+        {% for key in data[0].keys() %}
+        <td>{{ record[key] }}</td>
+        {% endfor %}
+    </tr>
     {% endfor %}
 </table>
 {% endblock %}
