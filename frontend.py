@@ -111,12 +111,7 @@ def confirm_activity(data:dict) -> None:
             "method": "POST"
         },
         form_data=data
-    )
-
-def view_activity(data:dict) -> None:
-    return render_template('view.html',
-                           entity="activity",
-                          data=data)    
+    
 
 # membership - student-cca
 '''
