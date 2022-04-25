@@ -1,50 +1,13 @@
 {% extends "layout.html" %}
 {% block title %}
-View {{ entity }}
+View {{ entity | title }}
 {% endblock %}
 
 {% block main %}
+
 <h1>View {{ entity | title }}</h1>
-<label for="search_key">Filter by: </label>
-<select name="search_key" id="search_key">
-    {% if entity == "student" %}
-    <option value="student_id">Student ID</option>
-    <option value="student_name">Student Name</option>
-    <option value="class">Class</option>
-    <option value="age">Age</option>
-    <option value="year_enrolled">Year Enrolled</option>
-    <option value="year_graduated">Year Graduated</option>
-
-    {% elif entity == "class" %}
-    <option value="class_id">Class ID</option>
-    <option value="class_name">Class Name</option>
-    <option value="class_level">Class Level</option>
-
-    {% elif entity == "subject" %}
-    <option value="subject_code">Subject Code</option>
-    <option value="subject_name">Subject Name</option>
-    <option value="subject_level">Subject Level</option>
-
-    {% elif entity == "cca" %}
-    <option value="id">CCA ID</option>
-    <option value="name">CCA Name</option>
-
-    {% elif entity == "activity" %}
-    <option value="activity_id">Activity ID</option>
-    <option value="activity_startdate">Activity Start Date</option>
-    <option value="activity_enddate">Activity End Date</option>
-    <option value="activity_desc">Activity Description</option>            
-    {% endif %}
-</select>
-
-<label for="search_value">Search: </label>
-<input
-    id="search_value"
-    type="text"
-    name="search_value"
-    value=""
-    >
-
+{% if entity == "subject" %}
+<h2>Subjects Taken</h2>
 <table>
     <tr>
         {% for key in data[0].keys() %}
@@ -57,6 +20,72 @@ View {{ entity }}
         <td>{{ record[key] }}</td>
         {% endfor %}
     </tr>
-    {% endfor %}
+</table>
+{% endif %}
+
+<form action="view_{{ entitiy }}" method="POST">
+    <label for="search_key">Filter by: </label>
+    <select name="search_key" id="search_key">
+        {% if entity == "student" %}
+        <option value="id">Student ID</option>
+        <option value="name">Student Name</option>
+        <option value="student_class">Class</option>
+        <option value="age">Age</option>
+        <option value="year_enrolled">Year Enrolled</option>
+        <option value="graduating_year">Graduating Year</option>
+    
+        {% elif entity == "class" %}
+        <option value="id">Class ID</option>
+        <option value="name">Class Name</option>
+        <option value="level">Class Level</option>
+    
+        {% elif entity == "cca" %}
+        <option value="id">CCA ID</option>
+        <option value="name">CCA Name</option>
+    
+        {% elif entity == "activity" %}
+        <option value="id">Activity ID</option>
+        <option value="start_date">Activity Start Date</option>
+        <option value="end_date">Activity End Date</option>
+        <option value="description">Activity Description</option>            
+        {% endif %}
+    </select>
+    
+    <input
+        id="search_value"
+        type="text"
+        name="search_value"
+        value=""
+        placeholder="Search..."
+        autocomplete="off"
+        required
+        >
+    <input type="submit" value="Search">
+</form>
+
+<p id="fail">{{ message }}</p>
+
+
+<form action='/view_subject' method='POST'>
+    <table>
+        <tr>
+            {% for key in data[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+        </tr>
+        {% for record in data %}
+        <tr>
+            {% if entity == "student" %}
+            <td><input type="submit" value="View Subject"><input type="hidden" name="id" value="{{ record['id'] }}"></td>
+            {% endif %}
+            {% for key in data[0].keys() %}
+            <td>{{ record[key] }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+        
+</form>
+
 </table>
 {% endblock %}

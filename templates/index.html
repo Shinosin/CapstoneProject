@@ -5,7 +5,6 @@ Index
 {% endblock %}
 
 {% block main %}
-
     <div class="view">
         <h1>Available Actions</h1><br>
 
@@ -41,13 +40,23 @@ Index
     <br><br>
 
     <div class="edit">
-        <a href="/edit_membership">
-            <button type="button">Membership</button>
-        </a>
+        <div class="dropdown">
+            <button class="action" class="dropbtn">MEMBERSHIP</button>
+            <div class="dropdown-content">
+                <a href="/add_membership">Add Membership</a>
+                <a href="/edit_membership">Edit Membership</a>
+            </div>
+        </div>
+        <br><br>
 
-        <a href="/edit_participation">
-            <button type="button">Participation</button>
-        </a>
+        <div class="dropdown">
+            <button class="action" class="dropbtn">PARTICIPATION</button>
+            <div class="dropdown-content">
+                <a href="/add_participation">Add Participation</a>
+                <a href="/edit_participation">Edit Participation</a>
+            </div>
+        </div>
+        <br><br>
     </div>
 
 {% endblock %}
