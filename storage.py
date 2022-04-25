@@ -138,6 +138,9 @@ class Activity(Table):
     def insert(self, record:dict) -> bool:
         return super().insert_one(record, sql.INSERT_ACTIVITY)
 
+def validate(date: str) -> bool:
+    pass
+
 database = {
     'students': Student('database.db'), 
     'classes': Class('database.db'),
