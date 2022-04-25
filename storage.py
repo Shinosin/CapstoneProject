@@ -65,13 +65,33 @@ class Table:
             self.execute(sql, record)
             return True #inserted
         else:
-            return False #did not insert
+            return False #record exists in database, cannot insert
 
     def update(self, record:dict, new_record:dict) -> bool:
         if self.find(record) == False:
             return False #cannot update, record not found
-        else:
-            pass
+        else: #record found, all columns in record are valid
+            keys = '' #column(s) to be updated
+            values = [] #values to be updated
+            for key1 in record:
+                for key2 in new_record:
+                    if key1 == key2: #validate keys in new_record
+                        keys += key1 + ','
+                        values += new_record[key2] 
+                        
+            keys = keys.strip(',')
+            
+            sql_statement = 'UPDATE ' + self.__table + ' SET ' 
+
+            for key in keys:
+                sql_statement += f'{key} = ? AND '
+
+            sql_statement = sql_statement.strip('AND ')
+            #idk what exactly this function takes in so um ...
+            #also this code only works for tables with id (subject and other tables with two primary keys will not work :D)
+            sql_statement += f'WHERE {"id"} = {record["id"]};'
+            
+            return self.execute(sql_statement, values)
                 
 class Student(Table):
 
@@ -91,31 +111,32 @@ class Class(Table):
         super().__init__(database, 'class', ['id', 'name', 'level'])
         super().execute(sql.CREATE_CLASS)
 
-    def find(self, record:dict, column='*') -> list: 
-        sql_statement = 'SELECT ' + column + ' FROM "class" WHERE'
+    # def find(self, record:dict, column='*') -> list:
+    #     #class is a reserved word
+    #     sql_statement = 'SELECT ' + column + ' FROM "class" WHERE' 
         
-        keys = dict.keys() #column names
-        valid_keys = [] #valid columns
-        values = []
+    #     keys = dict.keys() #column names
+    #     valid_keys = [] #valid columns
+    #     values = []
         
-        if column not in self.columns: #verify column in parameter 
-            return [] 
+    #     if column not in self.columns: #verify column in parameter 
+    #         return [] 
             
-        for key in keys: #verify keys
-            if key in self.columns:
-                valid_keys.append(key)
+    #     for key in keys: #verify keys
+    #         if key in self.columns:
+    #             valid_keys.append(key)
 
-        if valid_keys == []: #keys do not exist in the table
-            return []
+    #     if valid_keys == []: #keys do not exist in the table
+    #         return []
 
-        for key in valid_keys:
-            sql_statement += f' {key} = ? AND'
-            values += dict[key].upper()
+    #     for key in valid_keys:
+    #         sql_statement += f' {key} = ? AND'
+    #         values += dict[key].upper()
 
-        sql_statement.strip(' AND')
-        sql_statement += ';' 
+    #     sql_statement.strip(' AND')
+    #     sql_statement += ';' 
         
-        return self.execute(sql_statement, values)
+    #     return self.execute(sql_statement, values)
 
     def insert(self, record:dict) -> bool:
         return super().insert_one(record, sql.INSERT_CLASS)    
@@ -132,18 +153,47 @@ class CCA(Table):
 class Activity(Table):
 
     def __init__(self, database:str) -> None:
-        super().__init__(database, 'activity', ['id', 'name', 'start_date', 'end_date'])
+        super().__init__(database, 'activity', ['id', 'name', 'start_date', 'end_date', 'description'])
         super().execute(sql.CREATE_ACTIVITY)
 
     def insert(self, record:dict) -> bool:
-        return super().insert_one(record, sql.INSERT_ACTIVITY)
+        if self.validate_year(record['start_date']): #validate start_date
+            if record['end_date'] != '': #check if end_date exists
+                if self.validate_year(record['end_date']): #validate end_date
+                    return super().insert_one(record, sql.INSERT_ACTIVITY)
+            else:
+                return super().insert_one(record, sql.INSERT_ACTIVITY)
+        else:
+            return False #wrong date format 
 
-def validate(date: str) -> bool:
-    pass
+    def leap_year(self, year:int) -> bool:
+        return (year % 4 == 0)
 
+    def validate_date(self, date:str) -> bool:
+        #length, type, format check
+        if len(date) != 8 or type(date) != str or not date.isdigit():
+            return False
+        else:
+            year, month, day = int(date[:4]), int(date[4:6]), int(date[7:])
+            
+            #format/range check
+            if not (1 <= month <= 12): #check range of month
+                return False
+            if month in (1, 3, 5, 7, 8, 10, 12) and not (1 <= day <= 31): #months with 31st
+                return False
+            if month in (4, 6, 9, 11) and not (1 <= day <= 30): #months with 30th
+                return False
+            if month == 2: #february
+                if self.leap_year(year) and not (1 <= day <= 29): #leap year
+                    return False
+                elif not self.leap_year(year) and (1 <= day <= 28): #no leap year
+                    return False
+            return True
+            
 database = {
     'students': Student('database.db'), 
     'classes': Class('database.db'),
     'ccas': CCA('database.db'),
     'activities': Activity('database.db')
     }
+
