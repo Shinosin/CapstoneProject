@@ -43,8 +43,9 @@ Add Activity
     
         <input type="submit" value="Submit">
     </form>
+
     <p id="fail">{{ message }}</p>
-        
+
     {% elif page_type == "confirm" %}
     
     <h2>Confirm details</h2>
@@ -72,4 +73,6 @@ Add Activity
         <input type="submit" value="No">
     </form>
     {% endif %}
+
 {% endblock %}
+

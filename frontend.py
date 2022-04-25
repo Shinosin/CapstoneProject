@@ -10,7 +10,7 @@ def index(message=''):
 '''
 Redirects to a success (confirmation) page
 '''
-def redirect(data:dict) -> None:
+def redirect(data: dict) -> None:
     return render_template('redirect.html',
                           form_data=data)
 
@@ -18,7 +18,7 @@ def redirect(data:dict) -> None:
 '''
 A form to view data
 '''
-def view(entity, data:dict, message="") -> None:
+def view(entity, data: list, message="") -> None:
     return render_template("view.html",
                           entity=entity,
                           data=data,
@@ -44,9 +44,10 @@ def add_cca(message="") -> None:
         form_data={
             "name": ""
         },
-    message=message)
+        message=message)
+
     
-def confirm_cca(name:str) -> None:
+def confirm_cca(name: str) -> None:
     return render_template(
         "add_cca.html",
         page_type="confirm",
@@ -81,9 +82,9 @@ def add_activity(message="") -> None:
                 "end_date": "",
                 "description": ""
             },
-    message=message)
+            message=message)
 
-def confirm_activity(data:dict) -> None:
+def confirm_activity(data: dict) -> None:
     return render_template(
         "add_activity.html",
         page_type="confirm",
@@ -91,8 +92,7 @@ def confirm_activity(data:dict) -> None:
             "action": "/add_activity?verify",
             "method": "POST"
         },
-        form_data=data
-    )
+        form_data=data)
 
 # membership - student-cca
 '''
@@ -114,9 +114,9 @@ def add_membership(names: list, message="") -> None:
         form_data={
             "student_id": "",
             "cca_id": "",
-            "role": "Member"
+            "role": "MEMBER"
         },
-    message=message)
+        message=message)
     
 def edit_membership(names: list, message="") -> None:
     return render_template(
@@ -155,7 +155,7 @@ Arguments:
 - role: str
 - award: str
 - hours: int
-- coordinator: str
+- coordinator: int
 '''
 def add_participation(activity_ids: list, message="") -> None:
     return render_template(

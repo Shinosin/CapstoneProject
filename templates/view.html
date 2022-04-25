@@ -1,21 +1,29 @@
 {% extends "layout.html" %}
 {% block title %}
-View {{ entity }}
+View {{ entity | title }}
 {% endblock %}
 
 {% block main %}
-<h1>View {{ entity }}</h1>
+
+<h1>View {{ entity | title }}</h1>
 {% if entity == "subject" %}
 <h2>Subjects Taken</h2>
 <table>
-    {% for name, value in data %}
-    <th>{{ name }}</th>
-    <tr>{{ value }}</tr>
-    {% endfor %}
+    <tr>
+        {% for key in data[0].keys() %}
+        <th>{{ key }}</th>
+        {% endfor %}
+    </tr>
+    {% for record in data %}
+    <tr>
+        {% for key in data[0].keys() %}
+        <td>{{ record[key] }}</td>
+        {% endfor %}
+    </tr>
 </table>
 {% endif %}
 
-<form method="GET">
+<form action="view_{{ entitiy }}" method="POST">
     <label for="search_key">Filter by: </label>
     <select name="search_key" id="search_key">
         {% if entity == "student" %}
@@ -43,23 +51,41 @@ View {{ entity }}
         {% endif %}
     </select>
     
-    <label for="search_value">Search: </label>
     <input
         id="search_value"
         type="text"
         name="search_value"
         value=""
+        placeholder="Search..."
+        autocomplete="off"
+        required
         >
+    <input type="submit" value="Search">
 </form>
 
-<table>
-    <p id="fail">{{ message }}</p>
-    {% for name, value in data %}
-    <th>{{ name }}</th>
-    <tr>{{ value }}</tr>
-    {% if entity == "student" %}
-    <tr><a href="/view_subject">View Student's Subjects</a></tr>
-    {% endif %}
-    {% endfor %}
+<p id="fail">{{ message }}</p>
+
+
+<form action='/view_subject' method='POST'>
+    <table>
+        <tr>
+            {% for key in data[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+        </tr>
+        {% for record in data %}
+        <tr>
+            {% if entity == "student" %}
+            <td><input type="submit" value="View Subject"><input type="hidden" name="id" value="{{ record['id'] }}"></td>
+            {% endif %}
+            {% for key in data[0].keys() %}
+            <td>{{ record[key] }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+        
+</form>
+
 </table>
 {% endblock %}
