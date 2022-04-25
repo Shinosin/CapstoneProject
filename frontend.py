@@ -126,7 +126,7 @@ Arguments:
 - student_name: str
 - cca_name: str (dropdown)
 '''
-def edit_membership(cca_names: list) -> None:
+def edit_membership(cca_names: list, message="") -> None:
     if "add" in request.args:
         return render_template(
             "student_cca.html",
@@ -138,7 +138,9 @@ def edit_membership(cca_names: list) -> None:
             form_data={
                 "student_name": "",
                 "cca_name": ""
-            })
+            },
+        message=message)
+        
     elif "edit" in request.args:
         return render_template(
             "student_cca.html",
@@ -150,7 +152,9 @@ def edit_membership(cca_names: list) -> None:
             form_data={
                 "student_name": "",
                 "cca_name": ""
-            })
+            },
+        message=message)
+        
     else:
         return render_template(
             "edit_index.html",
@@ -181,7 +185,7 @@ Arguments:
 - student_name: str
 - activity_id: int (dropdown)
 '''
-def edit_participation(activity_ids: list) -> None:
+def edit_participation(activity_ids: list, message="") -> None:
     if "add" in request.args:
         return render_template(
             "student_activity.html",
@@ -193,7 +197,9 @@ def edit_participation(activity_ids: list) -> None:
             form_data={
                 "student_name": "",
                 "activity_id": ""
-            })
+            },
+        message=message)
+        
     elif "edit" in request.args:
         return render_template(
             "student_activity.html",
@@ -205,7 +211,9 @@ def edit_participation(activity_ids: list) -> None:
             form_data={
                 "student_name": "",
                 "activity_id": ""
-            })
+            },
+        message=message)
+        
     else:
         return render_template(
             "edit_index.html",
