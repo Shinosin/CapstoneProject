@@ -3,14 +3,11 @@ from flask import render_template
 def splash():
     return render_template('splash.html')
 
-def index(message=''):
-    return render_template('index.html',
-                           message=message)
+def index():
+    return render_template('index.html')
 
-'''
-Redirects to a success (confirmation) page
-'''
 def redirect(data: dict) -> None:
+    '''Redirects to a success (confirmation) page'''
     return render_template('redirect.html',
                           form_data=data)
 
@@ -28,16 +25,16 @@ Arguments:
 '''
 def view_student(data: list, message="") -> None:
     return render_template("view.html",
-                          entity="student",
+                           entity="student",
                            headers=[
                                {"label": "Student ID", "value": "id"},
                                {"label": "Student Name", "value": "name"},
-                               {"label": "Student Class", "value": "student_class"},
                                {"label": "Student Age", "value": "age"},
                                {"label": "Year Enrolled", "value": "year_enrolled"},
-                               {"label": "Graduating Year", "value": "graduating_year"}],
-                          data=data,
-                          message=message)
+                               {"label": "Graduating Year", "value": "graduating_year"},
+                               {"label": "Student Class", "value": "student_class"}],     
+                           data=data,
+                           message=message)
 
 '''
 A form to view class data.
@@ -49,13 +46,13 @@ Arguments:
 '''
 def view_class(data: list, message="") -> None:
     return render_template("view.html",
-                          entity="class",
+                           entity="class",
                            headers=[
                                {"label": "Class ID", "value": "id"},
                                {"label": "Class Name", "value": "name"},
                                {"label": "Class Level", "value": "level"}],
-                          data=data,
-                          message=message)
+                           data=data,
+                           message=message)
 
 '''
 A form to view cca data.
@@ -66,12 +63,12 @@ Arguments:
 '''
 def view_cca(data: list, message="") -> None:
     return render_template("view.html",
-                          entity="cca",
+                           entity="cca",
                            headers=[
                                {"label": "CCA ID", "value": "id"},
                                {"label": "CCA Name", "value": "name"}],
-                          data=data,
-                          message=message)
+                           data=data,
+                           message=message)
 
 '''
 A form to view activity data.
@@ -84,15 +81,34 @@ Arguments:
 '''
 def view_activity(data: list, message="") -> None:
     return render_template("view.html",
-                          entity="activity",
+                           entity="activity",
                            headers=[
                                {"label": "Activity ID", "value": "id"},
+                               {"label": "Activity Name", "value": "name"},
                                {"label": "Activity Start Date", "value": "start_date"},
                                {"label": "Activity End Date", "value": "end_date"},
                                {"label": "Activity Description", "value": "description"}],
-                          data=data,
-                          message=message)
+                           data=data,
+                           message=message)
 
+"""
+A form to view subject data
+
+Arguments:
+- subject_code: str
+- name: str
+- level: str
+"""
+def view_subject(data: list, student_name: str) -> None:
+    return render_template("view.html",
+                           entity="subject",
+                           headers=[
+                               {"label": "Subject Code", "value": "subject_code"},
+                               {"label": "Subject Name", "value": "name"},
+                               {"label": "Subject Level", "value": "level"}
+                           ],
+                           data=data,
+                           student_name=student_name)
 # add functions
 # cca
 '''
@@ -147,6 +163,7 @@ def add_activity(message="") -> None:
                 "method": "POST"
             },
             form_data={
+                "name": "",
                 "start_date": "",
                 "end_date": "",
                 "description": ""

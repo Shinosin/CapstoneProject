@@ -139,9 +139,9 @@ class Activity(Table):
         super().execute(sql.CREATE_ACTIVITY)
 
     def insert(self, record:dict) -> bool:
-        if self.validate_year(record['start_date']): #validate start_date
+        if self.validate_date(record['start_date']): #validate start_date
             if record['end_date'] != '': #check if end_date exists
-                if self.validate_year(record['end_date']): #validate end_date
+                if self.validate_date(record['end_date']): #validate end_date
                     return super().insert_one(record, sql.INSERT_ACTIVITY)
             else:
                 return super().insert_one(record, sql.INSERT_ACTIVITY)
@@ -151,13 +151,12 @@ class Activity(Table):
     def leap_year(self, year:int) -> bool:
         return (year % 4 == 0)
 
-    def validate_date(self, date:str) -> bool:
+    def validate_date(self, date: str) -> bool:
         #length, type, format check
         if len(date) != 8 or type(date) != str or not date.isdigit():
             return False
         else:
-            year, month, day = int(date[:4]), int(date[4:6]), int(date[7:])
-            
+            year, month, day = int(date[:4]), int(date[4:6]), int(date[6:])
             #format/range check
             if not (1 <= month <= 12): #check range of month
                 return False
@@ -168,7 +167,7 @@ class Activity(Table):
             if month == 2: #february
                 if self.leap_year(year) and not (1 <= day <= 29): #leap year
                     return False
-                elif not self.leap_year(year) and (1 <= day <= 28): #no leap year
+                elif not self.leap_year(year) and not (1 <= day <= 28): #no leap year
                     return False
             return True
 

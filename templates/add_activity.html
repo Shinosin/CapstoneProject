@@ -8,6 +8,17 @@ Add Activity
 
     {% if page_type == "new"  %}
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+        <label for="name">Activity Name:</label>
+        <input
+            id="name"
+            type="text"
+            name="name"
+            value=""
+            placeholder="Name of Activity"
+            autocomplete="off"
+            required
+            >
+        <br>
         <label for="start_date">Start Date:</label>
         <input
             id="start_date"

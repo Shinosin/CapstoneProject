@@ -79,15 +79,14 @@ def view_student():
         search_value = request.form['search_value']
         record = {search_key: search_value} # dict
         data = storage.database['students'].find(record) # list of dict
-        print(data)
         if data == []:
-            return frontend.view(entity='student', data=data, message='Student {} cannot be found.'.format(search_value))
+            return frontend.view_student(data=data, message='Student {} {} cannot be found.'.format(search_key, search_value))
         
         else:
-            return frontend.view(entity='student', data=data, message="Viewing Students with {} {}.".format(search_key, search_value))
+            return frontend.view_student(data=data, message="Viewing Students with {} {}.".format(search_key, search_value))
     else: # all data
         data = storage.database['students'].get_all() # list of dict
-        return frontend.view(entity='student', data=data, message='Viewing All Students.')
+        return frontend.view_student(data=data, message='Viewing All Students.')
 
 @app.route('/view_class', methods=['POST', 'GET'])
 def view_class():
@@ -98,13 +97,13 @@ def view_class():
         data = storage.database['classes'].find(record) # list of dict
         
         if data == []:
-            return frontend.view(entity='class', data=data, message='Class {} cannot be found.'.format(search_value))
+            return frontend.view_class(data=data, message='Class {} {} cannot be found.'.format(search_key, search_value))
         
         else:
-            return frontend.view(entity='class', data=data, message="Viewing Classes with {} {}.".format(search_key, search_value))
+            return frontend.view_class(data=data, message="Viewing Classes with {} {}.".format(search_key, search_value))
     else: # all data
         data = storage.database['classes'].get_all() # list of dict
-        return frontend.view(entity='class', data=data, message='Viewing All Classes.')
+        return frontend.view_class(data=data, message='Viewing All Classes.')
 
 @app.route('/view_cca', methods=['POST', 'GET'])
 def view_cca():
@@ -115,13 +114,13 @@ def view_cca():
         data = storage.database['ccas'].find(record) # list of dict
         
         if data == []:
-            return frontend.view(entity='cca', data=data, message='CCA {} cannot be found.'.format(search_value))
+            return frontend.view_cca(data=data, message='CCA {} {} cannot be found.'.format(search_key, search_value))
         
         else:
-            return frontend.view(entity='cca', data=data, message="Viewing CCAs with {} {}.".format(search_key, search_value))
+            return frontend.view_cca(data=data, message="Viewing CCAs with {} {}.".format(search_key, search_value))
     else: # all data
         data = storage.database['ccas'].get_all() # list of dict
-        return frontend.view(entity='cca', data=data, message='Viewing All CCAs.')
+        return frontend.view_cca(data=data, message='Viewing All CCAs.')
 
 @app.route('/view_activity', methods=['POST', 'GET'])
 def view_activity():
@@ -132,15 +131,15 @@ def view_activity():
         data = storage.database['activities'].find(record) # list of dict
         
         if data == []:
-            return frontend.view(entity='activity', data=data, message='Activity {} cannot be found.'.format(search_value))
+            return frontend.view_activity(data=data, message='Activity {} {} cannot be found.'.format(search_key, search_value))
         
         else:
-            return frontend.view(entity='activity', data=data, message="Viewing Activities with {} {}.".format(search_key, search_value))
+            return frontend.view_activity(data=data, message="Viewing Activities with {} {}.".format(search_key, search_value))
             
     else: # all data
         data = storage.database['activities'].get_all() # list of dict
         print(data)
-        return frontend.view(entity='activity', data=data, message='Viewing All Activities.')
+        return frontend.view_activity(data=data, message='Viewing All Activities.')
 
 @app.route('/view_subject', methods=['POST'])
 def view_subject():
@@ -149,9 +148,12 @@ def view_subject():
     student_name = storage.database['students'].find(
         {'id': student_id },
         column='name'
-    )
-    data = storage.database['subject'].find(record)
-    return frontend.view(entity='subject', data=data)
+    ) # list of dict
+    list_of_subject_code = storage.database['student_subject'].find(record, column='subject_code')
+    data = []
+    for record in list_of_subject_code:
+        data.extend(storage.database['subjects'].find(record))
+    return frontend.view_subject(student_name=student_name[0]['name'], data=data)
 
 @app.route('/edit_membership', methods=['POST', 'GET'])
 def edit_membership():
