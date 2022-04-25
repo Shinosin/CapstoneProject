@@ -10,11 +10,11 @@ Participation
     {% if page_type = 'new' %}
     <h2>Input Participation details</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-        <label for="student_name">Student Name:</label>
+        <label for="student_id">Student ID:</label>
         <input
-            id="student_name"
+            id="student_id"
             type="text"
-            name="student_name"
+            name="student_id"
             value=""
             >
         
@@ -31,10 +31,10 @@ Participation
     {% elif page_type = 'edit' %}
     <h2>Input Participation details</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-        <label for="student_name">Student Name:</label>
-        <select name="student_name" id="student_name">
-            {% for name in student_names %}
-            <option value="{{ name }}">{{ name }}</option>
+        <label for="student_id">Student ID:</label>
+        <select name="student_id" id="student_id">
+            {% for student in student_ids %}
+            <option value="{{ student }}">{{ student }}</option>
             {% endfor %}
         </select>
 

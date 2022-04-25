@@ -10,17 +10,17 @@ Membership
     {% if page_type = 'new' %}
     <h2>Input Membership details</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-        <label for="student_name">Student Name:</label>
+        <label for="student_id">Student ID:</label>
         <input
-            id="student_name"
+            id="student_id"
             type="text"
-            name="student_name"
+            name="student_id"
             value=""
             >
         
-        <label for="cca_name">CCA Name:</label>
-        <select name="cca_name" id="cca_name">
-            {% for cca in cca_names %}
+        <label for="cca_id">CCA ID:</label>
+        <select name="cca_id" id="cca_id">
+            {% for cca in cca_ids %}
             <option value="{{ cca }}">{{ cca }}</option>
             {% endfor %}
             <option value="None">None</option>
@@ -31,17 +31,17 @@ Membership
     {% elif page_type = 'edit' %}
     <h2>Input Membership details</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-        <label for="student_name">Student Name:</label>
-        <select name="student_name" id="student_name">
-            {% for name in student_names %}
-            <option value="{{ name }}">{{ name }}</option>
+        <label for="student_id">Student ID:</label>
+        <select name="student_id" id="student_id">
+            {% for student in student_ids %}
+            <option value="{{ student }}">{{ student }}</option>
             {% endfor %}
         </select>
 
-        <label for="cca_name">CCA Name:</label>
-        <select name="cca_name" id="cca_name">
-            {% for name in cca_names %}
-            <option value="name">CCA</option>
+        <label for="cca_id">CCA ID:</label>
+        <select name="cca_id" id="cca_id">
+            {% for cca in cca_ids %}
+            <option value="{{ cca }}">{{ cca }}</option>
             {% endfor %}
             <option value="None">None</option>
         </select>

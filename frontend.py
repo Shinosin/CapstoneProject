@@ -16,8 +16,8 @@ def redirect(data:dict) -> None:
 A form for students to view existing students.
 
 Arguments:
-- cca_id: int
-- cca_name: str
+- id: int
+- name: str
 '''
 def view_student(data:dict, message="") -> None:
     # display data
@@ -31,9 +31,9 @@ def view_student(data:dict, message="") -> None:
 A form for students to view existing classes.
 
 Arguments:
-- class_id: int
-- class_name: str
-- class_level: str
+- id: int
+- name: str
+- level: str
 '''
 def view_class(data:dict, message="") -> None:
     # display data
@@ -47,8 +47,8 @@ def view_class(data:dict, message="") -> None:
 A form for students to add and view a cca.
 
 Arguments:
-- cca_id: int
-- cca_name: str
+- id: int
+- name: str
 '''
 def add_cca(message="") -> None:
     return render_template(
@@ -59,11 +59,11 @@ def add_cca(message="") -> None:
             "method": "POST"
         },
         form_data={
-            "cca_name": ""
+            "name": ""
         },
     message=message)
     
-def confirm_cca(cca_name:str) -> None:
+def confirm_cca(name:str) -> None:
     return render_template(
         "add_cca.html",
         page_type="confirm",
@@ -72,7 +72,7 @@ def confirm_cca(cca_name:str) -> None:
             "method": "POST"
         },
         form_data={
-            "cca_name": cca_name 
+            "name": name 
         })
 
 
@@ -87,9 +87,9 @@ def view_cca(data:dict, message="") -> None:
 A form for students to add an activity.
 
 Arguments:
-- activity_id: int
-- activity_startdate: int
-- activity_enddate: int
+- id: int
+- start_date: int
+- end_date: int
 - activity_desc: str
 '''
 def add_activity(message="") -> None:
@@ -101,7 +101,8 @@ def add_activity(message="") -> None:
                 "method": "POST"
             },
             form_data={
-                "activity_date": "",
+                "start_date": "",
+                "end_date": "",
                 "activity_desc": ""
             },
     message=message)
@@ -119,14 +120,14 @@ def confirm_activity(data:dict) -> None:
 
 # membership - student-cca
 '''
-A form for students to enter a student name and cca name, to add a student into a cca.
+A form for students to enter a student id and cca id, to add a student into a cca.
 
 Arguments:
 - student_id: int
-- student_name: str
-- cca_name: str (dropdown)
+- cca_id: int
+- role: str
 '''
-def edit_membership(cca_names: list, message="") -> None:
+def edit_membership(names: list, message="") -> None:
     if "add" in request.args:
         return render_template(
             "student_cca.html",
@@ -136,8 +137,9 @@ def edit_membership(cca_names: list, message="") -> None:
                 "method": "POST",
             },
             form_data={
-                "student_name": "",
-                "cca_name": ""
+                "student_id": "",
+                "cca_id": "",
+                "role": ""
             },
         message=message)
         
@@ -150,8 +152,9 @@ def edit_membership(cca_names: list, message="") -> None:
                 "method": "POST",
             },
             form_data={
-                "student_name": "",
-                "cca_name": ""
+                "student_id": "",
+                "cca_id": "",
+                "role": ""
             },
         message=message)
         
@@ -178,12 +181,16 @@ def confirm_membership(data:dict) -> None:
 
 # participation - student-activity
 '''
-A form for students to enter a student name and activity name, to add a student into an activity
+A form for students to enter a student id and activity id, to add a student into an activity
 
 Arguments:
 - student_id: int
-- student_name: str
-- activity_id: int (dropdown)
+- activity_id: str
+- category: str
+- role: str
+- award: str
+- hours: str
+- coordinator: str
 '''
 def edit_participation(activity_ids: list, message="") -> None:
     if "add" in request.args:
@@ -195,7 +202,7 @@ def edit_participation(activity_ids: list, message="") -> None:
                 "method": "POST",
             },
             form_data={
-                "student_name": "",
+                "student_id": "",
                 "activity_id": ""
             },
         message=message)
@@ -209,7 +216,7 @@ def edit_participation(activity_ids: list, message="") -> None:
                 "method": "POST",
             },
             form_data={
-                "student_name": "",
+                "student_id": "",
                 "activity_id": ""
             },
         message=message)

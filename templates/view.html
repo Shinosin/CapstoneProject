@@ -9,26 +9,26 @@ View {{ entity }}
     <label for="search_key">Filter by: </label>
     <select name="search_key" id="search_key">
         {% if entity == "student" %}
-        <option value="student_id">Student ID</option>
-        <option value="student_name">Student Name</option>
+        <option value="id">Student ID</option>
+        <option value="name">Student Name</option>
         <option value="student_class">Class</option>
-        <option value="student_age">Age</option>
-        <option value="student_yearenrolled">Year Enrolled</option>
-        <option value="student_yeargraduated">Year Graduated</option>
+        <option value="age">Age</option>
+        <option value="year_enrolled">Year Enrolled</option>
+        <option value="graduating_year">Year Graduated</option>
     
         {% elif entity == "class" %}
-        <option value="class_id">Class ID</option>
-        <option value="class_name">Class Name</option>
-        <option value="class_level">Class Level</option>
+        <option value="id">Class ID</option>
+        <option value="name">Class Name</option>
+        <option value="level">Class Level</option>
     
-        {% elif entity == "club" %}
-        <option value="club_id">Club ID</option>
-        <option value="club_name">Club Name</option>
+        {% elif entity == "cca" %}
+        <option value="id">CCA ID</option>
+        <option value="name">CCA Name</option>
     
         {% elif entity == "activity" %}
-        <option value="activity_id">Activity ID</option>
-        <option value="activity_startdate">Activity Start Date</option>
-        <option value="activity_enddate">Activity End Date</option>
+        <option value="id">Activity ID</option>
+        <option value="start_date">Activity Start Date</option>
+        <option value="end_date">Activity End Date</option>
         <option value="activity_desc">Activity Description</option>            
         {% endif %}
     </select>
