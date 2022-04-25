@@ -103,7 +103,7 @@ Arguments:
 - cca_id: int
 - role: str
 '''
-def add_membership(names: list, message="") -> None:
+def add_membership(student_ids: list, cca_ids: list, message="") -> None:
     return render_template(
         "student_cca.html",
         page_type="new",
@@ -116,9 +116,11 @@ def add_membership(names: list, message="") -> None:
             "cca_id": "",
             "role": "MEMBER"
         },
+        student_ids=student_ids,
+        cca_ids=cca_ids,
         message=message)
     
-def edit_membership(names: list, message="") -> None:
+def edit_membership(student_ids: list, cca_ids: list, message="") -> None:
     return render_template(
         "student_cca.html",
         page_type="edit",
@@ -131,9 +133,11 @@ def edit_membership(names: list, message="") -> None:
             "cca_id": "",
             "role": ""
         },
-    message=message)
+        student_ids=student_ids,
+        cca_ids=cca_ids,
+        message=message)
 
-def confirm_membership(data:dict) -> None:
+def confirm_membership(data: dict) -> None:
     return render_template(
         "student_cca.html",
         page_type="confirm",
@@ -157,7 +161,7 @@ Arguments:
 - hours: int
 - coordinator: int
 '''
-def add_participation(activity_ids: list, message="") -> None:
+def add_participation(student_ids: list, activity_ids: list, message="") -> None:
     return render_template(
         "student_activity.html",
         page_type="new",
@@ -174,9 +178,11 @@ def add_participation(activity_ids: list, message="") -> None:
             "hours": "",
             "coordinator": ""
         },
-    message=message)
+        student_ids=student_ids,
+        activity_ids=activity_ids,
+        message=message)
         
-def edit_participation(activity_ids: list, message="") -> None:
+def edit_participation(student_ids: list, activity_ids: list, message="") -> None:
     return render_template(
         "student_activity.html",
         page_type="edit",
@@ -193,9 +199,11 @@ def edit_participation(activity_ids: list, message="") -> None:
             "hours": "",
             "coordinator": ""
         },
-    message=message)
+        student_ids=student_ids,
+        activity_ids=activity_ids,
+        message=message)
 
-def confirm_participation(data:dict) -> None:
+def confirm_participation(data: dict) -> None:
     return render_template(
         "student_activity.html",
         page_type="confirm",
