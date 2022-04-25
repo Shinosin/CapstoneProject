@@ -127,17 +127,39 @@ Arguments:
 - cca_name: str (dropdown)
 '''
 def edit_membership(cca_names: list) -> None:
-    return render_template(
+    if "add" in request.args:
+        return render_template(
             "student_cca.html",
             page_type="new",
             form_meta={
                 "action": "/edit_membership?confirm",
-                "method": "POST"
+                "method": "POST",
             },
             form_data={
                 "student_name": "",
                 "cca_name": ""
             })
+    elif "edit" in request.args:
+        return render_template(
+            "student_cca.html",
+            page_type="edit",
+            form_meta={
+                "action": "/edit_membership?confirm",
+                "method": "POST",
+            },
+            form_data={
+                "student_name": "",
+                "cca_name": ""
+            })
+    else:
+        return render_template(
+            "edit_index.html",
+            entity_rs="membership",
+            entity1="student",
+            entity2="a CCA",
+            form_meta={
+            "method": "GET"
+        })
 
 def confirm_membership(data:dict) -> None:
     return render_template(
@@ -160,17 +182,39 @@ Arguments:
 - activity_id: int (dropdown)
 '''
 def edit_participation(activity_ids: list) -> None:
-    return render_template(
+    if "add" in request.args:
+        return render_template(
             "student_activity.html",
             page_type="new",
             form_meta={
                 "action": "/edit_participation?confirm",
-                "method": "POST"
+                "method": "POST",
             },
             form_data={
                 "student_name": "",
                 "activity_id": ""
             })
+    elif "edit" in request.args:
+        return render_template(
+            "student_activity.html",
+            page_type="edit",
+            form_meta={
+                "action": "/edit_participation?confirm",
+                "method": "POST",
+            },
+            form_data={
+                "student_name": "",
+                "activity_id": ""
+            })
+    else:
+        return render_template(
+            "edit_index.html",
+            entity_rs="participation",
+            entity1="student",
+            entity2="an activity",
+            form_meta={
+            "method": "GET"
+        })
 
 def confirm_participation(data:dict) -> None:
     return render_template(

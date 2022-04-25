@@ -8,6 +8,7 @@ Participation
 <p>Register a student into an Activity</p>
 
     {% if page_type = 'new' %}
+    <h2>Input Participation details</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
         <label for="student_name">Student Name:</label>
         <input
@@ -16,6 +17,7 @@ Participation
             name="student_name"
             value=""
             >
+        
         <label for="activity_id">Activity ID:</label>
         <select name="activity_id" id="activity_id">
             {% for activity in activity_ids %}
@@ -23,6 +25,27 @@ Participation
             {% endfor %}
             <option value="None">None</option>
         </select>
+    </form>
+
+    {% elif page_type = 'edit' %}
+    <h2>Input Participation details</h2>
+    <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+        <label for="student_name">Student Name:</label>
+        <select name="student_name" id="student_name">
+            {% for name in student_names %}
+            <option value="{{ name }}">{{ name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="activity_id">Activity ID:</label>
+        <select name="activity_id" id="activity_id">
+            {% for activity in activity_ids %}
+            <option value="{{ activity }}">{{ activity }}</option>
+            {% endfor %}
+            <option value="None">None</option>
+        </select>
+
+        <input type="submit" value="Submit">
     </form>
 
     {% elif page_type = 'confirm' %}
