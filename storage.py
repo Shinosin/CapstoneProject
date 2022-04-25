@@ -139,7 +139,16 @@ class Class(Table):
     #     return self.execute(sql_statement, values)
 
     def insert(self, record:dict) -> bool:
-        return super().insert_one(record, sql.INSERT_CLASS)    
+        return super().insert_one(record, sql.INSERT_CLASS)
+
+class Subject(Table):
+
+    def __init__(self, database:str) -> None:
+        super().__init__(database, 'subject', ['subject_code', 'name', 'level'])
+        super().execute(sql.CREATE_SUBJECT)
+
+    def insert(self, record:dict) -> bool:
+        return super().insert_one(record, sql.INSERT_SUBJECT)
     
 class CCA(Table):
     
