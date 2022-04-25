@@ -16,6 +16,9 @@ Participation
             type="text"
             name="student_id"
             value=""
+            placeholder="ID of Student"
+            autocomplete="off"
+            required
             >
         
         <label for="activity_id">Activity ID:</label>
@@ -23,8 +26,47 @@ Participation
             {% for activity in activity_ids %}
             <option value="{{ activity }}">{{ activity }}</option>
             {% endfor %}
-            <option value="None">None</option>
         </select>
+
+        <label for="category">Category:</label>
+        <select name="category" id="category">
+            <option value="Achievement">Achievement</option>
+            <option value="Enrichment">Enrichment</option>
+            <option value="Leadership">Leadership</option>
+            <option value="Service">Service</option>
+        </select>
+
+        <label for="role">Role:</label>
+        <input
+            id="role"
+            type="text"
+            name="role"
+            value=""
+            placeholder="Role of Student"
+            autocomplete="off"
+            >
+
+        <label for="award">Award:</label>
+        <input
+            id="award"
+            type="text"
+            name="award"
+            value=""
+            placeholder="Award"
+            autocomplete="off"
+            >
+
+        <label for="hours">Hours:</label>
+        <input
+            id="hours"
+            type="text"
+            name="hours"
+            value=""
+            placeholder="Activity Hours"
+            autocomplete="off"
+            >        
+        
+        <input type="submit" value="Submit">
     </form>
     <p id="fail">{{ message }}</p>
 
@@ -45,6 +87,45 @@ Participation
             {% endfor %}
             <option value="None">None</option>
         </select>
+
+        <label for="category">Category:</label>
+        <select name="category" id="category">
+            <option value="Achievement">Achievement</option>
+            <option value="Enrichment">Enrichment</option>
+            <option value="Leadership">Leadership</option>
+            <option value="Service">Service</option>
+        </select>
+
+        <label for="role">Role:</label>
+        <input
+            id="role"
+            type="text"
+            name="role"
+            value=""
+            placeholder="Role of Student"
+            autocomplete="off"
+            >
+
+        <label for="award">Award:</label>
+        <input
+            id="award"
+            type="text"
+            name="award"
+            value=""
+            placeholder="Award"
+            autocomplete="off"
+            >
+
+        <label for="hours">Hours:</label>
+        <input
+            id="hours"
+            type="text"
+            name="hours"
+            value=""
+            placeholder="Activity Hours"
+            autocomplete="off"
+            >        
+        
 
         <input type="submit" value="Submit">
     </form>

@@ -90,7 +90,7 @@ Arguments:
 - id: int
 - start_date: int
 - end_date: int
-- activity_desc: str
+- description: str
 '''
 def add_activity(message="") -> None:
     return render_template(
@@ -103,7 +103,7 @@ def add_activity(message="") -> None:
             form_data={
                 "start_date": "",
                 "end_date": "",
-                "activity_desc": ""
+                "description": ""
             },
     message=message)
 
@@ -139,7 +139,7 @@ def edit_membership(names: list, message="") -> None:
             form_data={
                 "student_id": "",
                 "cca_id": "",
-                "role": ""
+                "role": "Member"
             },
         message=message)
         
@@ -185,11 +185,11 @@ A form for students to enter a student id and activity id, to add a student into
 
 Arguments:
 - student_id: int
-- activity_id: str
+- activity_id: int
 - category: str
 - role: str
 - award: str
-- hours: str
+- hours: int
 - coordinator: str
 '''
 def edit_participation(activity_ids: list, message="") -> None:
@@ -203,7 +203,12 @@ def edit_participation(activity_ids: list, message="") -> None:
             },
             form_data={
                 "student_id": "",
-                "activity_id": ""
+                "activity_id": "",
+                "category": "",
+                "role": "Participant",
+                "award": "",
+                "hours": "",
+                "coordinator": ""
             },
         message=message)
         
@@ -217,7 +222,12 @@ def edit_participation(activity_ids: list, message="") -> None:
             },
             form_data={
                 "student_id": "",
-                "activity_id": ""
+                "activity_id": "",
+                "category": "",
+                "role": "Participant",
+                "award": "",
+                "hours": "",
+                "coordinator": ""
             },
         message=message)
         

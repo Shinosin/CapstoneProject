@@ -16,6 +16,9 @@ Membership
             type="text"
             name="student_id"
             value=""
+            placeholder="ID of Student"
+            autocomplete="off"
+            required
             >
         
         <label for="cca_id">CCA ID:</label>
@@ -23,8 +26,19 @@ Membership
             {% for cca in cca_ids %}
             <option value="{{ cca }}">{{ cca }}</option>
             {% endfor %}
-            <option value="None">None</option>
         </select>
+
+        <label for="role">Role:</label>
+        <input
+            id="role"
+            type="text"
+            name="role"
+            value=""
+            placeholder="Role of Student"
+            autocomplete="off"
+            >
+        
+        <input type="submit" value="Submit">
     </form>
     <p id="fail">{{ message }}</p>
 
@@ -45,6 +59,16 @@ Membership
             {% endfor %}
             <option value="None">None</option>
         </select>
+
+        <label for="role">Role:</label>
+        <input
+            id="role"
+            type="text"
+            name="role"
+            value=""
+            placeholder="Role of Student"
+            autocomplete="off"
+            >
 
         <input type="submit" value="Submit">
     </form>
