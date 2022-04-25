@@ -20,10 +20,11 @@ View {{ entity | title }}
         <td>{{ record[key] }}</td>
         {% endfor %}
     </tr>
+    {% endfor %}
 </table>
 {% endif %}
 
-<form action="view_{{ entitiy }}" method="POST">
+<form action="view_{{ entity }}" method="POST">
     <label for="search_key">Filter by: </label>
     <select name="search_key" id="search_key">
         {% if entity == "student" %}
