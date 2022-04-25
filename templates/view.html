@@ -5,6 +5,16 @@ View {{ entity }}
 
 {% block main %}
 <h1>View {{ entity }}</h1>
+{% if entity == "subject" %}
+<h2>Subjects Taken</h2>
+<table>
+    {% for name, value in data %}
+    <th>{{ name }}</th>
+    <tr>{{ value }}</tr>
+    {% endfor %}
+</table>
+{% endif %}
+
 <form method="GET">
     <label for="search_key">Filter by: </label>
     <select name="search_key" id="search_key">
@@ -14,7 +24,7 @@ View {{ entity }}
         <option value="student_class">Class</option>
         <option value="age">Age</option>
         <option value="year_enrolled">Year Enrolled</option>
-        <option value="graduating_year">Year Graduated</option>
+        <option value="graduating_year">Graduating Year</option>
     
         {% elif entity == "class" %}
         <option value="id">Class ID</option>
@@ -47,5 +57,9 @@ View {{ entity }}
     {% for name, value in data %}
     <th>{{ name }}</th>
     <tr>{{ value }}</tr>
+    {% if entity == "student" %}
+    <tr><a href="/view_subject">View Student's Subjects</a></tr>
+    {% endif %}
+    {% endfor %}
 </table>
 {% endblock %}

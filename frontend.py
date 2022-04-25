@@ -7,44 +7,27 @@ def index(message=''):
     return render_template('index.html',
                            message=message)
 
+'''
+Redirects to a success (confirmation) page
+'''
 def redirect(data:dict) -> None:
     return render_template('redirect.html',
                           form_data=data)
 
-#student
+# view function
 '''
-A form for students to view existing students.
-
-Arguments:
-- id: int
-- name: str
+A form to view data
 '''
-def view_student(data:dict, message="") -> None:
-    # display data
-    return render_template('view.html',
-                           entity="student",
+def view(entity, data:dict, message="") -> None:
+    return render_template("view.html",
+                          entity=entity,
                           data=data,
                           message=message)
 
-#class
+# add functions
+# cca
 '''
-A form for students to view existing classes.
-
-Arguments:
-- id: int
-- name: str
-- level: str
-'''
-def view_class(data:dict, message="") -> None:
-    # display data
-    return render_template('view.html',
-                           entity="class",
-                          data=data,
-                          message=message)
-
-#cca
-'''
-A form for students to add and view a cca.
+A form for students to add a cca.
 
 Arguments:
 - id: int
@@ -75,14 +58,7 @@ def confirm_cca(name:str) -> None:
             "name": name 
         })
 
-
-def view_cca(data:dict, message="") -> None:
-    return render_template('view.html',
-                           entity="cca",
-                          data=data,
-                          message=message)
-
-#activity
+# activity
 '''
 A form for students to add an activity.
 
@@ -127,46 +103,35 @@ Arguments:
 - cca_id: int
 - role: str
 '''
+def add_membership(names: list, message="") -> None:
+    return render_template(
+        "student_cca.html",
+        page_type="new",
+        form_meta={
+            "action": "/edit_membership?confirm",
+            "method": "POST",
+        },
+        form_data={
+            "student_id": "",
+            "cca_id": "",
+            "role": "Member"
+        },
+    message=message)
+    
 def edit_membership(names: list, message="") -> None:
-    if "add" in request.args:
-        return render_template(
-            "student_cca.html",
-            page_type="new",
-            form_meta={
-                "action": "/edit_membership?confirm",
-                "method": "POST",
-            },
-            form_data={
-                "student_id": "",
-                "cca_id": "",
-                "role": "Member"
-            },
-        message=message)
-        
-    elif "edit" in request.args:
-        return render_template(
-            "student_cca.html",
-            page_type="edit",
-            form_meta={
-                "action": "/edit_membership?confirm",
-                "method": "POST",
-            },
-            form_data={
-                "student_id": "",
-                "cca_id": "",
-                "role": ""
-            },
-        message=message)
-        
-    else:
-        return render_template(
-            "edit_index.html",
-            entity_rs="membership",
-            entity1="student",
-            entity2="a CCA",
-            form_meta={
-            "method": "GET"
-        })
+    return render_template(
+        "student_cca.html",
+        page_type="edit",
+        form_meta={
+            "action": "/edit_membership?confirm",
+            "method": "POST",
+        },
+        form_data={
+            "student_id": "",
+            "cca_id": "",
+            "role": ""
+        },
+    message=message)
 
 def confirm_membership(data:dict) -> None:
     return render_template(
@@ -192,54 +157,43 @@ Arguments:
 - hours: int
 - coordinator: str
 '''
+def add_participation(activity_ids: list, message="") -> None:
+    return render_template(
+        "student_activity.html",
+        page_type="new",
+        form_meta={
+            "action": "/edit_participation?confirm",
+            "method": "POST",
+        },
+        form_data={
+            "student_id": "",
+            "activity_id": "",
+            "category": "",
+            "role": "Participant",
+            "award": "",
+            "hours": "",
+            "coordinator": ""
+        },
+    message=message)
+        
 def edit_participation(activity_ids: list, message="") -> None:
-    if "add" in request.args:
-        return render_template(
-            "student_activity.html",
-            page_type="new",
-            form_meta={
-                "action": "/edit_participation?confirm",
-                "method": "POST",
-            },
-            form_data={
-                "student_id": "",
-                "activity_id": "",
-                "category": "",
-                "role": "Participant",
-                "award": "",
-                "hours": "",
-                "coordinator": ""
-            },
-        message=message)
-        
-    elif "edit" in request.args:
-        return render_template(
-            "student_activity.html",
-            page_type="edit",
-            form_meta={
-                "action": "/edit_participation?confirm",
-                "method": "POST",
-            },
-            form_data={
-                "student_id": "",
-                "activity_id": "",
-                "category": "",
-                "role": "Participant",
-                "award": "",
-                "hours": "",
-                "coordinator": ""
-            },
-        message=message)
-        
-    else:
-        return render_template(
-            "edit_index.html",
-            entity_rs="participation",
-            entity1="student",
-            entity2="an activity",
-            form_meta={
-            "method": "GET"
-        })
+    return render_template(
+        "student_activity.html",
+        page_type="edit",
+        form_meta={
+            "action": "/edit_participation?confirm",
+            "method": "POST",
+        },
+        form_data={
+            "student_id": "",
+            "activity_id": "",
+            "category": "",
+            "role": "Participant",
+            "award": "",
+            "hours": "",
+            "coordinator": ""
+        },
+    message=message)
 
 def confirm_participation(data:dict) -> None:
     return render_template(
