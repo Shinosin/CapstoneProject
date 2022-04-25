@@ -54,14 +54,14 @@ def add_activity():
         data = request.form.to_dict() # dict
 
         # verifying date format
-        if storage.validate(start_date): # check valid date format
+        if storage.database['activities'].validate_date(start_date): # check valid date format
             if end_date != "": # they have input end date
-                if storage.validate(end_date): # check valid date format
+                if storage.database['activities'].validate_date(end_date): # check valid date format
                     return frontend.confirm_activity(data)
             else:
                 return frontend.confirm_activity(data)
         else:
-            return frontend.add_activity(message='Start Date and End Date should be in yyyy-mm-dd format.')
+            return frontend.add_activity(message='Start Date and End Date should be in YYYYMMDD format.')
     elif 'verify' in request.args:
         data = request.form.to_dict() # dict
         if storage.database['activities'].insert(data): # successfully inserted

@@ -171,17 +171,44 @@ class Activity(Table):
                 elif not self.leap_year(year) and (1 <= day <= 28): #no leap year
                     return False
             return True
-            
+
+class Student_Subject(Table):
+    def __init__(self, database:str) -> None:
+        super().__init__(database, 'student_subject', ['student_id', 'subject_code'])
+        super().execute(sql.CREATE_STUDENT_SUBJECT)
+
+    def insert(self, record:dict) -> bool:
+        return super().insert_one(record, sql.INSERT_STUDENT_SUBJECT)
+
+class Student_CCA(Table):
+    def __init__(self, database:str) -> None:
+        super().__init__(database, 'student_cca', ['student_id', 'cca_id', 'role'])
+        super().execute(sql.CREATE_STUDENT_CCA)
+
+    def insert(self, record:dict) -> bool:
+        return super().insert_one(record, sql.INSERT_STUDENT_CCA)
+
+class Student_Activity(Table):
+    def __init__(self, database:str) -> None:
+        super().__init__(database, 'student_activity', ['student_id', 'activity_id', 'category', 'role', 'award', 'hours', 'coordinator'])
+        super().execute(sql.CREATE_STUDENT_ACTIVITY)
+
+    def insert(self, record:dict) -> bool:
+        return super().insert_one(record, sql.INSERT_STUDENT_ACTIVITY)
+
 database = {
     'students': Student('database.db'), 
     'classes': Class('database.db'),
     'ccas': CCA('database.db'),
     'activities': Activity('database.db'),
-    'subjects': Subject('database.db')
+    'subjects': Subject('database.db'),
+    'student_subject': Student_Subject('databse.db'),
+    'student_cca': Student_CCA('database.db'),
+    'student_activity': Student_Activity('database.db')
     }
 
 database['students'].import_csv('student.csv')
 database['classes'].import_csv('class.csv')
 database['ccas'].import_csv('cca.csv')
 database['subjects'].import_csv('subject.csv')
-
+database['student_subject'].import_csv('student_subject.csv')
