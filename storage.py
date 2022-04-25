@@ -66,7 +66,21 @@ class Table:
             return True #inserted
         else:
             return False #record exists in database, cannot insert
+                
+class Student(Table):
 
+    def __init__(self, database:str) -> None:
+        super().__init__(database, 'student', ['id', 'name', 'age', 'year_enrolled', 'graduating_year', 'student_class'])
+        super().execute(sql.CREATE_STUDENT)
+        super().execute(sql.CREATE_STUDENT_SUBJECT)
+        super().execute(sql.CREATE_STUDENT_CCA)
+        super().execute(sql.CREATE_STUDENT_ACTIVITY)
+
+    def insert(self, record:dict) -> bool:
+        return super().insert_one(record, sql.INSERT_STUDENT)
+        #do i need a function for insert activity and insert cca?
+
+    #only for student_cca and student_activity
     def update(self, record:dict, new_record:dict) -> bool:
         if self.find(record) == False:
             return False #cannot update, record not found
@@ -88,22 +102,15 @@ class Table:
 
             sql_statement = sql_statement.strip('AND ')
             #idk what exactly this function takes in so um ...
-            #also this code only works for tables with id (subject and other tables with two primary keys will not work :D)
             sql_statement += f'WHERE {"id"} = {record["id"]};'
             
             return self.execute(sql_statement, values)
-                
-class Student(Table):
 
-    def __init__(self, database:str) -> None:
-        super().__init__(database, 'student', ['id', 'name', 'age', 'year_enrolled', 'graduating_year', 'student_class'])
-        super().execute(sql.CREATE_STUDENT)
-        super().execute(sql.CREATE_STUDENT_SUBJECT)
-        super().execute(sql.CREATE_STUDENT_CCA)
-        super().execute(sql.CREATE_STUDENT_ACTIVITY)
+    def update_cca(self, student_id:int, record:dict) -> bool:
+        pass
 
-    def insert(self, record:dict) -> bool:
-        return super().insert_one(record, sql.INSERT_STUDENT)
+    def update_activity(self, student_id:int, record:dict) -> bool:
+        pass
 
 class Class(Table):
 
