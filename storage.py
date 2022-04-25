@@ -91,31 +91,30 @@ class Class(Table):
         super().__init__(database, 'class', ['id', 'name', 'level'])
         super().execute(sql.CREATE_CLASS)
 
-    def find(self, record:dict, column='*') -> list: 
-        sql_statement = 'SELECT ' + column + ' FROM "class" WHERE'
+    # def find(self, record:dict, column='*') -> list: 
+    #     sql_statement = 'SELECT ' + column + ' FROM "class" WHERE'
         
-        keys = dict.keys() #column names
-        valid_keys = [] #valid columns
-        values = []
+    #     keys = record.keys() #column names
+    #     valid_keys = [] #valid columns
+    #     values = []
         
-        if column not in self.columns: #verify column in parameter 
-            return [] 
+    #     if column != '*' and column not in self.__columns: #verify column in parameter 
+    #         return []
             
-        for key in keys: #verify keys
-            if key in self.columns:
-                valid_keys.append(key)
+    #     for key in keys: #verify keys
+    #         if key in self.__columns:
+    #             valid_keys.append(key)
 
-        if valid_keys == []: #keys do not exist in the table
-            return []
+    #     if valid_keys == []: #keys do not exist in the table
+    #         return []
 
-        for key in valid_keys:
-            sql_statement += f' {key} = ? AND'
-            values += dict[key].upper()
+    #     for key in valid_keys:
+    #         sql_statement += f' {key} = ? AND'
+    #         values.append(record[key].upper()) # database values are captitalised
 
-        sql_statement.strip(' AND')
-        sql_statement += ';' 
-        
-        return self.execute(sql_statement, values)
+    #     sql_statement = sql_statement.strip(' AND')
+    #     sql_statement += ';' 
+    #     return self.execute(sql_statement, values)
 
     def insert(self, record:dict) -> bool:
         return super().insert_one(record, sql.INSERT_CLASS)    
@@ -147,3 +146,6 @@ database = {
     'ccas': CCA('database.db'),
     'activities': Activity('database.db')
     }
+database['students'].import_csv('student.csv')
+database['classes'].import_csv('class.csv')
+database['ccas'].import_csv('cca.csv')

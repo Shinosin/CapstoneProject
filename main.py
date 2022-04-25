@@ -79,7 +79,7 @@ def view_student():
         search_value = request.form['search_value']
         record = {search_key: search_value} # dict
         data = storage.database['students'].find(record) # list of dict
-        
+        print(data)
         if data == []:
             return frontend.view(entity='student', data=data, message='Student {} cannot be found.'.format(search_value))
         
@@ -139,7 +139,14 @@ def view_activity():
             
     else: # all data
         data = storage.database['activities'].get_all() # list of dict
+        print(data)
         return frontend.view(entity='activity', data=data, message='Viewing All Activities.')
+
+@app.route('/view_subject', methods=['POST'])
+def view_subject():
+    student_id = request.form.getlist('id')
+    data = []
+    return frontend.view(entity='subject', data=data)
 
 @app.route('/edit_membership', methods=['POST', 'GET'])
 def edit_membership():
