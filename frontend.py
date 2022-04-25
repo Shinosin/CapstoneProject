@@ -19,11 +19,12 @@ Arguments:
 - cca_id: int
 - cca_name: str
 '''
-def view_student(data:dict) -> None:
+def view_student(data:dict, message="") -> None:
     # display data
     return render_template('view.html',
                            entity="student",
-                          data=data)
+                          data=data,
+                          message=message)
 
 #class
 '''
@@ -34,11 +35,12 @@ Arguments:
 - class_name: str
 - class_level: str
 '''
-def view_class(data:dict) -> None:
+def view_class(data:dict, message="") -> None:
     # display data
     return render_template('view.html',
                            entity="class",
-                          data=data)
+                          data=data,
+                          message=message)
 
 #cca
 '''
@@ -74,10 +76,11 @@ def confirm_cca(cca_name:str) -> None:
         })
 
 
-def view_cca(data:dict) -> None:
+def view_cca(data:dict, message="") -> None:
     return render_template('view.html',
                            entity="cca",
-                          data=data)
+                          data=data,
+                          message=message)
 
 #activity
 '''
@@ -89,7 +92,7 @@ Arguments:
 - activity_enddate: int
 - activity_desc: str
 '''
-def add_activity() -> None:
+def add_activity(message="") -> None:
     return render_template(
             "add_activity.html",
             page_type="new",
@@ -100,7 +103,8 @@ def add_activity() -> None:
             form_data={
                 "activity_date": "",
                 "activity_desc": ""
-            })
+            },
+    message=message)
 
 def confirm_activity(data:dict) -> None:
     return render_template(
@@ -111,7 +115,7 @@ def confirm_activity(data:dict) -> None:
             "method": "POST"
         },
         form_data=data
-    
+    )
 
 # membership - student-cca
 '''
