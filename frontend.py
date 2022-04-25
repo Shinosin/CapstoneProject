@@ -125,7 +125,11 @@ def confirm_cca(name: str) -> None:
             "method": "POST"
         },
         form_data={
-            "name": name 
+            "name": name
+        },
+        headers={
+            "label": "CCA Name",
+            "value": "name"
         })
 
 # activity
@@ -161,7 +165,15 @@ def confirm_activity(data: dict) -> None:
             "action": "/add_activity?verify",
             "method": "POST"
         },
-        form_data=data)
+        form_data=data,
+    headers=[        
+        {"label": "Activity Start Date",
+        "name": "start_date"},
+        {"label": "Activity End Date",
+        "name": "end_date"},
+        {"label": "Activity Description",
+        "name": "description"}
+    ])
 
 # membership - student-cca
 '''

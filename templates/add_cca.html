@@ -27,12 +27,10 @@ Add CCA
     
     <h2>Confirm details</h2>
     <table>
-        {% for name, value in form_data.items() %}
         <tr>
-            <th>{{ name }}</th>
-            <td>{{ value }}</td>
+            <th>{{ headers['label'] }}</th>
+            <td>{{ form_data["name"] }}</td>
         </tr>
-        {% endfor %}
     </table>
     <p>Is this correct?</p>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">

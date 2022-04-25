@@ -49,10 +49,10 @@ Add Activity
     
     <h2>Confirm details</h2>
     <table>
-        {% for name, value in form_data.items() %}
+        {% for i in range(headers | length) %}
         <tr>
-            <th>{{ name }}</th>
-            <td>{{ value }}</td>
+            <th>{{ header[i]['label'] }}</th>
+            <td>{{ form_data[i][header['value']] }}</td>
         </tr>
         {% endfor %}
     </table>
