@@ -27,29 +27,9 @@ View {{ entity | title }}
 <form action="view_{{ entity }}" method="POST">
     <label for="search_key">Filter by: </label>
     <select name="search_key" id="search_key">
-        {% if entity == "student" %}
-        <option value="id">Student ID</option>
-        <option value="name">Student Name</option>
-        <option value="student_class">Class</option>
-        <option value="age">Age</option>
-        <option value="year_enrolled">Year Enrolled</option>
-        <option value="graduating_year">Graduating Year</option>
-    
-        {% elif entity == "class" %}
-        <option value="id">Class ID</option>
-        <option value="name">Class Name</option>
-        <option value="level">Class Level</option>
-    
-        {% elif entity == "cca" %}
-        <option value="id">CCA ID</option>
-        <option value="name">CCA Name</option>
-    
-        {% elif entity == "activity" %}
-        <option value="id">Activity ID</option>
-        <option value="start_date">Activity Start Date</option>
-        <option value="end_date">Activity End Date</option>
-        <option value="description">Activity Description</option>            
-        {% endif %}
+        {% for header in headers %}
+        <option value="{{ header['value'] }}">{{ header['label'] }}</option>
+        {% endfor %}
     </select>
     
     <input
@@ -63,9 +43,23 @@ View {{ entity | title }}
         >
     <input type="submit" value="Search">
 </form>
-
+<a href="/view_{{ entity }}">View All</a>
 <p id="fail">{{ message }}</p>
 
+<table>
+    <tr>
+        {% for header in headers %}
+        <th>{{ header['label'] }}</th>
+        {% endfor %}
+    </tr>
+    {% for record in data %}
+    <tr>
+        {% for name, value in record.items() %}
+        <td>{{ value }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
 
 <form action='/view_subject' method='POST'>
     <table>

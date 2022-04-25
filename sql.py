@@ -89,9 +89,11 @@ CREATE TABLE IF NOT EXISTS student_activity(
     role TEXT DEFAULT 'PARTICIPANT',
     award TEXT,
     hours INTEGER,
+    coordinator TEXT,
     PRIMARY KEY (student_id, activity_id),
     FOREIGN KEY (student_id) REFERENCES student(id),
-    FOREIGN KEY (activity_id) REFERENCES activity(id)
+    FOREIGN KEY (activity_id) REFERENCES activity(id),
+    FOREIGN KEY (coordinator) REFERENCES cca(id)
 );
 '''
 
