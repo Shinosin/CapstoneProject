@@ -155,13 +155,13 @@ def view_subject():
         data.extend(storage.database['subjects'].find(record))
     return frontend.view_subject(student_name=student_name[0]['name'], data=data)
 
-@app.route('/edit_membership', methods=['POST', 'GET'])
+@app.route('/add_membership', methods=['POST', 'GET'])
 def edit_membership():
-    return frontend.edit_membership()
+    return frontend.add_membership()
 
-@app.route('/edit_participation', methods=['POST', 'GET'])
+@app.route('/add_participation', methods=['POST', 'GET'])
 def edit_participation():
-    return frontend.edit_partipcipation()
+    return frontend.add_participation()
         
 # Future Functions
 @app.route('/login', methods=['GET'])
