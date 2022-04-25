@@ -144,8 +144,13 @@ def view_activity():
 
 @app.route('/view_subject', methods=['POST'])
 def view_subject():
-    student_id = request.form.getlist('id')
-    data = []
+    student_id = request.form['id']
+    record = {'student_id': student_id}
+    student_name = storage.database['students'].find(
+        {'id': student_id },
+        column='name'
+    )
+    data = storage.database['subject'].find(record)
     return frontend.view(entity='subject', data=data)
 
 @app.route('/edit_membership', methods=['POST', 'GET'])
