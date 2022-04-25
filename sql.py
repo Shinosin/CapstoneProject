@@ -29,8 +29,8 @@ CREATE TABLE IF NOT EXISTS class(
 CREATE_SUBJECT = '''
 CREATE TABLE IF NOT EXISTS subject(
     subject_code TEXT,
-    name TEXT CHECK(
-        name IN ('PG', 'MATH', 'FM', 'COMP', 'PHY', 'CHEM', 'ECONS', 'BIO', 'GEO', 'HIST', 'ELIT', 'ART', 'CLTRANS', 'CL', 'ML', 'TL', 'CLL', 'CLB', 'PW', 'PUNJABI', 'HINDI', 'BENGALESE', 'JAPANESE')
+    name TEXT CHECK (
+        name IN ('GP', 'MATH', 'FM', 'COMP', 'PHY', 'CHEM', 'ECONS', 'BIO', 'GEO', 'HIST', 'ELIT', 'ART', 'CLTRANS', 'CL', 'ML', 'TL', 'CLL', 'CLB', 'PW', 'PUNJABI', 'HINDI', 'BENGALESE', 'JAPANESE')
         ),
     level TEXT CHECK(
         level IN ("H1", "H2", "H3")
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS subject(
 '''
 
 CREATE_CCA = '''
-CREATE TABLE IF NOT EXISTS cca(
+CREATE TABLE IF NOT EXISTS cca (
     id INTEGER,
     name TEXT,
     PRIMARY KEY(id)
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS cca(
 '''
 
 CREATE_ACTIVITY = '''
-CREATE TABLE IF NOT EXISTS activity(
+CREATE TABLE IF NOT EXISTS activity (
     id INTEGER,
     name TEXT,
     start_date TEXT,
@@ -72,7 +72,7 @@ CREATE_STUDENT_CCA = '''
 CREATE TABLE IF NOT EXISTS student_cca(
     student_id INTEGER,
     cca_id INTEGER,
-    role TEXT,
+    role TEXT DEFAULT 'MEMBER',
     PRIMARY KEY (student_id, cca_id),
     FOREIGN KEY (student_id) REFERENCES student(id),
     FOREIGN KEY (cca_id) REFERENCES cca(id)
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS student_activity(
     role TEXT DEFAULT 'PARTICIPANT',
     award TEXT,
     hours INTEGER,
-    coordinator TEXT,
+    coordinator INT,
     PRIMARY KEY (student_id, activity_id),
     FOREIGN KEY (student_id) REFERENCES student(id),
     FOREIGN KEY (activity_id) REFERENCES activity(id),
