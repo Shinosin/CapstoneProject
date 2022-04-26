@@ -155,6 +155,57 @@ def view_subject():
         data.extend(storage.database['subjects'].find(record))
     return frontend.view_subject(student_name=student_name[0]['name'], data=data)
 
+
+
+
+
+
+# @app.route('/edit_membership', methods=['POST', 'GET'])
+# def edit_membership():
+#     if 'verify' in request.args: # Step 4: Modify Database
+#         student_id = request.form.getlist('id') # student_id is a list
+#         cca_name = request.form['name']
+#         cca_id = storage.database['ccas'].find(
+#             {"name": cca_name},
+#             column='id'
+#         )
+#         cca_id = cca_id[0]
+#         storage.database['ccas'].insert_member(student_id=student_id,
+#                                            cca_id=cca_id[0]) # insert into database
+#         return frontend.success_membership(message="Successfully edited membership of {}".format(cca_name))
+
+#     elif 'confirm' in request.args: # Step 3: Confirm
+#         ClubName = request.form['ClubName']
+#         student_id = request.form.getlist('StudentID') # student_id is a list
+#         student_data = []
+#         for id in student_id:
+#             student = storage.coll['student'].find(column='ID, Name', ID=id)
+#             student_data.extend(student)
+#         return frontend.membership_confirm(club_name=ClubName,
+#                                            student_data=student_data)
+
+#     elif 'student' in request.args: # Step 2: Choose Students
+#         ClubID = request.form['ClubID']
+#         ClubName = storage.coll['club'].find(ID=ClubID, column="Name")
+#         if storage.coll['club'].find_students_not_in_club(ClubID) == []:
+#             student_data = [(30, 'JERRY', 'TENNIS')]
+#         else:
+#             student_data = storage.coll['club'].find_students_not_in_club(ClubID)
+#         if storage.coll['club'].find_students_in_club(ClubID) == []:
+#             existing_members = []
+#         else:
+#             existing_members = storage.coll['club'].find_students_in_club(ClubID)
+#         return frontend.membership_chooseStudent(club_name=ClubName[0],
+#                                                  student_data=student_data,
+#                                                  existing_data=existing_members)
+
+#     else: # Step 1: Choose Club
+#         club_data = storage.coll['club'].get_all()
+#         return frontend.membership_chooseClub(club_data=club_data)
+
+
+
+
 @app.route('/add_membership', methods=['POST', 'GET'])
 def edit_membership():
     return frontend.add_membership()
@@ -162,7 +213,16 @@ def edit_membership():
 @app.route('/add_participation', methods=['POST', 'GET'])
 def edit_participation():
     return frontend.add_participation()
-        
+
+
+
+
+
+
+
+    
+
+    
 # Future Functions
 @app.route('/login', methods=['GET'])
 def login():
