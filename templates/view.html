@@ -5,88 +5,75 @@ View {{ entity | title }}
 
 {% block main %}
 
-<h1>View {{ entity | title }}</h1>
-{% if entity == "subject" %}
-<h2>Subjects Taken</h2>
-<table>
-    <tr>
-        {% for key in data[0].keys() %}
-        <th>{{ key }}</th>
-        {% endfor %}
-    </tr>
-    {% for record in data %}
-    <tr>
-        {% for key in data[0].keys() %}
-        <td>{{ record[key] }}</td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
-</table>
-{% endif %}
-
-<form action="view_{{ entity }}" method="POST">
-    <label for="search_key">Filter by: </label>
-    <select name="search_key" id="search_key">
-        {% if entity == "student" %}
-        <option value="id">Student ID</option>
-        <option value="name">Student Name</option>
-        <option value="student_class">Class</option>
-        <option value="age">Age</option>
-        <option value="year_enrolled">Year Enrolled</option>
-        <option value="graduating_year">Graduating Year</option>
-    
-        {% elif entity == "class" %}
-        <option value="id">Class ID</option>
-        <option value="name">Class Name</option>
-        <option value="level">Class Level</option>
-    
-        {% elif entity == "cca" %}
-        <option value="id">CCA ID</option>
-        <option value="name">CCA Name</option>
-    
-        {% elif entity == "activity" %}
-        <option value="id">Activity ID</option>
-        <option value="start_date">Activity Start Date</option>
-        <option value="end_date">Activity End Date</option>
-        <option value="description">Activity Description</option>            
-        {% endif %}
-    </select>
-    
-    <input
-        id="search_value"
-        type="text"
-        name="search_value"
-        value=""
-        placeholder="Search..."
-        autocomplete="off"
-        required
-        >
-    <input type="submit" value="Search">
-</form>
-
-<p id="fail">{{ message }}</p>
-
-
-<form action='/view_subject' method='POST'>
+    <h1>View {{ entity | title }}</h1>
+    {% if entity == "subject" %}
+    <h2>Subjects Taken</h2>
+    <h3>Student Name: {{ student_name }}</h3>
     <table>
         <tr>
-            {% for key in data[0].keys() %}
-            <th>{{ key }}</th>
+            {% for header in headers %}
+            <th>{{ header['label'] }}</th>
+            {% endfor %}
+        </tr>
+        {% for record in data %}
+        <tr>
+            {% for value in record.values() %}
+            <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="/view_student">Return to View Student</a></p>
+    
+    {% else %}
+    <form action="view_{{ entity }}" method="POST">
+        <label for="search_key">Filter by: </label>
+        <select name="search_key" id="search_key">
+            {% for header in headers %}
+            <option value="{{ header['value'] }}">{{ header['label'] }}</option>
+            {% endfor %}
+        </select>
+        
+        <input
+            id="search_value"
+            type="text"
+            name="search_value"
+            value=""
+            placeholder="Search..."
+            autocomplete="off"
+            required
+            >
+        <input type="submit" value="Search">
+    </form>
+    <a href="/view_{{ entity }}">View All</a>
+    <p id="fail">{{ message }}</p>
+    
+    <table>
+        <tr>
+            {% if entity == "student" %}
+            <th>View Subject</th>    
+            {% endif %}
+            {% for header in headers %}
+            <th>{{ header['label'] }}</th>
             {% endfor %}
         </tr>
         {% for record in data %}
         <tr>
             {% if entity == "student" %}
-            <td><input type="submit" value="View Subject"><input type="hidden" name="id" value="{{ record['id'] }}"></td>
+            <td>
+                <form action="/view_subject" method="POST">
+                    <input type="hidden" name="id" value="{{ record['id'] }}">
+                    <input type="submit" value="View">
+                </form>
+            </td>
             {% endif %}
-            {% for key in data[0].keys() %}
-            <td>{{ record[key] }}</td>
+            {% for value in record.values() %}
+            <td>{{ value }}</td>
             {% endfor %}
         </tr>
         {% endfor %}
     </table>
-        
-</form>
+    {% endif %}
 
-</table>
 {% endblock %}

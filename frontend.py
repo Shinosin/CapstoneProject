@@ -3,27 +3,112 @@ from flask import render_template
 def splash():
     return render_template('splash.html')
 
-def index(message=''):
-    return render_template('index.html',
-                           message=message)
+def index():
+    return render_template('index.html')
 
-'''
-Redirects to a success (confirmation) page
-'''
 def redirect(data: dict) -> None:
+    '''Redirects to a success (confirmation) page'''
     return render_template('redirect.html',
                           form_data=data)
 
-# view function
+# view functions
 '''
-A form to view data
-'''
-def view(entity, data: list, message="") -> None:
-    return render_template("view.html",
-                          entity=entity,
-                          data=data,
-                          message=message)
+A form to view student data.
 
+Arguments:
+- id: int
+- name: str
+- student_class: int
+- age: int
+- year_enrolled: int
+- graduating_year: int
+'''
+def view_student(data: list, message="") -> None:
+    return render_template("view.html",
+                           entity="student",
+                           headers=[
+                               {"label": "Student ID", "value": "id"},
+                               {"label": "Student Name", "value": "name"},
+                               {"label": "Student Age", "value": "age"},
+                               {"label": "Year Enrolled", "value": "year_enrolled"},
+                               {"label": "Graduating Year", "value": "graduating_year"},
+                               {"label": "Student Class", "value": "student_class"}],     
+                           data=data,
+                           message=message)
+
+'''
+A form to view class data.
+
+Arguments:
+- id: int
+- name: str
+- level: str
+'''
+def view_class(data: list, message="") -> None:
+    return render_template("view.html",
+                           entity="class",
+                           headers=[
+                               {"label": "Class ID", "value": "id"},
+                               {"label": "Class Name", "value": "name"},
+                               {"label": "Class Level", "value": "level"}],
+                           data=data,
+                           message=message)
+
+'''
+A form to view cca data.
+
+Arguments:
+- id: int
+- name: str
+'''
+def view_cca(data: list, message="") -> None:
+    return render_template("view.html",
+                           entity="cca",
+                           headers=[
+                               {"label": "CCA ID", "value": "id"},
+                               {"label": "CCA Name", "value": "name"}],
+                           data=data,
+                           message=message)
+
+'''
+A form to view activity data.
+
+Arguments:
+- id: int
+- start_date: int
+- end_date: int
+- description: str
+'''
+def view_activity(data: list, message="") -> None:
+    return render_template("view.html",
+                           entity="activity",
+                           headers=[
+                               {"label": "Activity ID", "value": "id"},
+                               {"label": "Activity Name", "value": "name"},
+                               {"label": "Activity Start Date", "value": "start_date"},
+                               {"label": "Activity End Date", "value": "end_date"},
+                               {"label": "Activity Description", "value": "description"}],
+                           data=data,
+                           message=message)
+
+"""
+A form to view subject data
+
+Arguments:
+- subject_code: str
+- name: str
+- level: str
+"""
+def view_subject(data: list, student_name: str) -> None:
+    return render_template("view.html",
+                           entity="subject",
+                           headers=[
+                               {"label": "Subject Code", "value": "subject_code"},
+                               {"label": "Subject Name", "value": "name"},
+                               {"label": "Subject Level", "value": "level"}
+                           ],
+                           data=data,
+                           student_name=student_name)
 # add functions
 # cca
 '''
@@ -78,6 +163,7 @@ def add_activity(message="") -> None:
                 "method": "POST"
             },
             form_data={
+                "name": "",
                 "start_date": "",
                 "end_date": "",
                 "description": ""
@@ -103,7 +189,7 @@ Arguments:
 - cca_id: int
 - role: str
 '''
-def add_membership(names: list, message="") -> None:
+def add_membership(student_ids: list, cca_ids: list, message="") -> None:
     return render_template(
         "student_cca.html",
         page_type="new",
@@ -116,9 +202,11 @@ def add_membership(names: list, message="") -> None:
             "cca_id": "",
             "role": "MEMBER"
         },
+        student_ids=student_ids,
+        cca_ids=cca_ids,
         message=message)
     
-def edit_membership(names: list, message="") -> None:
+def edit_membership(student_ids: list, cca_ids: list, message="") -> None:
     return render_template(
         "student_cca.html",
         page_type="edit",
@@ -131,9 +219,11 @@ def edit_membership(names: list, message="") -> None:
             "cca_id": "",
             "role": ""
         },
-    message=message)
+        student_ids=student_ids,
+        cca_ids=cca_ids,
+        message=message)
 
-def confirm_membership(data:dict) -> None:
+def confirm_membership(data: dict) -> None:
     return render_template(
         "student_cca.html",
         page_type="confirm",
@@ -157,7 +247,7 @@ Arguments:
 - hours: int
 - coordinator: int
 '''
-def add_participation(activity_ids: list, message="") -> None:
+def add_participation(student_ids: list, activity_ids: list, message="") -> None:
     return render_template(
         "student_activity.html",
         page_type="new",
@@ -174,9 +264,11 @@ def add_participation(activity_ids: list, message="") -> None:
             "hours": "",
             "coordinator": ""
         },
-    message=message)
+        student_ids=student_ids,
+        activity_ids=activity_ids,
+        message=message)
         
-def edit_participation(activity_ids: list, message="") -> None:
+def edit_participation(student_ids: list, activity_ids: list, message="") -> None:
     return render_template(
         "student_activity.html",
         page_type="edit",
@@ -193,9 +285,11 @@ def edit_participation(activity_ids: list, message="") -> None:
             "hours": "",
             "coordinator": ""
         },
-    message=message)
+        student_ids=student_ids,
+        activity_ids=activity_ids,
+        message=message)
 
-def confirm_participation(data:dict) -> None:
+def confirm_participation(data: dict) -> None:
     return render_template(
         "student_activity.html",
         page_type="confirm",

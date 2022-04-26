@@ -54,14 +54,14 @@ def add_activity():
         data = request.form.to_dict() # dict
 
         # verifying date format
-        if storage.validate(start_date): # check valid date format
+        if storage.database['activities'].validate_date(start_date): # check valid date format
             if end_date != "": # they have input end date
-                if storage.validate(end_date): # check valid date format
+                if storage.database['activities'].validate_date(end_date): # check valid date format
                     return frontend.confirm_activity(data)
             else:
                 return frontend.confirm_activity(data)
         else:
-            return frontend.add_activity(message='Start Date and End Date should be in yyyy-mm-dd format.')
+            return frontend.add_activity(message='Start Date and End Date should be in YYYYMMDD format.')
     elif 'verify' in request.args:
         data = request.form.to_dict() # dict
         if storage.database['activities'].insert(data): # successfully inserted
@@ -79,15 +79,14 @@ def view_student():
         search_value = request.form['search_value']
         record = {search_key: search_value} # dict
         data = storage.database['students'].find(record) # list of dict
-        
         if data == []:
-            return frontend.view(entity='student', data=data, message='Student {} cannot be found.'.format(search_value))
+            return frontend.view_student(data=data, message='Student {} {} cannot be found.'.format(search_key, search_value))
         
         else:
-            return frontend.view(entity='student', data=data, message="Viewing Students with {} {}.".format(search_key, search_value))
+            return frontend.view_student(data=data, message="Viewing Students with {} {}.".format(search_key, search_value))
     else: # all data
         data = storage.database['students'].get_all() # list of dict
-        return frontend.view(entity='student', data=data, message='Viewing All Students.')
+        return frontend.view_student(data=data, message='Viewing All Students.')
 
 @app.route('/view_class', methods=['POST', 'GET'])
 def view_class():
@@ -98,13 +97,13 @@ def view_class():
         data = storage.database['classes'].find(record) # list of dict
         
         if data == []:
-            return frontend.view(entity='class', data=data, message='Class {} cannot be found.'.format(search_value))
+            return frontend.view_class(data=data, message='Class {} {} cannot be found.'.format(search_key, search_value))
         
         else:
-            return frontend.view(entity='class', data=data, message="Viewing Classes with {} {}.".format(search_key, search_value))
+            return frontend.view_class(data=data, message="Viewing Classes with {} {}.".format(search_key, search_value))
     else: # all data
         data = storage.database['classes'].get_all() # list of dict
-        return frontend.view(entity='class', data=data, message='Viewing All Classes.')
+        return frontend.view_class(data=data, message='Viewing All Classes.')
 
 @app.route('/view_cca', methods=['POST', 'GET'])
 def view_cca():
@@ -115,13 +114,13 @@ def view_cca():
         data = storage.database['ccas'].find(record) # list of dict
         
         if data == []:
-            return frontend.view(entity='cca', data=data, message='CCA {} cannot be found.'.format(search_value))
+            return frontend.view_cca(data=data, message='CCA {} {} cannot be found.'.format(search_key, search_value))
         
         else:
-            return frontend.view(entity='cca', data=data, message="Viewing CCAs with {} {}.".format(search_key, search_value))
+            return frontend.view_cca(data=data, message="Viewing CCAs with {} {}.".format(search_key, search_value))
     else: # all data
         data = storage.database['ccas'].get_all() # list of dict
-        return frontend.view(entity='cca', data=data, message='Viewing All CCAs.')
+        return frontend.view_cca(data=data, message='Viewing All CCAs.')
 
 @app.route('/view_activity', methods=['POST', 'GET'])
 def view_activity():
@@ -132,14 +131,29 @@ def view_activity():
         data = storage.database['activities'].find(record) # list of dict
         
         if data == []:
-            return frontend.view(entity='activity', data=data, message='Activity {} cannot be found.'.format(search_value))
+            return frontend.view_activity(data=data, message='Activity {} {} cannot be found.'.format(search_key, search_value))
         
         else:
-            return frontend.view(entity='activity', data=data, message="Viewing Activities with {} {}.".format(search_key, search_value))
+            return frontend.view_activity(data=data, message="Viewing Activities with {} {}.".format(search_key, search_value))
             
     else: # all data
         data = storage.database['activities'].get_all() # list of dict
-        return frontend.view(entity='activity', data=data, message='Viewing All Activities.')
+        print(data)
+        return frontend.view_activity(data=data, message='Viewing All Activities.')
+
+@app.route('/view_subject', methods=['POST'])
+def view_subject():
+    student_id = request.form['id']
+    record = {'student_id': student_id}
+    student_name = storage.database['students'].find(
+        {'id': student_id },
+        column='name'
+    ) # list of dict
+    list_of_subject_code = storage.database['student_subject'].find(record, column='subject_code')
+    data = []
+    for record in list_of_subject_code:
+        data.extend(storage.database['subjects'].find(record))
+    return frontend.view_subject(student_name=student_name[0]['name'], data=data)
 
 @app.route('/edit_membership', methods=['POST', 'GET'])
 def edit_membership():
