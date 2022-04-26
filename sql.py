@@ -169,3 +169,32 @@ INSERT_STUDENT_ACTIVITY = '''
         :student_id, :activity_id, :category, :role, :award, :hours
     );
 '''
+
+IN_CCA = '''
+    SELECT student.id, student.name, class.name AS class
+    FROM student, class, student_cca
+    WHERE student_cca.cca_id = ? AND
+    student_cca.student_id = student.id AND
+    student.student_class = "class".id;
+'''
+
+NOT_IN_CCA = '''
+    SELECT student.id, student.name, class.name AS class
+    FROM student, class, student_cca
+    WHERE cca.id = ? AND
+    cca.id != student_cca.cca_id AND
+    student_cca.student_id = student.id AND
+    student.student_class = class.id;
+'''
+
+DELETE_STUDENT_CCA = '''
+    DELETE FROM student_cca
+    WHERE student_id = ? AND
+    cca_id = ?;
+'''
+
+UPDATE_STUDENT_CCA = '''
+    UPDATE student_cca
+    SET role = ?;
+'''
+

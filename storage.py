@@ -52,8 +52,8 @@ class Table:
         sql_statement += ';' 
         return self.execute(sql_statement, values)
 
-    def get_all(self) -> list:
-        sql_statement = 'SELECT * FROM ' + self.__table
+    def get_all(self, column='*') -> list:
+        sql_statement = 'SELECT ' + column + ' FROM ' + self.__table
         return self.execute(sql_statement)
 
     def insert_one(self, record:dict, sql:str) -> bool:  
@@ -98,9 +98,9 @@ class Student(Table):
     def __init__(self, database:str) -> None:
         super().__init__(database, 'student', ['id', 'name', 'age', 'year_enrolled', 'graduating_year', 'student_class'])
         super().execute(sql.CREATE_STUDENT)
-        super().execute(sql.CREATE_STUDENT_SUBJECT)
-        super().execute(sql.CREATE_STUDENT_CCA)
-        super().execute(sql.CREATE_STUDENT_ACTIVITY)
+        # super().execute(sql.CREATE_STUDENT_SUBJECT)
+        # super().execute(sql.CREATE_STUDENT_CCA)
+        # super().execute(sql.CREATE_STUDENT_ACTIVITY)
 
     def insert(self, record:dict) -> bool:
         return super().insert_one(record, sql.INSERT_STUDENT)
@@ -187,13 +187,53 @@ class Student_CCA(Table):
     def insert(self, record:dict) -> bool:
         return super().insert_one(record, sql.INSERT_STUDENT_CCA)
 
+    def delete(self, record:dict) -> bool:
+        #record = {'student_id':int, 'cca_id':int}
+        if super().find(record) != []: #record is in student_cca
+            super().execute(sql.DELETE_STUDENT_CCA, (record['student_id'], record['cca_id'],))
+            return True #record deleted
+        else: 
+            return False #cannot delete, record does not exist
+
+    def update_role(self, record:dict, role:str) -> bool:
+        #record = {'student_id':int, 'cca_id':int}
+        if super().find(record) != []:
+            super().execute(sql.UPDATE_STUDENT_CCA, (role.upper(),))
+            return True #record updated
+        else:
+            return False #cannot update, record does not exist
+
+    def existing_members(self, cca_id:int) -> list:
+        return super().execute(sql.IN_CCA, (cca_id,))
+
+    def not_in_cca(self, cca_id:int) -> list:
+        return super().execute(sql.NOT_IN_CCA, (cca_id,))
+
+    def add_members(self, student_ids:list, cca_id:int) -> bool:
+        #student_ids is a list of students who are not in the cca
+        for student_id in student_ids:
+            record = {'student_id':student_id,
+                     'cca_id':cca_id,
+                     'role':'member'}
+            self.insert(record)
+                
 class Student_Activity(Table):
     def __init__(self, database:str) -> None:
-        super().__init__(database, 'student_activity', ['student_id', 'activity_id', 'category', 'role', 'award', 'hours', 'coordinator'])
+        super().__init__(database, 'student_activity', ['student_id', 'activity_id', 'category', 'role', 'award', 'hours', 'coordinator']) #coordinator is cca id
         super().execute(sql.CREATE_STUDENT_ACTIVITY)
 
     def insert(self, record:dict) -> bool:
         return super().insert_one(record, sql.INSERT_STUDENT_ACTIVITY)
+
+    def delete(self, record:dict) -> bool:
+        #record = {'student_id':int, 'activity_id':int}
+        pass
+
+    def update(self, record:dict, new_record:dict) -> bool:
+        #record = {'student_id':int, 'cca_id':int}
+        #e.g. new_record = {'category':str, 'role':str, 'award':str}
+        pass
+        
 
 database = {
     'students': Student('database.db'), 
@@ -211,3 +251,21 @@ database['classes'].import_csv('class.csv')
 database['ccas'].import_csv('cca.csv')
 database['subjects'].import_csv('subject.csv')
 database['student_subject'].import_csv('student_subject.csv')
+database['student_cca'].import_csv('student_cca.csv')
+
+#list student id student_name, class_name, who are not in cca_id (given)
+#...are in cca_id(given)
+# for ur insert im giving u student name and cca id
+"""
+student id, cca id, role
+1, 1
+2, 1
+3, 2
+4, 3
+
+given cca id is 1
+"""
+print('sdsvjb')
+database['student_cca'].import_csv('student_cca.csv')
+print(database['student_cca'].existing_members(1))
+print('fwejfj')
