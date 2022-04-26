@@ -63,7 +63,7 @@ Membership
     <p id="fail">{{ message }}</p>
 
     {% elif page_type = 'data' %}
-    <h2>Edit Existing Students in {{ cca_name }}</h2>
+    <h2>Choose student to edit in {{ cca_name }}</h2>
     <table>
         <tr>
             {% for header in headers %}
@@ -73,6 +73,7 @@ Membership
         <tr>
             {% for record in in_cca %}
             <td>{{ record['name'] }}</td>
+            <td>{{ record['class'] }}</td>
             <td>
                 <form action="/edit_membership?edit" method="POST">
                     <input type="button" name="edit" value="Edit">
@@ -88,8 +89,16 @@ Membership
     </table>
 
     {% elif page_type = 'edit' %}
-    <h2>Edit Details for {{ student_name }}</h2>
-        <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+    <h2>Edit Details for {{ form_data['name'] }}</h2>
+    <table>
+        {% for name, value in form_data.items() %}
+        <tr>
+            <th>{{ name }}</th>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
             <label for="role">Role:</label>
             <input
             id="role"
@@ -99,9 +108,11 @@ Membership
             placeholder="Role of Student"
             autocomplete="off"
             >
-
-            <input type="submit" value="Confirm">
+        </tr>
+    </table>
+        <input type="submit" value="Confirm">
         </form>
+<!-- does this work can you separate the form like this LOL -->
     <p id="fail">{{ message }}</p>
 
     {% elif page_type = 'confirm' %}

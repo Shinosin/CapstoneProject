@@ -189,12 +189,28 @@ Arguments:
 - cca_id: int
 - role: str
 '''
-def add_membership(cca_names: list, message="") -> None:
-    return render_template(
+def cca_membership(action, cca_names: list, message="") -> None:
+    # action: add / edit
+    if action == "add":
+        return render_template(
+            "student_cca.html",
+            page_type="cca",
+            form_meta={
+                "action": "/add_membership?choose",
+                "method": "POST",
+            },
+            form_data={
+                "cca_name": ""
+            },
+            cca_names=cca_names,
+            message=message
+        )
+    elif action == "edit":
+        return render_template(
         "student_cca.html",
         page_type="cca",
         form_meta={
-            "action": "/add_membership?student",
+            "action": "/edit_membership?data",
             "method": "POST",
         },
         form_data={
@@ -221,22 +237,7 @@ def choose_membership(out_cca: list, in_cca: list, cca_name: str, message="") ->
         ],
         message=message
     )
-
-def edit_membership(cca_names: list, message="") -> None:
-    return render_template(
-        "student_cca.html",
-        page_type="cca",
-        form_meta={
-            "action": "/edit_membership?data",
-            "method": "POST",
-        },
-        form_data={
-            "cca_name": ""
-        },
-        cca_names=cca_names,
-        message=message
-    )
-    
+   
 def data_membership(in_cca: list, cca_name, message="") -> None:
     return render_template(
         "student_cca.html",
@@ -244,12 +245,14 @@ def data_membership(in_cca: list, cca_name, message="") -> None:
         cca_name=cca_name,
         in_cca=in_cca,
         headers=[
-            {"label": "Student Name", "value": "name"}
+            {"label": "Student Name", "value": "name"},
+            {"label": "Student Class", "value": "class"}
         ],
         message=message
     )
 
-def editdata_membership(data: dict) -> None:
+def edit_membership(data: dict) -> None:
+    # data: student_name & class_name
     return render_template(
         "student_cca.html",
         page_type="edit",
@@ -257,7 +260,8 @@ def editdata_membership(data: dict) -> None:
     )
 
 def confirm_membership(action, data: dict, cca_name) -> None:
-    # action = add / edit / delete
+    # action: add / edit / delete
+    # data: student_name, class_name, things that were changed
     return render_template(
         "student_cca.html",
         page_type="confirm",
