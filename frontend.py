@@ -189,49 +189,88 @@ Arguments:
 - cca_id: int
 - role: str
 '''
-def add_membership(student_ids: list, cca_ids: list, message="") -> None:
-    return render_template(
+def cca_membership(action, cca_names: list, message="") -> None:
+    # action: add / edit
+    if action == "add":
+        return render_template(
+            "student_cca.html",
+            page_type="cca",
+            form_meta={
+                "action": "/add_membership?choose",
+                "method": "POST",
+            },
+            form_data={
+                "cca_name": ""
+            },
+            cca_names=cca_names,
+            message=message
+        )
+    elif action == "edit":
+        return render_template(
         "student_cca.html",
-        page_type="new",
+        page_type="cca",
         form_meta={
-            "action": "/edit_membership?confirm",
+            "action": "/edit_membership?data",
             "method": "POST",
         },
         form_data={
-            "student_id": "",
-            "cca_id": "",
-            "role": "MEMBER"
+            "cca_name": ""
         },
-        student_ids=student_ids,
-        cca_ids=cca_ids,
-        message=message)
-    
-def edit_membership(student_ids: list, cca_ids: list, message="") -> None:
+        cca_names=cca_names,
+        message=message
+    )
+
+def choose_membership(out_cca: list, in_cca: list, cca_name: str, message="") -> None:
+    return render_template(
+        "student_cca.html",
+        page_type="add",
+    form_meta={
+        "action": "/add_membership?confirm",
+        "method": "POST"
+    },
+        cca_name=cca_name,
+        out_cca=out_cca,
+        in_cca=in_cca,
+        headers=[
+            {"label": "Student Name", "value": "name"},
+            {"label": "Student Class", "value": "class"}
+        ],
+        message=message
+    )
+   
+def data_membership(in_cca: list, cca_name, message="") -> None:
+    return render_template(
+        "student_cca.html",
+        page_type="data",
+        cca_name=cca_name,
+        in_cca=in_cca,
+        headers=[
+            {"label": "Student Name", "value": "name"},
+            {"label": "Student Class", "value": "class"}
+        ],
+        message=message
+    )
+
+def edit_membership(data: dict) -> None:
+    # data: student_name & class_name
     return render_template(
         "student_cca.html",
         page_type="edit",
-        form_meta={
-            "action": "/edit_membership?confirm",
-            "method": "POST",
-        },
-        form_data={
-            "student_id": "",
-            "cca_id": "",
-            "role": ""
-        },
-        student_ids=student_ids,
-        cca_ids=cca_ids,
-        message=message)
+        form_data=data
+    )
 
-def confirm_membership(data: dict) -> None:
+def confirm_membership(action, data: dict, cca_name) -> None:
+    # action: add / edit / delete
+    # data: student_name, class_name, things that were changed
     return render_template(
         "student_cca.html",
         page_type="confirm",
         form_meta={
-            "action": "/edit_membership?verify",
+            "action": "_membership?",
             "method": "POST"
         },
-        form_data=data
+        form_data=data,
+        cca_name=cca_name
     )
 
 # participation - student-activity

@@ -7,71 +7,112 @@ Membership
 <h1>Membership</h1>
 <p>Register a student into a CCA</p>
 
-    {% if page_type = 'new' %}
-    <h2>Input Membership details</h2>
+    {% if page_type = 'cca' %}
+<!--     Shows page with dropdown box to choose cca -->
+    <h2>Choose CCA</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-        <label for="student_id">Student ID:</label>
-        <input
-            id="student_id"
-            type="text"
-            name="student_id"
-            value=""
-            placeholder="ID of Student"
-            autocomplete="off"
-            required
-            >
-        
-        <label for="cca_id">CCA ID:</label>
-        <select name="cca_id" id="cca_id">
-            {% for cca in cca_ids %}
-            <option value="{{ cca }}">{{ cca }}</option>
+        <label for="cca_name">CCA Name:</label>
+        <select name="cca_name" id="cca_name">
+            {% for cca in cca_names %}
+            <option value="{{ cca['name'] }}">{{ cca['name'] }}</option>
             {% endfor %}
         </select>
+    </form>
 
-        <label for="role">Role:</label>
-        <input
-            id="role"
-            type="text"
-            name="role"
-            value=""
-            placeholder="Role of Student"
-            autocomplete="off"
-            >
+    {% elif page_type = 'add' %}
+<!-- Shows page with table of students to choose students to add into cca -->
+    <h2>Existing Students in {{ cca_name }}</h2>
+    <table>
+        <tr>
+            {% for header in headers %}
+            <th>{{ header['label'] }}</th>
+            {% endfor %}
+        </tr>
+        {% for record in in_cca %}
+        <tr>
+            <td>{{ record['name'] }}</td>
+            <td>{{ record['class'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <h2>Choose Students to Add into {{ cca_name }}</h2>
+    <table>
+        <tr>
+            <th>Select</th>
+            {% for header in headers %}
+            <th>{{ header['label'] }}</th>
+            {% endfor %}
+        </tr>
+        {% for record in out_cca %}
+        <tr>
+            <td>
+                <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+                    <input type="hidden" name="name" value="{{ record['name'] }}">
+                    <input type="hidden" name="class" value="{{ record['class'] }}">
+                    <input type="checkbox" id="choose" name="choose" value="{{ record['id'] }}">
+                </form>
+            </td>
+            <td>{{ record['name'] }}</td>
+            <td>{{ record['class'] </td>
+        </tr>
+    </table>
         
-        <input type="submit" value="Submit">
+    <input type="submit" value="Submit">
     </form>
     <p id="fail">{{ message }}</p>
 
+    {% elif page_type = 'data' %}
+    <h2>Choose student to edit in {{ cca_name }}</h2>
+    <table>
+        <tr>
+            {% for header in headers %}
+            <td>{{ header['label'] }}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for record in in_cca %}
+            <td>{{ record['name'] }}</td>
+            <td>{{ record['class'] }}</td>
+            <td>
+                <form action="/edit_membership?edit" method="POST">
+                    <input type="button" name="edit" value="Edit">
+                </form>
+            </td>
+            <td>
+                <form action="/edit_membership?delete" method="POST">
+                    <input type="button" name="delete" value="Delete">
+                </form>
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
+
     {% elif page_type = 'edit' %}
-    <h2>Input Membership details</h2>
-    <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-        <label for="student_id">Student ID:</label>
-        <select name="student_id" id="student_id">
-            {% for student in student_ids %}
-            <option value="{{ student }}">{{ student }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="cca_id">CCA ID:</label>
-        <select name="cca_id" id="cca_id">
-            {% for cca in cca_ids %}
-            <option value="{{ cca }}">{{ cca }}</option>
-            {% endfor %}
-            <option value="None">None</option>
-        </select>
-
-        <label for="role">Role:</label>
-        <input
+    <h2>Edit Details for {{ form_data['name'] }}</h2>
+    <table>
+        {% for name, value in form_data.items() %}
+        <tr>
+            <th>{{ name }}</th>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+            <label for="role">Role:</label>
+            <input
             id="role"
             type="text"
             name="role"
-            value=""
+            value="MEMBER"
             placeholder="Role of Student"
             autocomplete="off"
             >
-
-        <input type="submit" value="Submit">
-    </form>
+        </tr>
+    </table>
+        <input type="submit" value="Confirm">
+        </form>
+<!-- does this work can you separate the form like this LOL -->
     <p id="fail">{{ message }}</p>
 
     {% elif page_type = 'confirm' %}
@@ -85,7 +126,7 @@ Membership
             {% endfor %}
         </table>
         <p>Is this correct?</p>
-        <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+        <form action="f'{'/'}{action}{form_meta['action']}" method="{{ form_meta['method'] }}">
             {% for name, value in form_data.items() %}
             <input
                 type="hidden"
@@ -94,9 +135,14 @@ Membership
                 >
             {% endfor %}
             <input type="submit" value="Yes">
+            <input
+                type="hidden"
+                name="cca_name"
+                value="{{ cca_name }}"
+            >
         </form>
         
-        <form action="/edit_membership" method="GET">
+        <form action="f'{'/''}{action}{form_meta['action']}{'verify'}" method="GET">
             <input type="submit" value="No">
         </form>
     {% endif %}
