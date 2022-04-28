@@ -121,6 +121,7 @@ Membership
             value="MEMBER"
             placeholder="Role of Student"
             autocomplete="off"
+            required
             >
         </tr>
     </table>
@@ -162,11 +163,11 @@ Membership
                 value="{{ record['id'] }}"
                 >
             {% endfor %}
-            <input type="submit" value="Yes">
             <input
                 type="hidden"
                 name="cca_name"
                 value="{{ cca_name }}"
+            <input type="submit" value="Yes">
             >
         </form>
         
