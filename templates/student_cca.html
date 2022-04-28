@@ -37,8 +37,8 @@ Membership
         {% endfor %}
     </table>
     <br>
+
     <h2>Choose Students to Add into {{ cca_name }}</h2>
-    
     <form action="/add_membership?confirm" method="{{ form_meta['method'] }}">
         <table>
             <tr>
@@ -48,12 +48,19 @@ Membership
                 {% endfor %}
             </tr>
             {% for record in out_cca %}
+            
             <tr>
                 <td> 
-                    <input type="checkbox" id="choose" name="choose" value="{{ record['id'] }}">
+                    <input type="checkbox" id="choose {{ record['id'] }}" name="choose" value="{{ record['id'] }}">
                 </td>
-                <td>{{ record['name'] }}<input type="hidden" name="class" value="{{ record['class'] }}"></td>
-                <td>{{ record['class'] }}<input type="hidden" name="name" value="{{ record['name'] }}"></td>
+                <td>
+                    <label for="choose {{ record['id'] }}">{{ record['name'] }}</label>
+                    <input type="hidden" name="class" value="{{ record['class'] }}">
+                </td>
+                <td>
+                    <label for="choose {{ record['id'] }}">{{ record['class'] }}</label>
+                    <input type="hidden" name="name" value="{{ record['name'] }}">
+                </td>
             </tr>
             {% endfor %}
         </table>
@@ -67,7 +74,7 @@ Membership
     <p id="fail">{{ message }}</p>
 
     {% elif page_type == 'data' %}
-    <h2>Choose student to edit in {{ cca_name }}</h2>
+    <h2>Existing Students in {{ cca_name }}</h2>
     <table>
         <tr>
             {% for header in headers %}
@@ -80,25 +87,28 @@ Membership
             <td>{{ record['class'] }}</td>
             <td>
                 <form action="/edit_membership?edit" method="POST">
-                    <input type="button" name="edit" value="Edit">
+                    <input type="submit" name="edit" value="Edit">
                 </form>
             </td>
             <td>
                 <form action="/edit_membership?delete" method="POST">
-                    <input type="button" name="delete" value="Delete">
+                    <input type="submit" name="delete" value="Delete">
                 </form>
             </td>
             {% endfor %}
         </tr>
     </table>
+    <form action="/index" method="GET">
+        <input type="submit" value="Return to Homepage">
+    </form>
 
     {% elif page_type == 'edit' %}
-    <h2>Edit Details for {{ form_data['name'] }}</h2>
+    <h2>Edit Details for {{ form_data[0]['name'] }}</h2>
     <table>
-        {% for name, value in form_data.items() %}
+        {% for record in form_data %}
         <tr>
-            <th>{{ name }}</th>
-            <td>{{ value }}</td>
+            <th>{{ record['name'] }}</th>
+            <td>{{ record['class'] }}</td>
         </tr>
         {% endfor %}
         <tr>
@@ -117,10 +127,14 @@ Membership
         <input type="submit" value="Confirm">
         </form>
 <!-- does this work can you separate the form like this LOL -->
+        <form action="edit_membership" method="GET">
+            <input type="submit" value="Return without saving">
+        </form>
     <p id="fail">{{ message }}</p>
 
     {% elif page_type == 'confirm' %}
     <h2>Confirm details</h2>
+    <p>{{ action }} student in {{ cca_name }}</P>
         <table>
             <tr>
                 <th>Student ID</th>
@@ -135,7 +149,7 @@ Membership
         </table>
         <p>Is this correct?</p>
 <!--         you dont know how to use fstrings :<<<<<<< -->
-        <form action=f"/{{action}}{{ form_meta['action'] }}?verify" method="{{ form_meta['method'] }}">
+        <form action="{{ form_meta['action_yes'] }}" method="{{ form_meta['method'] }}">
             {% for record in form_data %}
             <input
                 type="hidden"
@@ -156,7 +170,7 @@ Membership
             >
         </form>
         
-        <form action="/add_membership" method="GET">
+        <form action="{{ form_meta['action_no'] }}" method="GET">
             <input type="submit" value="No">
         </form>
     {% endif %}

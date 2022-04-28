@@ -262,16 +262,47 @@ def edit_membership(data: dict) -> None:
 def confirm_membership(action, data: list, cca_name) -> None:
     # action: add / edit / delete
     # data: student_name, class_name, things that were changed
-    return render_template(
-        "student_cca.html",
-        page_type="confirm",
-        form_meta={
-            "action": "_membership",
-            "method": "POST"
-        },
-        form_data=data,
-        cca_name=cca_name
-    )
+    if action == "add":
+        return render_template(
+            "student_cca.html",
+            page_type="confirm",
+            form_meta={
+                "action_yes": "/add_membership?verify",
+                "action_no": "/add_membership",
+                "method": "POST"
+            },
+            form_data=data,
+            action=action,
+            cca_name=cca_name
+        )
+
+    elif action == "edit":
+        return render_template(
+            "student_cca.html",
+            page_type="data",
+            form_meta={
+                "action_yes": "/edit_membership?verify",
+                "action_no": "/edit_membership",
+                "method": "POST"
+            },
+            form_data=data,
+            action=action,
+            cca_name=cca_name
+        )
+
+    elif action == "delete":
+        return render_template(
+            "student_cca.html",
+            page_type="data",
+            form_meta={
+                "action_yes": "/delete_membership",
+                "action_no": "/edit_membership",
+                "method": "POST"
+            },
+            form_data=data,
+            action=action,
+            cca_name=cca_name
+        )
 
 # participation - student-activity
 '''

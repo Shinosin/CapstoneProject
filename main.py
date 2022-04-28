@@ -209,7 +209,7 @@ def add_membership():
         for id in student_id:
             student = storage.database['students'].find({'id': id}, column='id, name')
             data.extend(student)
-        return frontend.data_membership(data)
+        return frontend.data_membership(data, cca_name)
 
 @app.route('/edit_membership', methods=['POST', 'GET'])
 def edit_membership():
