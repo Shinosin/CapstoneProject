@@ -156,7 +156,52 @@ def view_subject():
     return frontend.view_subject(student_name=student_name[0]['name'], data=data)
 
 
+@app.route('/add_membership', methods=['POST', 'GET'])
+def add_membership():
+    """Modify Membership
+    1. Select cca_name (give list of cca name)
+    
+    1. get cca_name from form (give)
+    2. list of student name and class name (give) who are not in cca (cca id)
+    3. and list who are in cca student name and class name
 
+    Create confirm form
+    1. get list of student name and class (give)
+
+    1. add to database (student id: list of int, ccaid: int)
+    1a. convert student name to student id
+    2. send data again to say yay u added (redirect)
+    """
+    if request.method == 'GET':
+        cca_name = storage.database['ccas'].get_all(column='name') # list of dict
+        return frontend.add_membership(cca_names=cca_name)
+
+    elif 'student' in request.args:
+        cca_name = request.form['cca_name']
+        cca_id = storage.database['ccas'].find({'name': cca_name}, column='id') # list of dict
+        existing_members = storage.database['student_cca'].existing_members(cca_id[0]['id'])
+        not_in_cca = storage.database['student_cca'].not_in_cca(cca_id[0]['id'])
+
+        return frontend.choose_membership(in_cca=existing_members, out_cca=not_in_cca , cca_name=cca_name)
+
+    elif 'confirm' in request.args:
+        """student id student name and class name"""
+        # student_data = []
+#         for id in student_id:
+#             student = storage.coll['student'].find(column='ID, Name', ID=id)
+#             student_data.extend(student)
+        # student_id = request.form.getlist('StudentID')
+        return frontend.confirm_membership(data, cca_name)
+
+    elif 'verify' in request.args:
+        return frontend
+
+@app.route('/edit_membership', methods=['POST', 'GET'])
+def edit_membership():
+    pass
+        
+                
+        
 
 
 
@@ -170,7 +215,7 @@ def view_subject():
 #             column='id'
 #         )
 #         cca_id = cca_id[0]
-#         storage.database['ccas'].insert_member(student_id=student_id,
+#         storage.database['ccas'].insert_member(student_id=student_id
 #                                            cca_id=cca_id[0]) # insert into database
 #         return frontend.success_membership(message="Successfully edited membership of {}".format(cca_name))
 
@@ -184,31 +229,11 @@ def view_subject():
 #         return frontend.membership_confirm(club_name=ClubName,
 #                                            student_data=student_data)
 
-#     elif 'student' in request.args: # Step 2: Choose Students
-#         ClubID = request.form['ClubID']
-#         ClubName = storage.coll['club'].find(ID=ClubID, column="Name")
-#         if storage.coll['club'].find_students_not_in_club(ClubID) == []:
-#             student_data = [(30, 'JERRY', 'TENNIS')]
-#         else:
-#             student_data = storage.coll['club'].find_students_not_in_club(ClubID)
-#         if storage.coll['club'].find_students_in_club(ClubID) == []:
-#             existing_members = []
-#         else:
-#             existing_members = storage.coll['club'].find_students_in_club(ClubID)
-#         return frontend.membership_chooseStudent(club_name=ClubName[0],
-#                                                  student_data=student_data,
-#                                                  existing_data=existing_members)
-
-#     else: # Step 1: Choose Club
-#         club_data = storage.coll['club'].get_all()
-#         return frontend.membership_chooseClub(club_data=club_data)
 
 
 
 
-@app.route('/add_membership', methods=['POST', 'GET'])
-def edit_membership():
-    return frontend.add_membership()
+
 
 @app.route('/add_participation', methods=['POST', 'GET'])
 def edit_participation():
