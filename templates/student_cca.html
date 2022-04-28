@@ -69,11 +69,11 @@ Membership
                 name="cca_name"
                 value="{{ cca_name }}"
         >
-        <input type="submit" value="Submit">
+        <input type="submit" value="Add Selected Students">
     </form>
     <p id="fail">{{ message }}</p>
 
-    {% elif page_type == 'data' %}
+    {% elif page_type == 'view' %}
     <h2>Existing Students in {{ cca_name }}</h2>
     <table>
         <tr>
@@ -86,12 +86,42 @@ Membership
             <td>{{ record['name'] }}</td>
             <td>{{ record['class'] }}</td>
             <td>
-                <form action="/edit_membership?edit" method="POST">
+                <form action="/edit_membership" method="POST">
+                    <input
+                        type="hidden"
+                        name="name"
+                        value="{{ record['name'] }}"
+                        >
+                    <input
+                        type="hidden"
+                        name="class"
+                        value="{{ record['class'] }}"
+                        >
+                    <input
+                        type="hidden"
+                        name="cca_name"
+                        value="{{ cca_name }}"
+                        >
                     <input type="submit" name="edit" value="Edit">
                 </form>
             </td>
             <td>
-                <form action="/edit_membership?delete" method="POST">
+                <form action="/delete_membership" method="POST">
+                    <input
+                        type="hidden"
+                        name="name"
+                        value="{{ record['name'] }}"
+                        >
+                    <input
+                        type="hidden"
+                        name="class"
+                        value="{{ record['class'] }}"
+                        >
+                    <input
+                        type="hidden"
+                        name="cca_name"
+                        value="{{ cca_name }}"
+                        >
                     <input type="submit" name="delete" value="Delete">
                 </form>
             </td>
@@ -125,10 +155,15 @@ Membership
             >
         </tr>
     </table>
-        <input type="submit" value="Confirm">
+        <input type="submit" value="Save Changes">
         </form>
 <!-- does this work can you separate the form like this LOL -->
-        <form action="edit_membership" method="GET">
+        <form action="/view_membership" method="POST">
+            <input
+                type="hidden"
+                name="cca_name"
+                value="{{ cca_name }}"
+                >
             <input type="submit" value="Return without saving">
         </form>
     <p id="fail">{{ message }}</p>
@@ -149,7 +184,6 @@ Membership
             {% endfor %}
         </table>
         <p>Is this correct?</p>
-<!--         you dont know how to use fstrings :<<<<<<< -->
         <form action="{{ form_meta['action_yes'] }}" method="{{ form_meta['method'] }}">
             {% for record in form_data %}
             <input
@@ -162,17 +196,43 @@ Membership
                 name="id"
                 value="{{ record['id'] }}"
                 >
+            <input
+                type="hidden"
+                name="class"
+                value="{{ record['class'] }}"
+                >
             {% endfor %}
             <input
                 type="hidden"
                 name="cca_name"
                 value="{{ cca_name }}"
-            <input type="submit" value="Yes">
+                >
+            <input
+                type="hidden"
+                name="action"
+                value="{{ action }}"
+                >
+            <input type="submit" value="Yes, {{ action }}">
             >
         </form>
         
-        <form action="{{ form_meta['action_no'] }}" method="GET">
-            <input type="submit" value="No">
+        <form action="{{ form_meta['action_no'] }}" method="POST">
+            <input
+                type="hidden"
+                name="name"
+                value="{{ record['name'] }}"
+                >
+            <input
+                type="hidden"
+                name="class"
+                value="{{ record['class'] }}"
+                >
+            <input
+                type="hidden"
+                name="cca_name"
+                value="{{ cca_name }}"
+                >
+            <input type="submit" value="No, do not {{ action }}">
         </form>
     {% endif %}
 {% endblock %}
