@@ -7,7 +7,7 @@ Membership
 <h1>Membership</h1>
 <p>Register a student into a CCA</p>
 
-    {% if page_type = 'cca' %}
+    {% if page_type == 'cca' %}
 <!--     Shows page with dropdown box to choose cca -->
     <h2>Choose CCA</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
@@ -17,9 +17,10 @@ Membership
             <option value="{{ cca['name'] }}">{{ cca['name'] }}</option>
             {% endfor %}
         </select>
+        <input type="submit" value="Next"> 
     </form>
 
-    {% elif page_type = 'add' %}
+    {% elif page_type == 'add' %}
 <!-- Shows page with table of students to choose students to add into cca -->
     <h2>Existing Students in {{ cca_name }}</h2>
     <table>
@@ -37,32 +38,35 @@ Membership
     </table>
     <br>
     <h2>Choose Students to Add into {{ cca_name }}</h2>
-    <table>
-        <tr>
-            <th>Select</th>
-            {% for header in headers %}
-            <th>{{ header['label'] }}</th>
-            {% endfor %}
-        </tr>
-        {% for record in out_cca %}
-        <tr>
-            <td>
-                <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-                    <input type="hidden" name="name" value="{{ record['name'] }}">
-                    <input type="hidden" name="class" value="{{ record['class'] }}">
+    
+    <form action="/add_membership?confirm" method="{{ form_meta['method'] }}">
+        <table>
+            <tr>
+                <th>Select</th>
+                {% for header in headers %}
+                <th>{{ header['label'] }}</th>
+                {% endfor %}
+            </tr>
+            {% for record in out_cca %}
+            <tr>
+                <td> 
                     <input type="checkbox" id="choose" name="choose" value="{{ record['id'] }}">
-                </form>
-            </td>
-            <td>{{ record['name'] }}</td>
-            <td>{{ record['class'] </td>
-        </tr>
-    </table>
-        
-    <input type="submit" value="Submit">
+                </td>
+                <td>{{ record['name'] }}<input type="hidden" name="class" value="{{ record['class'] }}"></td>
+                <td>{{ record['class'] }}<input type="hidden" name="name" value="{{ record['name'] }}"></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <input
+                type="hidden"
+                name="cca_name"
+                value="{{ cca_name }}"
+        >
+        <input type="submit" value="Submit">
     </form>
     <p id="fail">{{ message }}</p>
 
-    {% elif page_type = 'data' %}
+    {% elif page_type == 'data' %}
     <h2>Choose student to edit in {{ cca_name }}</h2>
     <table>
         <tr>
@@ -88,7 +92,7 @@ Membership
         </tr>
     </table>
 
-    {% elif page_type = 'edit' %}
+    {% elif page_type == 'edit' %}
     <h2>Edit Details for {{ form_data['name'] }}</h2>
     <table>
         {% for name, value in form_data.items() %}
@@ -115,23 +119,33 @@ Membership
 <!-- does this work can you separate the form like this LOL -->
     <p id="fail">{{ message }}</p>
 
-    {% elif page_type = 'confirm' %}
+    {% elif page_type == 'confirm' %}
     <h2>Confirm details</h2>
         <table>
-            {% for name, value in form_data.items() %}
             <tr>
-                <th>{{ name }}</th>
-                <td>{{ value }}</td>
+                <th>Student ID</th>
+                <th>Student Name</th>
+            </tr>
+            {% for record in form_data %}
+            <tr>
+                <td>{{ record['id'] }}</td>
+                <td>{{ record['name'] }}</td>
             </tr>
             {% endfor %}
         </table>
         <p>Is this correct?</p>
-        <form action="f'{'/'}{action}{form_meta['action']}" method="{{ form_meta['method'] }}">
-            {% for name, value in form_data.items() %}
+<!--         you dont know how to use fstrings :<<<<<<< -->
+        <form action=f"/{{action}}{{ form_meta['action'] }}?verify" method="{{ form_meta['method'] }}">
+            {% for record in form_data %}
             <input
                 type="hidden"
-                name="{{ name }}"
-                value="{{ value }}"
+                name="name"
+                value="{{ record['name'] }}"
+                >
+            <input
+                type="hidden"
+                name="id"
+                value="{{ record['id'] }}"
                 >
             {% endfor %}
             <input type="submit" value="Yes">
@@ -142,7 +156,7 @@ Membership
             >
         </form>
         
-        <form action="f'{'/''}{action}{form_meta['action']}{'verify'}" method="GET">
+        <form action="/add_membership" method="GET">
             <input type="submit" value="No">
         </form>
     {% endif %}

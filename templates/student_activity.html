@@ -7,7 +7,7 @@ Participation
 <h1>Participation</h1>
 <p>Register a student into an Activity</p>
 
-    {% if page_type = 'new' %}
+    {% if page_type == 'new' %}
     <h2>Input Participation details</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
         <label for="student_id">Student ID:</label>
@@ -70,7 +70,7 @@ Participation
     </form>
     <p id="fail">{{ message }}</p>
 
-    {% elif page_type = 'edit' %}
+    {% elif page_type == 'edit' %}
     <h2>Input Participation details</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
         <label for="student_id">Student ID:</label>
@@ -130,7 +130,7 @@ Participation
     </form>
     <p id="fail">{{ message }}</p>
 
-    {% elif page_type = 'confirm' %}
+    {% elif page_type == 'confirm' %}
     <h2>Confirm details</h2>
         <table>
             {% for name, value in form_data.items() %}

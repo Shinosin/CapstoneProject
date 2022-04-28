@@ -155,14 +155,114 @@ def view_subject():
         data.extend(storage.database['subjects'].find(record))
     return frontend.view_subject(student_name=student_name[0]['name'], data=data)
 
+
+@app.route('/add_membership', methods=['POST', 'GET'])
+def add_membership():
+    """Modify Membership
+    1. Select a cca name from the list of cca names
+    2. display table of existing members in cca
+    3. display table of the rest of the students
+    4. choose students to be added
+    5. from the selected students -> give confirmation page
+    
+    1. get cca_name from form (give)
+    2. list of student name and class name (give) who are not in cca (cca id)
+    3. and list who are in cca student name and class name
+
+    Create confirm form
+    1. get list of student name and class (give)
+
+    1. add to database (student id: list of int, ccaid: int)
+    1a. convert student name to student id
+    2. send data again to say yay u added (redirect)
+    """
+    if request.method == 'GET':
+        cca_name = storage.database['ccas'].get_all(column='name') # list of dict
+        return frontend.cca_membership(action="add", cca_names=cca_name)
+
+    elif 'choose' in request.args:
+        cca_name = request.form['cca_name']
+        cca_id = storage.database['ccas'].find({'name': cca_name}, column='id') # list of dict
+        existing_members = storage.database['student_cca'].existing_members(cca_id[0]['id'])
+        not_in_cca = storage.database['student_cca'].not_in_cca(cca_id[0]['id'])
+        return frontend.choose_membership(in_cca=existing_members, out_cca=not_in_cca , cca_name=cca_name)
+
+    elif 'confirm' in request.args:
+        cca_name = request.form['cca_name']
+        student_id = request.form.getlist('choose')
+        data = []
+        for id in student_id:
+            data.extend(
+                storage.database['students'].find(
+                    {'id': id}, column='id, name')
+            )
+        for record in data:
+            print(record)
+        return frontend.confirm_membership(action='add', data=data, cca_name=cca_name)
+
+    elif 'verify' in request.args:
+        cca_name = request.form['cca_name']
+        # student_name = request.form.getlist('name')
+        # student_class = request.form.getlist('class')
+        student_id = request.form.getlist('choose')
+        data = []
+        for id in student_id:
+            student = storage.database['students'].find({'id': id}, column='id, name')
+            data.extend(student)
+        return frontend.data_membership(data)
+
 @app.route('/edit_membership', methods=['POST', 'GET'])
 def edit_membership():
-    return frontend.edit_membership()
-
-@app.route('/edit_participation', methods=['POST', 'GET'])
-def edit_participation():
-    return frontend.edit_partipcipation()
+    pass
         
+                
+        
+
+
+
+# @app.route('/edit_membership', methods=['POST', 'GET'])
+# def edit_membership():
+#     if 'verify' in request.args: # Step 4: Modify Database
+#         student_id = request.form.getlist('id') # student_id is a list
+#         cca_name = request.form['name']
+#         cca_id = storage.database['ccas'].find(
+#             {"name": cca_name},
+#             column='id'
+#         )
+#         cca_id = cca_id[0]
+#         storage.database['ccas'].insert_member(student_id=student_id
+#                                            cca_id=cca_id[0]) # insert into database
+#         return frontend.success_membership(message="Successfully edited membership of {}".format(cca_name))
+
+#     elif 'confirm' in request.args: # Step 3: Confirm
+#         ClubName = request.form['ClubName']
+#         student_id = request.form.getlist('StudentID') # student_id is a list
+#         student_data = []
+#         for id in student_id:
+#             student = storage.coll['student'].find(column='ID, Name', ID=id)
+#             student_data.extend(student)
+#         return frontend.membership_confirm(club_name=ClubName,
+#                                            student_data=student_data)
+
+
+
+
+
+
+
+@app.route('/add_participation', methods=['POST', 'GET'])
+def edit_participation():
+    return frontend.participation()
+
+
+
+
+
+
+
+    
+
+    
 # Future Functions
 @app.route('/login', methods=['GET'])
 def login():
