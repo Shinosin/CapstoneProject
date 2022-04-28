@@ -6,10 +6,11 @@ def splash():
 def index():
     return render_template('index.html')
 
-def redirect(data: dict) -> None:
+def redirect(data: dict, cca_name=None) -> None:
     '''Redirects to a success (confirmation) page'''
     return render_template('redirect.html',
-                          form_data=data)
+                          form_data=data,
+                          cca_name=cca_name)
 
 # view functions
 '''
@@ -210,7 +211,7 @@ def cca_membership(action, cca_names: list, message="") -> None:
         "student_cca.html",
         page_type="cca",
         form_meta={
-            "action": "/edit_membership?data",
+            "action": "/view_membership",
             "method": "POST",
         },
         form_data={
@@ -238,10 +239,10 @@ def choose_membership(out_cca: list, in_cca: list, cca_name: str, message="") ->
         message=message
     )
    
-def data_membership(in_cca: list, cca_name, message="") -> None:
+def view_membership(in_cca: list, cca_name, message="") -> None:
     return render_template(
         "student_cca.html",
-        page_type="data",
+        page_type="view",
         cca_name=cca_name,
         in_cca=in_cca,
         headers=[
@@ -251,27 +252,63 @@ def data_membership(in_cca: list, cca_name, message="") -> None:
         message=message
     )
 
-def edit_membership(data: dict) -> None:
+def edit_membership(data: dict, cca_name) -> None:
     # data: student_name & class_name
     return render_template(
         "student_cca.html",
         page_type="edit",
-        form_data=data
-    )
-
-def confirm_membership(action, data: list, cca_name) -> None:
-    # action: add / edit / delete
-    # data: student_name, class_name, things that were changed
-    return render_template(
-        "student_cca.html",
-        page_type="confirm",
         form_meta={
-            "action": "_membership",
+            "action": "edit_membership?confirm",
             "method": "POST"
         },
         form_data=data,
         cca_name=cca_name
     )
+
+def confirm_membership(action, data: list, cca_name) -> None:
+    # action: add / edit / delete
+    # data: student_name, class_name, things that were changed
+    if action == "add":
+        return render_template(
+            "student_cca.html",
+            page_type="confirm",
+            form_meta={
+                "action_yes": "/add_membership?verify",
+                "action_no": "/add_membership",
+                "method": "POST"
+            },
+            form_data=data,
+            action=action,
+            cca_name=cca_name
+        )
+
+    elif action == "edit":
+        return render_template(
+            "student_cca.html",
+            page_type="confirm",
+            form_meta={
+                "action_yes": "/edit_membership?verify",
+                "action_no": "/edit_membership",
+                "method": "POST"
+            },
+            form_data=data,
+            action=action,
+            cca_name=cca_name
+        )
+
+    elif action == "delete":
+        return render_template(
+            "student_cca.html",
+            page_type="confirm",
+            form_meta={
+                "action_yes": "/delete_membership?verify",
+                "action_no": "/view_membership",
+                "method": "POST"
+            },
+            form_data=data,
+            action=action,
+            cca_name=cca_name
+        )
 
 # participation - student-activity
 '''
