@@ -33,9 +33,6 @@ class Table:
         keys = record.keys() #column names
         valid_keys = [] #valid columns
         values = []
-        
-        if column != '*' and column not in self.__columns: #verify column in parameter 
-            return []
             
         for key in keys: #verify keys
             if key in self.__columns:
@@ -46,7 +43,10 @@ class Table:
 
         for key in valid_keys:
             sql_statement += f' {key} = ? AND'
-            values.append(record[key].upper()) # database values are captitalised
+            if type(record[key]) == str:
+                values.append(record[key].upper()) # database values are captitalised
+            else:
+                values.append(record[key])
 
         sql_statement = sql_statement.strip(' AND')
         sql_statement += ';' 
@@ -265,7 +265,8 @@ student id, cca id, role
 
 given cca id is 1
 """
-print('sdsvjb')
-database['student_cca'].import_csv('student_cca.csv')
-print(database['student_cca'].existing_members(1))
-print('fwejfj')
+# print('sdsvjb')
+# database['student_cca'].import_csv('student_cca.csv')
+# print(database['student_cca'].existing_members(1))
+# print('fwejfj')
+print(database['students'].find({'id': 5}, column='id,name'))

@@ -180,12 +180,28 @@ IN_CCA = '''
 
 NOT_IN_CCA = '''
     SELECT student.id, student.name, class.name AS class
-    FROM student, class, student_cca
-    WHERE cca.id = ? AND
-    cca.id != student_cca.cca_id AND
-    student_cca.student_id = student.id AND
-    student.student_class = class.id;
+    FROM student
+    LEFT JOIN student_cca
+    ON student.id = student_cca.student_id
+    LEFT JOIN class
+    ON student.student_class = class.id
+    WHERE student.id IN (
+        SELECT id
+        FROM student
+        WHERE id NOT IN (
+            SELECT student_id
+            FROM student_cca
+            WHERE cca_id = ?
+        )
+    )
 '''
+    # it wont work cuz some students dont have a cca like its null so it wont appear
+    # SELECT student.id, student.name, class.name AS class
+    # FROM student, class, student_cca
+
+    # WHERE student_cca.cca_id != ? AND
+    # student_cca.student_id = student.id AND
+    # student.student_class = class.id;
 
 DELETE_STUDENT_CCA = '''
     DELETE FROM student_cca

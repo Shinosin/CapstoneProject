@@ -259,14 +259,14 @@ def edit_membership(data: dict) -> None:
         form_data=data
     )
 
-def confirm_membership(action, data: dict, cca_name) -> None:
+def confirm_membership(action, data: list, cca_name) -> None:
     # action: add / edit / delete
     # data: student_name, class_name, things that were changed
     return render_template(
         "student_cca.html",
         page_type="confirm",
         form_meta={
-            "action": "_membership?",
+            "action": "_membership",
             "method": "POST"
         },
         form_data=data,
