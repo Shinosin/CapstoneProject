@@ -145,14 +145,24 @@ Membership
             <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
             <label for="role">Role:</label>
             <input
-            id="role"
-            type="text"
-            name="role"
-            value="MEMBER"
-            placeholder="Role of Student"
-            autocomplete="off"
-            required
-            >
+                id="role"
+                type="text"
+                name="role"
+                value="MEMBER"
+                placeholder="Role of Student"
+                autocomplete="off"
+                required
+                >
+            <input
+                type="hidden"
+                name="name"
+                value="{{ record['name'] }}"
+                >
+            <input
+                type="hidden"
+                name="class"
+                value="{{ record['class'] }}"
+                >
         </tr>
     </table>
         <input type="submit" value="Save Changes">
