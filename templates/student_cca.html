@@ -5,7 +5,7 @@ Membership
 
 {% block main %}
 <h1>Membership</h1>
-<p>Register a student into a CCA</p>
+<p>Edit student records in a CCA</p>
 
     {% if page_type == 'cca' %}
 <!--     Shows page with dropdown box to choose cca -->
@@ -69,6 +69,9 @@ Membership
         >
         <input type="submit" value="Add Selected Students">
     </form>
+    <form action="/index" method="GET">
+        <input type="submit" value="Return to Homepage">
+    </form>
     <p id="fail">{{ message }}</p>
 
     {% elif page_type == 'view' %}
@@ -84,7 +87,7 @@ Membership
             <td>{{ record['name'] }}</td>
             <td>{{ record['class'] }}</td>
             <td>
-                <form action="/membership/edit?confirm" method="POST">
+                <form action="/membership/edit?edit" method="POST">
                     <input
                         type="hidden"
                         name="name"
@@ -131,57 +134,48 @@ Membership
     </form>
 
     {% elif page_type == 'edit' %}
-    <h2>Edit Details for {{ form_data['name'] }}</h2>
-    <table>
-        <tr>
-            <th>Student Name</th>
-            <th>Student Class</th>
-        </tr>
-        <tr>
-            <td>{{ form_data['name'] }}</td>
-            <td>{{ form_data['class'] }}</td>
-        </tr>
-
-        <tr>
-            <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-            <label for="role">Role:</label>
-            <input
-                id="role"
-                type="text"
-                name="role"
-                value="MEMBER"
-                placeholder="Role of Student"
-                autocomplete="off"
-                required
-                >
-            <input
-                type="hidden"
-                name="name"
-                value="{{ form_data['name'] }}"
-                >
-            <input
-                type="hidden"
-                name="class"
-                value="{{ form_data['class'] }}"
-                >
-            <input
-                type="hidden"
-                name="cca_name"
-                value="{{ cca_name }}"
-                >
-        </tr>
-    </table>
-        <input type="submit" value="Save Changes">
-        </form>
-<!-- does this work can you separate the form like this LOL -->
-        <form action="/view/membership" method="GET">
-            <input
-                type="hidden"
-                name="cca_name"
-                value="{{ cca_name }}"
-                >
-            <input type="submit" value="Return without saving">
-        </form>
+    {% for record in form_data %}
+    <h2>Edit Details for {{ record['name'] }}</h2>
+    {% for name, value in record.items() %}
+    <p>{{ name }}: {{value}}</p>
+    {% endfor %}
+    <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+    <label for="role">Role:</label>
+    <input
+        id="role"
+        type="text"
+        name="role"
+        value="MEMBER"
+        placeholder="Role of Student"
+        autocomplete="off"
+        required
+        >
+    <input
+        type="hidden"
+        name="name"
+        value="{{ record['name'] }}"
+        >
+    <input
+        type="hidden"
+        name="class"
+        value="{{ record['class'] }}"
+        >
+    <input
+        type="hidden"
+        name="cca_name"
+        value="{{ cca_name }}"
+        >
+    <input type="submit" value="Save Changes">
+    </form>
+    <form action="/view/membership" method="GET">
+        <input
+            type="hidden"
+            name="cca_name"
+            value="{{ cca_name }}"
+            >
+        <input type="submit" value="Return without saving">
+    </form>
+    {% endfor %}
     <p id="fail">{{ message }}</p>
 
     {% elif page_type == 'confirm' %}
