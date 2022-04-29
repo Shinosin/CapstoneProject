@@ -124,8 +124,6 @@ def view(form):
         return frontend.view_subject(student_name=student_name[0], data=data)
     
     elif form == 'membership': # GET
- #########       # SELECT ROLE OSO
-        
         cca_id = storage.database['ccas'].find(
             {'name': request.args['cca_name']},
             column='id'
@@ -248,14 +246,6 @@ def membership(action):
                 cca_name=cca_name
             )
 
-        elif 'edit' in request.args:
-            student_id = storage.database['students'].find(
-                {'name': request.form['name']},
-                column='id'
-            )
-            data = storage.database['student_cca'].select_by_student_id(student_id)
-            return frontend.edit_membership(data, cca_name)
-        
         elif 'confirm' in request.args:
             '''
             Display information for student to confirm
@@ -299,7 +289,11 @@ def membership(action):
         if 'confirm' in request.args:
             '''Display confirmation page'''
             return frontend.confirm_membership(action, data, cca_name)
-            
+
+        elif 'edit' in request.args:
+            data = storage.database['student_cca'].select_by_student_id(student_id)
+            return frontend.edit_membership(data, cca_name)
+        
         elif 'verify' in request.args:
             '''Update role in database OR Delete record'''
             if action == 'edit':
