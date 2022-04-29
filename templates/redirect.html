@@ -7,17 +7,21 @@ Success
 <h1>Success!</h1>
 <p>Successful {{ action }} of the following data:</p>
 <table>
+    <tr>
+        {% for key in form_data[0].keys() %}
+        <th>{{ key }}</th>
+        {% endfor %}
+    </tr>
     {% for record in form_data %}
     <tr>
         {% for name, value in record.items() %}
-        <th>{{ name }}</th>
         <td>{{ value }}</td>
         {% endfor %}
     </tr>
     {% endfor %}
 </table>
 <br>
-<form action="/view_membership" method="GET">
+<form action="/view/membership" method="GET">
     <input
         type="hidden"
         name="cca_name"

@@ -8,7 +8,7 @@ View {{ entity | title }}
     <h1>View {{ entity | title }}</h1>
     {% if entity == "subject" %}
     <h2>Subjects Taken</h2>
-    <h3>Student Name: {{ student_name }}</h3>
+    <h3>Student Name: {{ student_name['name'] }}</h3>
     <table>
         <tr>
             {% for header in headers %}
@@ -24,10 +24,10 @@ View {{ entity | title }}
         {% endfor %}
     </table>
 
-    <p><a href="/view_student">Return to View Student</a></p>
+    <p><a href="/view/students">Return to View Student</a></p>
     
     {% else %}
-    <form action="view_{{ entity }}" method="POST">
+    <form action="/view/{{ entity }}" method="POST">
         <label for="search_key">Filter by: </label>
         <select name="search_key" id="search_key">
             {% for header in headers %}
@@ -46,12 +46,12 @@ View {{ entity | title }}
             >
         <input type="submit" value="Search">
     </form>
-    <a href="/view_{{ entity }}">View All</a>
+    <a href="/view/{{ entity }}">View All</a>
     <p id="fail">{{ message }}</p>
     
     <table>
         <tr>
-            {% if entity == "student" %}
+            {% if entity == "students" %}
             <th>View Subject</th>    
             {% endif %}
             {% for header in headers %}
@@ -60,9 +60,9 @@ View {{ entity | title }}
         </tr>
         {% for record in data %}
         <tr>
-            {% if entity == "student" %}
+            {% if entity == "students" %}
             <td>
-                <form action="/view_subject" method="POST">
+                <form action="/view/subject" method="GET">
                     <input type="hidden" name="id" value="{{ record['id'] }}">
                     <input type="submit" value="View">
                 </form>

@@ -216,6 +216,14 @@ class Student_CCA(Table):
                      'cca_id':cca_id,
                      'role':'member'}
             self.insert(record)
+
+    def select_by_student_id(self, student_ids: list) -> list:
+        data = []
+        for student_id in student_ids:
+            data.extend(self.execute(
+                sql.FIND_BY_STUDENTID,
+                (student_id, )))
+        return data
                 
 class Student_Activity(Table):
     def __init__(self, database:str) -> None:
@@ -252,21 +260,3 @@ database['ccas'].import_csv('cca.csv')
 database['subjects'].import_csv('subject.csv')
 database['student_subject'].import_csv('student_subject.csv')
 database['student_cca'].import_csv('student_cca.csv')
-
-#list student id student_name, class_name, who are not in cca_id (given)
-#...are in cca_id(given)
-# for ur insert im giving u student name and cca id
-"""
-student id, cca id, role
-1, 1
-2, 1
-3, 2
-4, 3
-
-given cca id is 1
-"""
-# print('sdsvjb')
-# database['student_cca'].import_csv('student_cca.csv')
-# print(database['student_cca'].existing_members(1))
-# print('fwejfj')
-print(database['students'].find({'id': 5}, column='id,name'))

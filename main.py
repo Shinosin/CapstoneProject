@@ -15,29 +15,160 @@ def splash():
 def index():
     """Index Page. User actions are displayed.
     Access to: /add_cca, /add_activity, /profile,
-               /view_student, /view_class, /view_cca, /view_activity
-               /edit_membership, /edit_participation.
+               /view/students, /view/classes, /view/ccas, /view/activities
+               /membership/add, /membership/edit,
+               /participation/add, /participation/edit.
     """
     return frontend.index()
 
+@app.route('/view/<form>', methods=['POST', 'GET'])
+def view(form):
+    '''Viewing different entities'''
+    if request.method == 'POST': # filter functions for view page
+        search_key = request.form['search_key'] # str
+        search_value = request.form['search_value'] # str
+        data = storage.database[form].find(
+            {search_key: search_value}
+        ) # list of dict
+        
+    if form == 'students':
+        
+        if request.method == 'POST': # filter
+            
+            if data == []:
+                return frontend.view_student(
+                    data=data,
+                    message='Student {} {} cannot be found.'.format(search_key, search_value)
+                )
+            else:
+                return frontend.view_student(
+                    data=data,
+                    message="Viewing Students with {} {}.".format(search_key, search_value)
+                )
+            
+        else:
+            data = storage.database[form].get_all() # list of dict
+            return frontend.view_student(data=data, message='Viewing All Students.')
+
+    elif form == 'classes':
+
+        if request.method == 'POST': # filter
+            
+            if data == []:
+                return frontend.view_class(
+                    data=data,
+                    message='Class {} {} cannot be found.'.format(search_key, search_value)
+                )
+            else:
+                return frontend.view_class(
+                    data=data,
+                    message="Viewing Classes with {} {}.".format(search_key, search_value)
+                )
+
+        else:
+            data = storage.database[form].get_all() # list of dict
+            return frontend.view_class(data=data, message='Viewing All Classes.')
+
+    elif form == 'ccas':
+
+        if request.method == 'POST': # filter
+            
+            if data == []:
+                return frontend.view_cca(
+                    data=data,
+                    message='CCA {} {} cannot be found.'.format(search_key, search_value)
+                )
+            else:
+                return frontend.view_cca(
+                    data=data,
+                    message="Viewing CCAs with {} {}.".format(search_key, search_value)
+                )
+
+        else:
+            data = storage.database[form].get_all() # list of dict
+            return frontend.view_cca(data=data, message='Viewing All CCAs.')
+
+    elif form == 'activities':
+
+        if request.method == 'POST': # filter
+             
+            if data == []:
+                return frontend.view_activity(
+                    data=data,
+                    message='Activity {} {} cannot be found.'.format(search_key, search_value)
+                )
+            else:
+                return frontend.view_activity(
+                    data=data,
+                    message="Viewing Activities with {} {}.".format(search_key, search_value)
+                )
+
+        else:
+            data = storage.database[form].get_all() # list of dict
+            return frontend.view_activity(data=data, message='Viewing All Activities.')
+
+    elif form == 'subject': # GET
+        student_name = storage.database['students'].find(
+            {'id': request.args['id'] },
+            column='name'
+        ) # list of dict
+        subject_code = storage.database['student_subject'].find(
+            {'student_id': request.args['id']},
+            column='subject_code'
+        ) # list of dict
+
+        data = []
+        for record in subject_code:
+            data.extend(storage.database['subjects'].find(record))
+
+        return frontend.view_subject(student_name=student_name[0], data=data)
+    
+    elif form == 'membership': # GET
+        cca_id = storage.database['ccas'].find(
+            {'name': request.args['cca_name']},
+            column='id'
+        ) # list of dict
+        existing_members = storage.database['student_cca'].existing_members(cca_id[0]['id']) # list of dict
+        return frontend.view_membership(
+            in_cca=existing_members,
+            cca_name=request.args['cca_name']
+        )
+
+    elif form == 'participation': # GET
+        activity_id = storage.database['activities'].find(
+            {'name': request.args['activity_name']},
+            column='id'
+        ) # list of dict
+        existing_members = storage.database['student_activity'].existing_members(
+            activity_id[0]['id']
+        )
+        return frontend.view_membership(
+            in_act=existing_members,
+            act_name=request.args['activity_name']
+        )
+        
+
 @app.route('/add_cca', methods=['POST', 'GET'])
 def add_cca():
-    """Creating a new club
-    1. New Form for students to fill in new club data (club name)
+    """Creating a new cca
+    1. New Form for students to fill in new cca data (cca name)
     2. Confirmation page for students to ensure the details are correct
-    3. Verify with database if Club name already exists
+    3. Verify with database if CCA name already exists
     """
     if "confirm" in request.args: # confirmation page
         cca_name = request.form["name"] # str
         return frontend.confirm_cca(cca_name) # cca_name: str
+        
     elif 'verify' in request.args: # check with database
         cca_name = request.form.to_dict() # dict
+        
         if storage.database['ccas'].insert(cca_name): # successfully inserted
             data = {}
             data['cca_name'] = cca_name['name'] # for display
-            return frontend.redirect(data) # data: dict
+            return frontend.redirect([data]) # data: dict
         else:
             return frontend.add_cca(message='Failed to add CCA, CCA already exists.')
+    
     else:
         return frontend.add_cca()
 
@@ -55,204 +186,209 @@ def add_activity():
 
         # verifying date format
         if storage.database['activities'].validate_date(start_date): # check valid date format
+            
             if end_date != "": # they have input end date
                 if storage.database['activities'].validate_date(end_date): # check valid date format
                     return frontend.confirm_activity(data)
             else:
                 return frontend.confirm_activity(data)
+        
         else:
             return frontend.add_activity(message='Start Date and End Date should be in YYYYMMDD format.')
+    
     elif 'verify' in request.args:
         data = request.form.to_dict() # dict
+        
         if storage.database['activities'].insert(data): # successfully inserted
-            return frontend.redirect(data) # data: dict
+            return frontend.redirect([data]) # data: dict
         else:
             return frontend.add_activity(message='Failed to add Activity, Activity already exists.')
             
     else:
         return frontend.add_activity()
 
-@app.route('/view_student', methods=['POST', 'GET'])
-def view_student():
-    if request.method == 'POST': # selected data
-        search_key = request.form['search_key']
-        search_value = request.form['search_value']
-        record = {search_key: search_value} # dict
-        data = storage.database['students'].find(record) # list of dict
-        if data == []:
-            return frontend.view_student(data=data, message='Student {} {} cannot be found.'.format(search_key, search_value))
-        
-        else:
-            return frontend.view_student(data=data, message="Viewing Students with {} {}.".format(search_key, search_value))
-    else: # all data
-        data = storage.database['students'].get_all() # list of dict
-        return frontend.view_student(data=data, message='Viewing All Students.')
 
-@app.route('/view_class', methods=['POST', 'GET'])
-def view_class():
-    if request.method == 'POST': # selected data
-        search_key = request.form['search_key']
-        search_value = request.form['search_value']
-        record = {search_key: search_value} # dict
-        data = storage.database['classes'].find(record) # list of dict
-        
-        if data == []:
-            return frontend.view_class(data=data, message='Class {} {} cannot be found.'.format(search_key, search_value))
-        
-        else:
-            return frontend.view_class(data=data, message="Viewing Classes with {} {}.".format(search_key, search_value))
-    else: # all data
-        data = storage.database['classes'].get_all() # list of dict
-        return frontend.view_class(data=data, message='Viewing All Classes.')
 
-@app.route('/view_cca', methods=['POST', 'GET'])
-def view_cca():
-    if request.method == 'POST': # selected data
-        search_key = request.form['search_key']
-        search_value = request.form['search_value']
-        record = {search_key: search_value} # dict
-        data = storage.database['ccas'].find(record) # list of dict
-        
-        if data == []:
-            return frontend.view_cca(data=data, message='CCA {} {} cannot be found.'.format(search_key, search_value))
-        
-        else:
-            return frontend.view_cca(data=data, message="Viewing CCAs with {} {}.".format(search_key, search_value))
-    else: # all data
-        data = storage.database['ccas'].get_all() # list of dict
-        return frontend.view_cca(data=data, message='Viewing All CCAs.')
 
-@app.route('/view_activity', methods=['POST', 'GET'])
-def view_activity():
-    if request.method == 'POST': # selected data
-        search_key = request.form['search_key']
-        search_value = request.form['search_value']
-        record = {search_key: search_value} # dict
-        data = storage.database['activities'].find(record) # list of dict
-        
-        if data == []:
-            return frontend.view_activity(data=data, message='Activity {} {} cannot be found.'.format(search_key, search_value))
-        
-        else:
-            return frontend.view_activity(data=data, message="Viewing Activities with {} {}.".format(search_key, search_value))
+
+
+
+
+
+
+
+@app.route('/membership/<action>', methods=['POST', 'GET'])
+def membership(action):
+
+    if action == 'add':
+        """Modify Membership
+        1. Select a cca name from the list of cca names
+        2. Display table of existing members in cca
+        3. Display table of the rest of the students
+        4. Choose students to be added
+        5. From the selected students -> give confirmation page
+        6. Add into database
+        7. Show success page
+        """
+        if request.method == 'POST':
+            cca_name = request.form['cca_name']
+            cca_id = storage.database['ccas'].find(
+                {'name': request.form['cca_name']},
+                column='id'
+            ) # list of dict
             
-    else: # all data
-        data = storage.database['activities'].get_all() # list of dict
-        print(data)
-        return frontend.view_activity(data=data, message='Viewing All Activities.')
+        if request.method == 'GET':
+            '''Form to choose cca which you want to add people into'''
+            cca_name = storage.database['ccas'].get_all(column='name') # list of dict
+            return frontend.cca_membership(action="add", cca_names=cca_name)
 
-@app.route('/view_subject', methods=['POST'])
-def view_subject():
-    student_id = request.form['id']
-    record = {'student_id': student_id}
-    student_name = storage.database['students'].find(
-        {'id': student_id },
-        column='name'
-    ) # list of dict
-    list_of_subject_code = storage.database['student_subject'].find(record, column='subject_code')
-    data = []
-    for record in list_of_subject_code:
-        data.extend(storage.database['subjects'].find(record))
-    return frontend.view_subject(student_name=student_name[0]['name'], data=data)
-
-
-@app.route('/add_membership', methods=['POST', 'GET'])
-def add_membership():
-    """Modify Membership
-    1. Select a cca name from the list of cca names
-    2. display table of existing members in cca
-    3. display table of the rest of the students
-    4. choose students to be added
-    5. from the selected students -> give confirmation page
-    
-    1. get cca_name from form (give)
-    2. list of student name and class name (give) who are not in cca (cca id)
-    3. and list who are in cca student name and class name
-
-    Create confirm form
-    1. get list of student name and class (give)
-
-    1. add to database (student id: list of int, ccaid: int)
-    1a. convert student name to student id
-    2. send data again to say yay u added (redirect)
-    """
-    if request.method == 'GET':
-        cca_name = storage.database['ccas'].get_all(column='name') # list of dict
-        return frontend.cca_membership(action="add", cca_names=cca_name)
-
-    elif 'choose' in request.args:
-        cca_name = request.form['cca_name']
-        cca_id = storage.database['ccas'].find({'name': cca_name}, column='id') # list of dict
-        existing_members = storage.database['student_cca'].existing_members(cca_id[0]['id'])
-        not_in_cca = storage.database['student_cca'].not_in_cca(cca_id[0]['id'])
-        return frontend.choose_membership(in_cca=existing_members, out_cca=not_in_cca , cca_name=cca_name)
-
-    elif 'confirm' in request.args:
-        cca_name = request.form['cca_name']
-        student_id = request.form.getlist('choose')
-        data = []
-        for id in student_id:
-            data.extend(
-                storage.database['students'].find(
-                    {'id': id}, column='id, name')
+        elif 'choose' in request.args:
+            '''
+            Select students to add into the cca
+            in_cca: List of records (dict) of students in the cca
+            out_cca: List of records (dict) of students not in the cca
+            '''
+            existing_members = storage.database['student_cca'].existing_members(cca_id[0]['id'])
+            not_in_cca = storage.database['student_cca'].not_in_cca(cca_id[0]['id'])
+            return frontend.choose_membership(
+                in_cca=existing_members,
+                out_cca=not_in_cca,
+                cca_name=cca_name
             )
-        for record in data:
-            print(record)
-        return frontend.confirm_membership(action='add', data=data, cca_name=cca_name)
+    
+        elif 'confirm' in request.args:
+            '''
+            Display information for student to confirm
+            student_name: List of student_names to be added into cca
+            student_class: List of student_class who are to be added into cca
+            '''
+            student_id = request.form.getlist('choose')
+            data = storage.database['student_cca'].select_by_student_id(student_id)
+            return frontend.confirm_membership(action='add', data=data, cca_name=cca_name)
+    
+        elif 'verify' in request.args:
+            '''
+            Insert student(s) into database
+            (student_id: list, cca_id: int)
+            Display success page
+            '''
+            student_id = request.form.getlist('id')
+            storage.database['student_cca'].add_members(
+                student_id,
+                cca_id[0]['id']
+            )
+            data = storage.database['student_cca'].select_by_student_id(student_id)
+            return frontend.redirect(data, cca_name)
 
-    elif 'verify' in request.args:
-        cca_name = request.form['cca_name']
-        # student_name = request.form.getlist('name')
-        # student_class = request.form.getlist('class')
-        student_id = request.form.getlist('choose')
-        data = []
-        for id in student_id:
-            student = storage.database['students'].find({'id': id}, column='id, name')
-            data.extend(student)
-        return frontend.data_membership(data, cca_name)
+    elif action == 'edit' or action == 'delete':
 
-@app.route('/edit_membership', methods=['POST', 'GET'])
-def edit_membership():
-    pass
-        
-                
-        
+        data = [{
+                'name': request.form['name'],
+                'class': request.form['class'] 
+            }] # list of dict
+        cca_name = request.form['cca_name'] # str
+        cca_id = storage.database['ccas'].find(
+                {'name': request.form['cca_name']},
+                column='id'
+            ) # list of dict
+        student_id = storage.database['students'].find(
+                {'name': request.form['name']},
+                column='id'
+            ) # list of dict
 
+        if 'confirm' in request.args:
+            '''Display confirmation page'''
+            return frontend.confirm_membership(action, data, cca_name)
+            
+        elif 'verify' in request.args:
+            '''Update role in database OR Delete record'''
+            if action == 'edit':
+                storage.database['student_cca'].update_role(
+                    {'student_id': student_id[0]['id'],
+                     'cca_id': cca_id[0]['id']},
+                    role=request.form['role']
+                )
+            elif action == 'delete':
+                storage.database['student_cca'].delete(
+                {'student_id': student_id[0]['id'],
+                 'cca_id': cca_id[0]['id']}
+            )
+            
+            return frontend.redirect(data, cca_name)
 
-
-# @app.route('/edit_membership', methods=['POST', 'GET'])
-# def edit_membership():
-#     if 'verify' in request.args: # Step 4: Modify Database
-#         student_id = request.form.getlist('id') # student_id is a list
-#         cca_name = request.form['name']
-#         cca_id = storage.database['ccas'].find(
-#             {"name": cca_name},
-#             column='id'
-#         )
-#         cca_id = cca_id[0]
-#         storage.database['ccas'].insert_member(student_id=student_id
-#                                            cca_id=cca_id[0]) # insert into database
-#         return frontend.success_membership(message="Successfully edited membership of {}".format(cca_name))
-
-#     elif 'confirm' in request.args: # Step 3: Confirm
-#         ClubName = request.form['ClubName']
-#         student_id = request.form.getlist('StudentID') # student_id is a list
-#         student_data = []
-#         for id in student_id:
-#             student = storage.coll['student'].find(column='ID, Name', ID=id)
-#             student_data.extend(student)
-#         return frontend.membership_confirm(club_name=ClubName,
-#                                            student_data=student_data)
-
-
+    elif action == 'display':
+        '''Form to choose cca which you want to add people into'''
+        cca_name = storage.database['ccas'].get_all(column='name') # list of dict
+        return frontend.cca_membership(action="edit", cca_names=cca_name)
 
 
 
 
 
 @app.route('/add_participation', methods=['POST', 'GET'])
-def edit_participation():
-    return frontend.participation()
+def add_participation():
+    """Modify Participation
+    1. Select a activity name from the list of activity names
+    2. Display table of existing members in activity
+    3. Display table of the rest of the students
+    4. Choose students to be added
+    5. From the selected students -> give confirmation page
+    6. Add into database
+    7. Show success page
+    """
+    if request.method == 'GET':
+        '''Form to choose activity which you want to add people into'''
+        act_name = storage.database['activities'].get_all(column='name') # list of dict
+        return frontend.cca_membership(action="add", cca_names=act_name)
+
+    elif 'choose' in request.args:
+        '''
+        Select students to add into the activity
+        in_cca: List of records (dict) of students in the cca
+        out_cca: List of records (dict) of students not in the cca
+        '''
+        cca_id = storage.database['ccas'].find(
+            {'name': request.form['cca_name']},
+            column='id'
+        ) # list of dict
+        existing_members = storage.database['student_cca'].existing_members(cca_id[0]['id'])
+        not_in_cca = storage.database['student_cca'].not_in_cca(cca_id[0]['id'])
+        return frontend.choose_membership(
+            in_cca=existing_members,
+            out_cca=not_in_cca ,
+            cca_name=request.form['cca_name']
+        )
+
+    elif 'confirm' in request.args:
+        '''
+        Display information for student to confirm
+        student_name: List of student_names to be added into cca
+        student_class: List of student_class who are to be added into cca
+        '''
+        cca_name = request.form['cca_name']
+        student_id = request.form.getlist('choose')
+        data = storage.database['student_cca'].select_by_student_id(student_id)
+        return frontend.confirm_membership(action='add', data=data, cca_name=cca_name)
+
+    elif 'verify' in request.args:
+        '''
+        Insert student(s) into database
+        (student_id: list, cca_id: int)
+        Display success page
+        '''
+        cca_name = request.form['cca_name']
+        cca_id = storage.database['ccas'].find(
+            {'name': request.form['cca_name']},
+            column='id'
+        ) # list of dict
+        student_id = request.form.getlist('id')
+        storage.database['student_cca'].add_members(
+            student_id,
+            cca_id[0]['id']
+        )
+        data = storage.database['student_cca'].select_by_student_id(student_id)
+        return frontend.redirect(data, request.form['cca_name'])
+
 
 
 
@@ -264,6 +400,9 @@ def edit_participation():
 
     
 # Future Functions
+
+
+### FUTURE FUNCTIONS ### 
 @app.route('/login', methods=['GET'])
 def login():
     return 'Not Implemented for Now.'

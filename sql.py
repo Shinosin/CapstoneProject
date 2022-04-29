@@ -214,3 +214,10 @@ UPDATE_STUDENT_CCA = '''
     SET role = ?;
 '''
 
+FIND_BY_STUDENTID = '''
+    SELECT student.id, student.name, class.name AS class
+    FROM student
+    JOIN class
+    ON student.student_class = class.id
+    WHERE student.id = ?;
+'''

@@ -39,7 +39,7 @@ Membership
     <br>
 
     <h2>Choose Students to Add into {{ cca_name }}</h2>
-    <form action="/add_membership?confirm" method="{{ form_meta['method'] }}">
+    <form action="/membership/add?confirm" method="{{ form_meta['method'] }}">
         <table>
             <tr>
                 <th>Select</th>
@@ -55,11 +55,9 @@ Membership
                 </td>
                 <td>
                     <label for="choose {{ record['id'] }}">{{ record['name'] }}</label>
-                    <input type="hidden" name="class" value="{{ record['class'] }}">
                 </td>
                 <td>
                     <label for="choose {{ record['id'] }}">{{ record['class'] }}</label>
-                    <input type="hidden" name="name" value="{{ record['name'] }}">
                 </td>
             </tr>
             {% endfor %}
@@ -78,15 +76,15 @@ Membership
     <table>
         <tr>
             {% for header in headers %}
-            <td>{{ header['label'] }}</td>
+            <th>{{ header['label'] }}</th>
             {% endfor %}
         </tr>
+        {% for record in in_cca %}
         <tr>
-            {% for record in in_cca %}
             <td>{{ record['name'] }}</td>
             <td>{{ record['class'] }}</td>
             <td>
-                <form action="/edit_membership" method="POST">
+                <form action="/membership/edit?confirm" method="POST">
                     <input
                         type="hidden"
                         name="name"
@@ -106,7 +104,7 @@ Membership
                 </form>
             </td>
             <td>
-                <form action="/delete_membership" method="POST">
+                <form action="/membership/delete?confirm" method="POST">
                     <input
                         type="hidden"
                         name="name"
@@ -133,14 +131,17 @@ Membership
     </form>
 
     {% elif page_type == 'edit' %}
-    <h2>Edit Details for {{ form_data[0]['name'] }}</h2>
+    <h2>Edit Details for {{ form_data['name'] }}</h2>
     <table>
-        {% for record in form_data %}
         <tr>
-            <th>{{ record['name'] }}</th>
-            <td>{{ record['class'] }}</td>
+            <th>Student Name</th>
+            <th>Student Class</th>
         </tr>
-        {% endfor %}
+        <tr>
+            <td>{{ form_data['name'] }}</td>
+            <td>{{ form_data['class'] }}</td>
+        </tr>
+
         <tr>
             <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
             <label for="role">Role:</label>
@@ -156,19 +157,24 @@ Membership
             <input
                 type="hidden"
                 name="name"
-                value="{{ record['name'] }}"
+                value="{{ form_data['name'] }}"
                 >
             <input
                 type="hidden"
                 name="class"
-                value="{{ record['class'] }}"
+                value="{{ form_data['class'] }}"
+                >
+            <input
+                type="hidden"
+                name="cca_name"
+                value="{{ cca_name }}"
                 >
         </tr>
     </table>
         <input type="submit" value="Save Changes">
         </form>
 <!-- does this work can you separate the form like this LOL -->
-        <form action="/view_membership" method="POST">
+        <form action="/view/membership" method="GET">
             <input
                 type="hidden"
                 name="cca_name"
@@ -180,16 +186,16 @@ Membership
 
     {% elif page_type == 'confirm' %}
     <h2>Confirm details</h2>
-    <p>{{ action }} student in {{ cca_name }}</P>
+    <p>{{ action | title }} student in {{ cca_name }}</P>
         <table>
             <tr>
-                <th>Student ID</th>
                 <th>Student Name</th>
+                <th>Student Class</th>
             </tr>
             {% for record in form_data %}
             <tr>
-                <td>{{ record['id'] }}</td>
                 <td>{{ record['name'] }}</td>
+                <td>{{ record['class'] }}</td>
             </tr>
             {% endfor %}
         </table>
@@ -198,13 +204,13 @@ Membership
             {% for record in form_data %}
             <input
                 type="hidden"
-                name="name"
-                value="{{ record['name'] }}"
+                name="id"
+                value="{{ record['id'] }}"
                 >
             <input
                 type="hidden"
-                name="id"
-                value="{{ record['id'] }}"
+                name="name"
+                value="{{ record['name'] }}"
                 >
             <input
                 type="hidden"
@@ -217,26 +223,10 @@ Membership
                 name="cca_name"
                 value="{{ cca_name }}"
                 >
-            <input
-                type="hidden"
-                name="action"
-                value="{{ action }}"
-                >
             <input type="submit" value="Yes, {{ action }}">
-            >
         </form>
         
-        <form action="{{ form_meta['action_no'] }}" method="POST">
-            <input
-                type="hidden"
-                name="name"
-                value="{{ record['name'] }}"
-                >
-            <input
-                type="hidden"
-                name="class"
-                value="{{ record['class'] }}"
-                >
+        <form action="{{ form_meta['action_no'] }}" method="GET">
             <input
                 type="hidden"
                 name="cca_name"

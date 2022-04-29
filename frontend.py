@@ -26,7 +26,7 @@ Arguments:
 '''
 def view_student(data: list, message="") -> None:
     return render_template("view.html",
-                           entity="student",
+                           entity="students",
                            headers=[
                                {"label": "Student ID", "value": "id"},
                                {"label": "Student Name", "value": "name"},
@@ -47,7 +47,7 @@ Arguments:
 '''
 def view_class(data: list, message="") -> None:
     return render_template("view.html",
-                           entity="class",
+                           entity="classes",
                            headers=[
                                {"label": "Class ID", "value": "id"},
                                {"label": "Class Name", "value": "name"},
@@ -64,7 +64,7 @@ Arguments:
 '''
 def view_cca(data: list, message="") -> None:
     return render_template("view.html",
-                           entity="cca",
+                           entity="ccas",
                            headers=[
                                {"label": "CCA ID", "value": "id"},
                                {"label": "CCA Name", "value": "name"}],
@@ -82,7 +82,7 @@ Arguments:
 '''
 def view_activity(data: list, message="") -> None:
     return render_template("view.html",
-                           entity="activity",
+                           entity="activities",
                            headers=[
                                {"label": "Activity ID", "value": "id"},
                                {"label": "Activity Name", "value": "name"},
@@ -100,7 +100,7 @@ Arguments:
 - name: str
 - level: str
 """
-def view_subject(data: list, student_name: str) -> None:
+def view_subject(data: list, student_name: dict) -> None:
     return render_template("view.html",
                            entity="subject",
                            headers=[
@@ -197,7 +197,7 @@ def cca_membership(action, cca_names: list, message="") -> None:
             "student_cca.html",
             page_type="cca",
             form_meta={
-                "action": "/add_membership?choose",
+                "action": "/membership/add?choose",
                 "method": "POST",
             },
             form_data={
@@ -211,8 +211,8 @@ def cca_membership(action, cca_names: list, message="") -> None:
         "student_cca.html",
         page_type="cca",
         form_meta={
-            "action": "/view_membership",
-            "method": "POST",
+            "action": "/view/membership",
+            "method": "GET",
         },
         form_data={
             "cca_name": ""
@@ -226,7 +226,7 @@ def choose_membership(out_cca: list, in_cca: list, cca_name: str, message="") ->
         "student_cca.html",
         page_type="add",
     form_meta={
-        "action": "/add_membership?confirm",
+        "action": "/membership/add?confirm",
         "method": "POST"
     },
         cca_name=cca_name,
@@ -258,7 +258,7 @@ def edit_membership(data: dict, cca_name) -> None:
         "student_cca.html",
         page_type="edit",
         form_meta={
-            "action": "edit_membership?confirm",
+            "action": "/membership/edit?verify",
             "method": "POST"
         },
         form_data=data,
@@ -273,8 +273,8 @@ def confirm_membership(action, data: list, cca_name) -> None:
             "student_cca.html",
             page_type="confirm",
             form_meta={
-                "action_yes": "/add_membership?verify",
-                "action_no": "/add_membership",
+                "action_yes": "/membership/add?verify",
+                "action_no": "/membership/add",
                 "method": "POST"
             },
             form_data=data,
@@ -287,8 +287,8 @@ def confirm_membership(action, data: list, cca_name) -> None:
             "student_cca.html",
             page_type="confirm",
             form_meta={
-                "action_yes": "/edit_membership?verify",
-                "action_no": "/edit_membership",
+                "action_yes": "/membership/edit?verify",
+                "action_no": "/view/membership",
                 "method": "POST"
             },
             form_data=data,
@@ -301,8 +301,8 @@ def confirm_membership(action, data: list, cca_name) -> None:
             "student_cca.html",
             page_type="confirm",
             form_meta={
-                "action_yes": "/delete_membership?verify",
-                "action_no": "/view_membership",
+                "action_yes": "/membership/delete?verify",
+                "action_no": "/view/membership",
                 "method": "POST"
             },
             form_data=data,
