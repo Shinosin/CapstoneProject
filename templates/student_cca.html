@@ -86,6 +86,7 @@ Membership
         <tr>
             <td>{{ record['name'] }}</td>
             <td>{{ record['class'] }}</td>
+            <td>{{ record['role'] }}</td>
             <td>
                 <form action="/membership/edit?edit" method="POST">
                     <input
@@ -136,20 +137,29 @@ Membership
     {% elif page_type == 'edit' %}
     {% for record in form_data %}
     <h2>Edit Details for {{ record['name'] }}</h2>
-    {% for name, value in record.items() %}
-    <p>{{ name }}: {{value}}</p>
-    {% endfor %}
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-    <label for="role">Role:</label>
-    <input
-        id="role"
-        type="text"
-        name="role"
-        value="MEMBER"
-        placeholder="Role of Student"
-        autocomplete="off"
-        required
-        >
+    <table>
+        {% for name, value in record.items() %}
+        <tr>
+            <th>{{ name }}</th>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th><label for="role">Role</label></th>
+            <td>
+                <input
+                    id="role"
+                    type="text"
+                    name="role"
+                    value="MEMBER"
+                    placeholder="Role of Student"
+                    autocomplete="off"
+                    required
+                    >
+            </td>
+        </tr>
+    </table>
     <input
         type="hidden"
         name="name"

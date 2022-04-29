@@ -212,7 +212,7 @@ DELETE_STUDENT_CCA = '''
 UPDATE_STUDENT_CCA = '''
     UPDATE student_cca
     SET role = ?
-    WHERE student_id = ? NAD
+    WHERE student_id = ? AND
     cca_id = ?;
 '''
 SELECT_BY_STUDENT_ID = '''
@@ -258,6 +258,7 @@ NOT_IN_ACTIVITY = '''
         WHERE id NOT IN (
             SELECT student_id
             FROM student_activity
-            WHERE activity_id = ?
+            WHERE activity_id = ?;
         )
     )
+'''
