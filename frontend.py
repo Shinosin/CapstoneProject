@@ -6,10 +6,11 @@ def splash():
 def index():
     return render_template('index.html')
 
-def redirect(data: dict, cca_name=None) -> None:
+def redirect(data: dict, cca_name=None, action="change") -> None:
     '''Redirects to a success (confirmation) page'''
     return render_template('redirect.html',
                           form_data=data,
+                           action=action,
                           cca_name=cca_name)
 
 # view functions
@@ -247,7 +248,8 @@ def view_membership(in_cca: list, cca_name, message="") -> None:
         in_cca=in_cca,
         headers=[
             {"label": "Student Name", "value": "name"},
-            {"label": "Student Class", "value": "class"}
+            {"label": "Student Class", "value": "class"},
+            {"label": "Role", "value": "role"}
         ],
         message=message
     )
