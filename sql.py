@@ -258,6 +258,7 @@ NOT_IN_ACTIVITY = '''
         WHERE id NOT IN (
             SELECT student_id
             FROM student_activity
-            WHERE activity_id = ?
+            WHERE activity_id = ?;
         )
     )
+'''
