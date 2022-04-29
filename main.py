@@ -316,78 +316,9 @@ def membership(action):
 
 
 
-@app.route('/add_participation', methods=['POST', 'GET'])
-def add_participation():
-    """Modify Participation
-    1. Select a activity name from the list of activity names
-    2. Display table of existing members in activity
-    3. Display table of the rest of the students
-    4. Choose students to be added
-    5. From the selected students -> give confirmation page
-    6. Add into database
-    7. Show success page
-    """
-    if request.method == 'GET':
-        '''Form to choose activity which you want to add people into'''
-        act_name = storage.database['activities'].get_all(column='name') # list of dict
-        return frontend.cca_membership(action="add", cca_names=act_name)
-
-    elif 'choose' in request.args:
-        '''
-        Select students to add into the activity
-        in_cca: List of records (dict) of students in the cca
-        out_cca: List of records (dict) of students not in the cca
-        '''
-        cca_id = storage.database['ccas'].find(
-            {'name': request.form['cca_name']},
-            column='id'
-        ) # list of dict
-        existing_members = storage.database['student_cca'].existing_members(cca_id[0]['id'])
-        not_in_cca = storage.database['student_cca'].not_in_cca(cca_id[0]['id'])
-        return frontend.choose_membership(
-            in_cca=existing_members,
-            out_cca=not_in_cca ,
-            cca_name=request.form['cca_name']
-        )
-
-    elif 'confirm' in request.args:
-        '''
-        Display information for student to confirm
-        student_name: List of student_names to be added into cca
-        student_class: List of student_class who are to be added into cca
-        '''
-        cca_name = request.form['cca_name']
-        student_id = request.form.getlist('choose')
-        data = storage.database['student_cca'].select_by_student_id(student_id)
-        return frontend.confirm_membership(action='add', data=data, cca_name=cca_name)
-
-    elif 'verify' in request.args:
-        '''
-        Insert student(s) into database
-        (student_id: list, cca_id: int)
-        Display success page
-        '''
-        cca_name = request.form['cca_name']
-        cca_id = storage.database['ccas'].find(
-            {'name': request.form['cca_name']},
-            column='id'
-        ) # list of dict
-        student_id = request.form.getlist('id')
-        storage.database['student_cca'].add_members(
-            student_id,
-            cca_id[0]['id']
-        )
-        data = storage.database['student_cca'].select_by_student_id(student_id)
-        return frontend.redirect(data, request.form['cca_name'])
-
-
-
-
-
-
-
-
-    
+@app.route('/participation', methods=['POST', 'GET'])
+def participation(action):
+    return 
 
     
 # Future Functions
