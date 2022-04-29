@@ -51,7 +51,21 @@ Add Activity
             required
             >
         <br>
+        <label for="coordinator">Coordinator:</label>
+        <input
+            id="coordinator"
+            type="text"
+            name="coordinator"
+            value=""
+            placeholder="Coordinator of Activity"
+            autocomplete="off"
+            required
+            >
+        <br>
         <input type="submit" value="Submit">
+    </form>
+    <form action="/index" method="GET">
+        <input type="submit" value="Return to Homepage">
     </form>
 
     <p id="fail">{{ message }}</p>

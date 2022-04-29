@@ -5,155 +5,316 @@ Participation
 
 {% block main %}
 <h1>Participation</h1>
-<p>Register a student into an Activity</p>
+<p>Edit student records in an Activity</p>
 
-    {% if page_type == 'new' %}
-    <h2>Input Participation details</h2>
+    {% if page_type == 'activity' %}
+<!--     Shows page with dropdown box to choose activity -->
+    <h2>Choose Activity</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-        <label for="student_id">Student ID:</label>
-        <input
-            id="student_id"
-            type="text"
-            name="student_id"
-            value=""
-            placeholder="ID of Student"
-            autocomplete="off"
-            required
-            >
-        
-        <label for="activity_id">Activity ID:</label>
-        <select name="activity_id" id="activity_id">
-            {% for activity in activity_ids %}
-            <option value="{{ activity }}">{{ activity }}</option>
+        <label for="activity_name">Activity Name:</label>
+        <select name="activity_name" id="activity_name">
+            {% for activity in activity_names %}
+            <option value="{{ activity['name'] }}">{{ activity['name'] }}</option>
             {% endfor %}
         </select>
+        <br>
+        <input type="submit" value="Next"> 
+    </form>
+    <form action="/index" method="GET">
+        <input type="submit" value="Return to Homepage">
+    </form>
 
-        <label for="category">Category:</label>
-        <select name="category" id="category">
-            <option value="Achievement">Achievement</option>
-            <option value="Enrichment">Enrichment</option>
-            <option value="Leadership">Leadership</option>
-            <option value="Service">Service</option>
-        </select>
+    {% elif page_type == 'add' %}
+<!-- Shows page with table of students to choose students to add into activity -->
+    <h2>Existing Students in {{ activity_name }}</h2>
+    <table>
+        <tr>
+            {% for header in headers %}
+            <th>{{ header['label'] }}</th>
+            {% endfor %}
+        </tr>
+        {% for record in in_activity %}
+        <tr>
+            <td>{{ record['name'] }}</td>
+            <td>{{ record['class'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
 
-        <label for="role">Role:</label>
+    <h2>Choose Students to Add into {{ activity_name }}</h2>
+    <form action="/participation/add?confirm" method="{{ form_meta['method'] }}">
+        <table>
+            <tr>
+                <th>Select</th>
+                <th>Category</th>
+                {% for header in headers %}
+                <th>{{ header['label'] }}</th>
+                {% endfor %}
+            </tr>
+            {% for record in out_activity %}
+            <tr>
+                <td> 
+                    <input type="checkbox" id="choose {{ record['id'] }}" name="choose" value="{{ record['id'] }}">
+                </td>
+                <td>
+                    <select id="category" name="category">
+                        <option value="achievement">Achievement</option>
+                        <option value="enrichment">Enrichment</option>
+                        <option value="leadership">Leadership</option>
+                        <option value="service">Service</option>
+                    </select>
+                </td>
+                <td>
+                    <label for="choose {{ record['id'] }}">{{ record['name'] }}</label>
+                </td>
+                <td>
+                    <label for="choose {{ record['id'] }}">{{ record['class'] }}</label>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
         <input
-            id="role"
-            type="text"
-            name="role"
-            value=""
-            placeholder="Role of Student"
-            autocomplete="off"
-            >
-
-        <label for="award">Award:</label>
-        <input
-            id="award"
-            type="text"
-            name="award"
-            value=""
-            placeholder="Award"
-            autocomplete="off"
-            >
-
-        <label for="hours">Hours:</label>
-        <input
-            id="hours"
-            type="text"
-            name="hours"
-            value=""
-            placeholder="Activity Hours"
-            autocomplete="off"
-            >        
-        
-        <input type="submit" value="Submit">
+                type="hidden"
+                name="activity_name"
+                value="{{ activity_name }}"
+        >
+        <input type="submit" value="Add Selected Students">
+    </form>
+    <form action="/index" method="GET">
+        <input type="submit" value="Return to Homepage">
     </form>
     <p id="fail">{{ message }}</p>
 
-    {% elif page_type == 'edit' %}
-    <h2>Input Participation details</h2>
-    <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-        <label for="student_id">Student ID:</label>
-        <select name="student_id" id="student_id">
-            {% for student in student_ids %}
-            <option value="{{ student }}">{{ student }}</option>
+    {% elif page_type == 'view' %}
+    <h2>Existing Students in {{ activity_name }}</h2>
+    <table>
+        <tr>
+            {% for header in headers %}
+            <th>{{ header['label'] }}</th>
             {% endfor %}
-        </select>
-
-        <label for="activity_id">Activity ID:</label>
-        <select name="activity_id" id="activity_id">
-            {% for activity in activity_ids %}
-            <option value="{{ activity }}">{{ activity }}</option>
+        </tr>
+        {% for record in in_activity %}
+        <tr>
+            <td>{{ record['name'] }}</td>
+            <td>{{ record['class'] }}</td>
+            <td>{{ record['category'] }}</td>
+            <td>{{ record['role'] }}</td>
+            <td>{{ record['award'] }}</td>
+            <td>{{ record['hours'] }}</td>
+            <td>{{ record['coordinator'] }}</td>
+            <td>
+                <form action="/participation/edit?edit" method="POST">
+                    <input
+                        type="hidden"
+                        name="name"
+                        value="{{ record['name'] }}"
+                        >
+                    <input
+                        type="hidden"
+                        name="class"
+                        value="{{ record['class'] }}"
+                        >
+                    <input
+                        type="hidden"
+                        name="activity_name"
+                        value="{{ activity_name }}"
+                        >
+                    <input type="submit" name="edit" value="Edit">
+                </form>
+            </td>
+            <td>
+                <form action="/participation/delete?confirm" method="POST">
+                    <input
+                        type="hidden"
+                        name="name"
+                        value="{{ record['name'] }}"
+                        >
+                    <input
+                        type="hidden"
+                        name="class"
+                        value="{{ record['class'] }}"
+                        >
+                    <input
+                        type="hidden"
+                        name="activity_name"
+                        value="{{ activity_name }}"
+                        >
+                    <input type="submit" name="delete" value="Delete">
+                </form>
+            </td>
             {% endfor %}
-            <option value="None">None</option>
-        </select>
-
-        <label for="category">Category:</label>
-        <select name="category" id="category">
-            <option value="Achievement">Achievement</option>
-            <option value="Enrichment">Enrichment</option>
-            <option value="Leadership">Leadership</option>
-            <option value="Service">Service</option>
-        </select>
-
-        <label for="role">Role:</label>
-        <input
-            id="role"
-            type="text"
-            name="role"
-            value=""
-            placeholder="Role of Student"
-            autocomplete="off"
-            >
-
-        <label for="award">Award:</label>
-        <input
-            id="award"
-            type="text"
-            name="award"
-            value=""
-            placeholder="Award"
-            autocomplete="off"
-            >
-
-        <label for="hours">Hours:</label>
-        <input
-            id="hours"
-            type="text"
-            name="hours"
-            value=""
-            placeholder="Activity Hours"
-            autocomplete="off"
-            >        
-
-        <input type="submit" value="Submit">
+        </tr>
+    </table>
+    <form action="/index" method="GET">
+        <input type="submit" value="Return to Homepage">
     </form>
+
+    {% elif page_type == 'edit' %}
+    {% for record in form_data %}
+    <h2>Edit Details for {{ record['name'] }}</h2>
+    <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
+    <table>
+        {% for name, value in record.items() %}
+        <tr>
+            <th>{{ name }}</th>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th><label for="category">Category</label></th>
+                <td>
+                    <select id="category" name="category">
+                        <option value="achievement">Achievement</option>
+                        <option value="enrichment">Enrichment</option>
+                        <option value="leadership">Leadership</option>
+                        <option value="service">Service</option>
+                    </select>
+                </td>
+        </tr>
+        <tr>
+            <th><label for="role">Role</label></th>
+            <td>
+                <input
+                    id="role"
+                    type="text"
+                    name="role"
+                    value="PARTICIPANT"
+                    placeholder="Role of Student"
+                    autocomplete="off"
+                    required
+                    >
+            </td>
+        </tr>
+        <tr>
+            <th><label for="award">Award</label></th>
+            <td>
+                <input
+                    id="award"
+                    type="text"
+                    name="award"
+                    value=""
+                    placeholder="Award"
+                    autocomplete="off"
+                    >
+            </td>
+        </tr>
+        <tr>
+            <th><label for="hours">Hours</label></th>
+            <td>
+                <input
+                    id="hours"
+                    type="text"
+                    name="hours"
+                    value=""
+                    placeholder="Hours spent"
+                    autocomplete="off"
+                    >
+            </td>
+        </tr>
+        <tr>
+            <th><label for="coordinator">Coordinator</label></th>
+            <td>
+                <input
+                    id="coordinator"
+                    type="text"
+                    name="coordinator"
+                    value="{{ record['coordinator'] }}"
+                    placeholder="Coordinator of Activity"
+                    autocomplete="off"
+                    required
+                    >
+            </td>
+        </tr>
+    </table>
+    <input
+        type="hidden"
+        name="name"
+        value="{{ record['name'] }}"
+        >
+    <input
+        type="hidden"
+        name="class"
+        value="{{ record['class'] }}"
+        >
+    <input
+        type="hidden"
+        name="activity_name"
+        value="{{ activity_name }}"
+        >
+    <input type="submit" value="Save Changes">
+    </form>
+    <form action="/view/participation" method="GET">
+        <input
+            type="hidden"
+            name="activity_name"
+            value="{{ activity_name }}"
+            >
+        <input type="submit" value="Return without saving">
+    </form>
+    {% endfor %}
     <p id="fail">{{ message }}</p>
 
     {% elif page_type == 'confirm' %}
     <h2>Confirm details</h2>
+    <p>{{ action | title }} student in {{ activity_name }}</P>
         <table>
-            {% for name, value in form_data.items() %}
             <tr>
-                <th>{{ name }}</th>
-                <td>{{ value }}</td>
+                <th>Student Name</th>
+                <th>Student Class</th>
+                {% if action == "add" or action == "edit" %}
+                <th>Category</th>
+                {% endif %}
+            </tr>
+            {% for record in form_data %}
+            <tr>
+                <td>{{ record['name'] }}</td>
+                <td>{{ record['class'] }}</td>
+                {% if action == "add" or action == "edit" %}
+                <td>{{ record['category'] }}</td>
+                {% endif %}
             </tr>
             {% endfor %}
         </table>
         <p>Is this correct?</p>
-        <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-            {% for name, value in form_data.items() %}
+        <form action="{{ form_meta['action_yes'] }}" method="{{ form_meta['method'] }}">
+            {% for record in form_data %}
             <input
                 type="hidden"
-                name="{{ name }}"
-                value="{{ value }}"
+                name="id"
+                value="{{ record['id'] }}"
+                >
+            <input
+                type="hidden"
+                name="name"
+                value="{{ record['name'] }}"
+                >
+            <input
+                type="hidden"
+                name="class"
+                value="{{ record['class'] }}"
+                >
+            <input
+                type="hidden"
+                name="category"
+                value="{{ record['category'] }}"
                 >
             {% endfor %}
-            <input type="submit" value="Yes">
+            <input
+                type="hidden"
+                name="activity_name"
+                value="{{ activity_name }}"
+                >
+            <input type="submit" value="Yes, {{ action }}">
         </form>
         
-        <form action="/edit_membership" method="GET">
-            <input type="submit" value="No">
+        <form action="{{ form_meta['action_no'] }}" method="GET">
+            <input
+                type="hidden"
+                name="activity_name"
+                value="{{ activity_name }}"
+                >
+            <input type="submit" value="No, do not {{ action }}">
         </form>
     {% endif %}
 {% endblock %}

@@ -225,7 +225,7 @@ class Student_CCA(Table):
         data = []
         for student_id in student_ids:
             data.extend(self.execute(
-                sql.SELECT_BY_STUDENT_ID, (student_id['id'], )
+                sql.SELECT_BY_STUDENT_ID, (student_id, )
             )
         )
         return data
@@ -289,16 +289,16 @@ class Student_Activity(Table):
     def not_in_activity(self, activity_id:int) -> list:
         return super().execute(sql.NOT_IN_ACTIVITY, (activity_id,))
 
-    def add_participants(self, student_ids:list, activity_id:int) -> bool:
+    def add_participants(self, student_ids:list, activity_id:int, categories:list) -> bool:
         '''
         add_participants adds participants who are not recorded in the activity yet
         student_ids is a list of students who are not recorded in the activity
         '''
-        for student_id in student_ids:
+        for i in range(len(student_ids)):
             #WHAT DO CATEGORY, AWARD AND HOURS TAKE IN 
-            record = {'student_id':student_id,
+            record = {'student_id':student_ids[i],
                      'activity_id':activity_id,
-                     'category':'',
+                     'category':categories[i],
                      'role':'PARTICIPANT',
                      'award':'',
                      'hours':'',
@@ -308,7 +308,7 @@ class Student_Activity(Table):
     def select_by_student_id(self, student_ids:list) -> list:
         data = []
         for student_id in student_ids:
-            data.extend(self.execute(sql.SELECT_BY_STUDENT_ID_P,(student_id['id'], )))
+            data.extend(self.execute(sql.SELECT_BY_STUDENT_ID,(student_id, )))
         return data
 
     def display_participation(self, activity_id:int) -> list:

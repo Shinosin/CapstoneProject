@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS class(
     level TEXT CHECK(
         level IN ("JC1", "JC2")
         ),
-    PRIMARY KEY (id)
+    PRIMARY KEY(id)
 );
 '''
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS subject(
     level TEXT CHECK(
         level IN ("H1", "H2", "H3")
         ),
-    PRIMARY KEY (subject_code)
+    PRIMARY KEY(subject_code)
 );
 '''
 
@@ -193,7 +193,7 @@ NOT_IN_CCA = '''
             FROM student_cca
             WHERE cca_id = ?
         )
-    )
+    );
 '''
     # it wont work cuz some students dont have a cca like its null so it wont appear
     # SELECT student.id, student.name, class.name AS class
@@ -258,9 +258,9 @@ NOT_IN_ACTIVITY = '''
         WHERE id NOT IN (
             SELECT student_id
             FROM student_activity
-            WHERE activity_id = ?;
+            WHERE activity_id = ?
         )
-    )
+    );
 '''
 
 DISPLAY_PARTICIPATION = '''
