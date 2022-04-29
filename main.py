@@ -1,7 +1,6 @@
 from flask import Flask, request
 import frontend
 import storage
-import pdb
 
 app = Flask(__name__)
 
@@ -129,6 +128,9 @@ def view(form):
             {'name': request.args['cca_name']},
             column='id'
         ) # list of dict
+        # print(request.form['cca_name'])
+        print(request.args['cca_name'])
+        print(cca_id)
         existing_members = storage.database['student_cca'].display_membership(cca_id[0]['id']) # list of dict
         return frontend.view_membership(
             in_cca=existing_members,
@@ -166,7 +168,7 @@ def add_cca():
         if storage.database['ccas'].insert(cca_name): # successfully inserted
             data = {}
             data['cca_name'] = cca_name['name'] # for display
-            return frontend.redirect([data], 'cca') # data: dict
+            return frontend.redirect(data=[data], form='cca', name=cca_name) # data: dict
         else:
             return frontend.add_cca(message='Failed to add CCA, CCA already exists.')
     
@@ -201,7 +203,7 @@ def add_activity():
         data = request.form.to_dict() # dict
         
         if storage.database['activities'].insert(data): # successfully inserted
-            return frontend.redirect([data], 'activity') # data: dict
+            return frontend.redirect(data=[data], form='activity') # data: dict
         else:
             return frontend.add_activity(message='Failed to add Activity, Activity already exists.')
             
@@ -270,7 +272,8 @@ def membership(action):
                 cca_id[0]['id']
             )
             data = storage.database['student_cca'].select_by_student_id(student_id)
-            return frontend.redirect(data, 'membership', cca_name, action)
+            data['cca_name'] = cca_name
+            return frontend.redirect(data=data, form='membership', action=action, name=cca_name)
 
     elif action == 'edit' or action == 'delete':
 
@@ -305,13 +308,13 @@ def membership(action):
                     role=request.form['role']
                 )
                 data[0]['role'] = request.form['role']
-                return frontend.redirect(data, 'membership', cca_name, action)
+                return frontend.redirect(data, 'membership', name=cca_name, action=action)
             elif action == 'delete':
                 storage.database['student_cca'].delete(
                 {'student_id': student_id[0]['id'],
                  'cca_id': cca_id[0]['id']}
             )            
-                return frontend.redirect(data, 'membership', cca_name, action)
+                return frontend.redirect(data, 'membership', name=cca_name, action=action)
 
     elif action == 'display':
         '''Form to choose cca which you want to add people into'''
@@ -388,7 +391,7 @@ def participation(action):
             data = storage.database['student_activity'].select_by_student_id(student_id)
             for i in range (len(data)):
                data[i]['category'] = categories[i]
-            return frontend.redirect(data, 'participation', activity_name, action)
+            return frontend.redirect(data, 'participation', name=activity_name, action=action)
 
     elif action == 'edit' or action == 'delete':
 
@@ -417,12 +420,12 @@ def participation(action):
         elif 'verify' in request.args:
             '''Update ... in database OR Delete record'''
             if action == 'edit':
-                storage.database['student_activity'].update_role(
+                storage.database['student_activity'].update(
                     {'student_id': student_id[0]['id'],
                      'activity_id': activity_id[0]['id']},
-                    role=request.form['role']
+                    dict(request.form)
                 )
-                return frontend.redirect(data, 'participation', activity_name, action)
+                return frontend.redirect(data, 'participation', name=activity_name, action=action)
             elif action == 'delete':
                 storage.database['student_activity'].delete(
                 {'student_id': student_id[0]['id'],

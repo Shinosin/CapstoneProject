@@ -142,44 +142,44 @@ Membership
     {% for record in form_data %}
     <h2>Edit Details for {{ record['name'] }}</h2>
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
-    <table>
-        {% for name, value in record.items() %}
-        <tr>
-            <th>{{ name }}</th>
-            <td>{{ value }}</td>
-        </tr>
-        {% endfor %}
-        <tr>
-            <th><label for="role">Role</label></th>
-            <td>
-                <input
-                    id="role"
-                    type="text"
-                    name="role"
-                    value="MEMBER"
-                    placeholder="Role of Student"
-                    autocomplete="off"
-                    required
-                    >
-            </td>
-        </tr>
-    </table>
-    <input
-        type="hidden"
-        name="name"
-        value="{{ record['name'] }}"
-        >
-    <input
-        type="hidden"
-        name="class"
-        value="{{ record['class'] }}"
-        >
-    <input
-        type="hidden"
-        name="cca_name"
-        value="{{ cca_name }}"
-        >
-    <input type="submit" value="Save Changes">
+        <table>
+            {% for name, value in record.items() %}
+            <tr>
+                <th>{{ name }}</th>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <th><label for="role">Role</label></th>
+                <td>
+                    <input
+                        id="role"
+                        type="text"
+                        name="role"
+                        value="MEMBER"
+                        placeholder="Role of Student"
+                        autocomplete="off"
+                        required
+                        >
+                </td>
+            </tr>
+        </table>
+        <input
+            type="hidden"
+            name="name"
+            value="{{ record['name'] }}"
+            >
+        <input
+            type="hidden"
+            name="class"
+            value="{{ record['class'] }}"
+            >
+        <input
+            type="hidden"
+            name="cca_name"
+            value="{{ cca_name }}"
+            >
+        <input type="submit" value="Save Changes">
     </form>
     <form action="/view/membership" method="GET">
         <input
