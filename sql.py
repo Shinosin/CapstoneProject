@@ -212,7 +212,7 @@ DELETE_STUDENT_CCA = '''
 UPDATE_STUDENT_CCA = '''
     UPDATE student_cca
     SET role = ?
-    WHERE student_id = ? NAD
+    WHERE student_id = ? AND
     cca_id = ?;
 '''
 SELECT_BY_STUDENT_ID = '''
@@ -261,3 +261,14 @@ NOT_IN_ACTIVITY = '''
             WHERE activity_id = ?
         )
     )
+'''
+
+DISPLAY_PARTICIPATION = '''
+    SELECT student.name, class.name AS class, student_activity.category, student_activity.role, student_activity.award, student_activity.hours
+    FROM student, class, student_activity
+    WHERE student_activity.cca_id = ? AND 
+    student_activity.student_id = student.id AND
+    student.student_class = "class".id;
+'''
+#i ditched coordinator cos its just a number :D
+
