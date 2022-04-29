@@ -301,15 +301,14 @@ class Student_Activity(Table):
                      'category':'',
                      'role':'PARTICIPANT',
                      'award':'',
-                     'hours':''}
+                     'hours':'',
+                     'coordinator':''}
             self.insert(record)
 
     def select_by_student_id(self, student_ids:list) -> list:
         data = []
         for student_id in student_ids:
-            data.extend(self.execute(
-                sql.SELECT_BY_STUDENT_ID,
-                (student_id, )))
+            data.extend(self.execute(sql.SELECT_BY_STUDENT_ID_P,(student_id['id'], )))
         return data
 
     def display_participation(self, activity_id:int) -> list:

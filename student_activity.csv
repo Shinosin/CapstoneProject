@@ -1,0 +1,4 @@
+student_id,activity_id,category,role,award,hours,coordinator
+1,2,SERVICE,FIRSTAID,GOLD,5,21
+5,3,ENRICHMENT,PARTICIPANT,NIL,3,2
+14,1,LEADERSHIP,PRESIDENT,SILVER,10,7
