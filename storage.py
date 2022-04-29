@@ -225,8 +225,9 @@ class Student_CCA(Table):
         data = []
         for student_id in student_ids:
             data.extend(self.execute(
-                sql.SELECT_BY_STUDENT_ID,
-                (student_id, )))
+                sql.SELECT_BY_STUDENT_ID, (student_id['id'], )
+            )
+        )
         return data
 
     def display_membership(self, cca_id:int) -> list:

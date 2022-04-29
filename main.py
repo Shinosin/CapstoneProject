@@ -291,6 +291,7 @@ def membership(action):
             return frontend.confirm_membership(action, data, cca_name)
 
         elif 'edit' in request.args:
+            print(student_id)
             data = storage.database['student_cca'].select_by_student_id(student_id)
             return frontend.edit_membership(data, cca_name)
         
@@ -302,6 +303,7 @@ def membership(action):
                      'cca_id': cca_id[0]['id']},
                     role=request.form['role']
                 )
+                data[0]['role'] = request.form['role']
                 return frontend.redirect(data, cca_name, action)
             elif action == 'delete':
                 storage.database['student_cca'].delete(
