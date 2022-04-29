@@ -6,12 +6,13 @@ def splash():
 def index():
     return render_template('index.html')
 
-def redirect(data: dict, cca_name=None, action="change") -> None:
+def redirect(data: dict, form, name=None, action="change") -> None:
     '''Redirects to a success (confirmation) page'''
     return render_template('redirect.html',
                           form_data=data,
+                           form=form,
                            action=action,
-                          cca_name=cca_name)
+                          name=name)
 
 # view functions
 '''
@@ -89,7 +90,8 @@ def view_activity(data: list, message="") -> None:
                                {"label": "Activity Name", "value": "name"},
                                {"label": "Activity Start Date", "value": "start_date"},
                                {"label": "Activity End Date", "value": "end_date"},
-                               {"label": "Activity Description", "value": "description"}],
+                               {"label": "Activity Description", "value": "description"},
+                               {"label": "Coordinator", "value": "coordinator"}],
                            data=data,
                            message=message)
 

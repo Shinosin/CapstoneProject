@@ -47,15 +47,23 @@ Participation
         <table>
             <tr>
                 <th>Select</th>
+                <th>Category</th>
                 {% for header in headers %}
                 <th>{{ header['label'] }}</th>
                 {% endfor %}
             </tr>
             {% for record in out_activity %}
-            
             <tr>
                 <td> 
                     <input type="checkbox" id="choose {{ record['id'] }}" name="choose" value="{{ record['id'] }}">
+                </td>
+                <td>
+                    <select id="category" name="category">
+                        <option value="achievement">Achievement</option>
+                        <option value="enrichment">Enrichment</option>
+                        <option value="leadership">Leadership</option>
+                        <option value="service">Service</option>
+                    </select>
                 </td>
                 <td>
                     <label for="choose {{ record['id'] }}">{{ record['name'] }}</label>
@@ -90,11 +98,11 @@ Participation
         <tr>
             <td>{{ record['name'] }}</td>
             <td>{{ record['class'] }}</td>
-            <td>{{ record['coordinator'] }}</td>
             <td>{{ record['category'] }}</td>
             <td>{{ record['role'] }}</td>
             <td>{{ record['award'] }}</td>
             <td>{{ record['hours'] }}</td>
+            <td>{{ record['coordinator'] }}</td>
             <td>
                 <form action="/participation/edit?edit" method="POST">
                     <input
@@ -154,31 +162,14 @@ Participation
         </tr>
         {% endfor %}
         <tr>
-            <th><label for="coordinator">Coordinator</label></th>
-            <td>
-                <input
-                    id="coordinator"
-                    type="text"
-                    name="coordinator"
-                    value="{{ record['coordinator'] }}"
-                    placeholder="Coordinator of Activity"
-                    autocomplete="off"
-                    required
-                    >
-            </td>
-        </tr>
-        <tr>
             <th><label for="category">Category</label></th>
                 <td>
-                    <input
-                        id="category"
-                        type="text"
-                        name="category"
-                        value=""
-                        placeholder="Category of Activity"
-                        autocomplete="off"
-                        required
-                        >
+                    <select id="category" name="category">
+                        <option value="achievement">Achievement</option>
+                        <option value="enrichment">Enrichment</option>
+                        <option value="leadership">Leadership</option>
+                        <option value="service">Service</option>
+                    </select>
                 </td>
         </tr>
         <tr>
@@ -221,6 +212,20 @@ Participation
                     >
             </td>
         </tr>
+        <tr>
+            <th><label for="coordinator">Coordinator</label></th>
+            <td>
+                <input
+                    id="coordinator"
+                    type="text"
+                    name="coordinator"
+                    value="{{ record['coordinator'] }}"
+                    placeholder="Coordinator of Activity"
+                    autocomplete="off"
+                    required
+                    >
+            </td>
+        </tr>
     </table>
     <input
         type="hidden"
@@ -257,11 +262,17 @@ Participation
             <tr>
                 <th>Student Name</th>
                 <th>Student Class</th>
+                {% if action == "add" or action == "edit" %}
+                <th>Category</th>
+                {% endif %}
             </tr>
             {% for record in form_data %}
             <tr>
                 <td>{{ record['name'] }}</td>
                 <td>{{ record['class'] }}</td>
+                {% if action == "add" or action == "edit" %}
+                <td>{{ record['category'] }}</td>
+                {% endif %}
             </tr>
             {% endfor %}
         </table>
@@ -282,6 +293,11 @@ Participation
                 type="hidden"
                 name="class"
                 value="{{ record['class'] }}"
+                >
+            <input
+                type="hidden"
+                name="category"
+                value="{{ record['category'] }}"
                 >
             {% endfor %}
             <input

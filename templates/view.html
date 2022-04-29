@@ -75,5 +75,8 @@ View {{ entity | title }}
         {% endfor %}
     </table>
     {% endif %}
+    <form action="/index" method="GET">
+        <input type="submit" value="Return to Homepage">
+    </form>
 
 {% endblock %}

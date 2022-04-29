@@ -1,6 +1,7 @@
 from flask import Flask, request
 import frontend
 import storage
+import pdb
 
 app = Flask(__name__)
 
@@ -165,7 +166,7 @@ def add_cca():
         if storage.database['ccas'].insert(cca_name): # successfully inserted
             data = {}
             data['cca_name'] = cca_name['name'] # for display
-            return frontend.redirect([data]) # data: dict
+            return frontend.redirect([data], 'cca') # data: dict
         else:
             return frontend.add_cca(message='Failed to add CCA, CCA already exists.')
     
@@ -200,7 +201,7 @@ def add_activity():
         data = request.form.to_dict() # dict
         
         if storage.database['activities'].insert(data): # successfully inserted
-            return frontend.redirect([data]) # data: dict
+            return frontend.redirect([data], 'activity') # data: dict
         else:
             return frontend.add_activity(message='Failed to add Activity, Activity already exists.')
             
@@ -269,7 +270,7 @@ def membership(action):
                 cca_id[0]['id']
             )
             data = storage.database['student_cca'].select_by_student_id(student_id)
-            return frontend.redirect(data, cca_name)
+            return frontend.redirect(data, 'membership', cca_name, action)
 
     elif action == 'edit' or action == 'delete':
 
@@ -304,13 +305,13 @@ def membership(action):
                     role=request.form['role']
                 )
                 data[0]['role'] = request.form['role']
-                return frontend.redirect(data, cca_name, action)
+                return frontend.redirect(data, 'membership', cca_name, action)
             elif action == 'delete':
                 storage.database['student_cca'].delete(
                 {'student_id': student_id[0]['id'],
                  'cca_id': cca_id[0]['id']}
             )            
-                return frontend.redirect(data, cca_name, action)
+                return frontend.redirect(data, 'membership', cca_name, action)
 
     elif action == 'display':
         '''Form to choose cca which you want to add people into'''
@@ -367,21 +368,27 @@ def participation(action):
             '''
             student_id = request.form.getlist('choose')
             data = storage.database['student_activity'].select_by_student_id(student_id)
-            return frontend.confirm_membership(action='add', data=data, activity_name=activity_name)
+            for record in data:
+               record['category'] = request.form.getlist('category')[record['id']-1]
+            return frontend.confirm_participation(action='add', data=data, activity_name=activity_name)
     
         elif 'verify' in request.args:
             '''
             Insert student(s) into database
-            (student_id: list, activity_id: int)
+            (student_id: list, activity_id: int, category: str)
             Display success page
             '''
             student_id = request.form.getlist('id')
+            categories = request.form.getlist('category')
             storage.database['student_activity'].add_participants(
                 student_id,
-                activity_id[0]['id']
+                activity_id[0]['id'],
+                categories
             )
             data = storage.database['student_activity'].select_by_student_id(student_id)
-            return frontend.redirect(data, activity_name)
+            for i in range (len(data)):
+               data[i]['category'] = categories[i]
+            return frontend.redirect(data, 'participation', activity_name, action)
 
     elif action == 'edit' or action == 'delete':
 
@@ -401,8 +408,12 @@ def participation(action):
 
         if 'confirm' in request.args:
             '''Display confirmation page'''
-            return frontend.confirm_membership(action, data, activity_name)
-            
+            return frontend.confirm_participation(action, data, activity_name)
+
+        elif 'edit' in request.args:
+            data = storage.database['student_activity'].select_by_student_id([student_id[0]['id']])
+            return frontend.edit_participation(data, activity_name)
+        
         elif 'verify' in request.args:
             '''Update ... in database OR Delete record'''
             if action == 'edit':
@@ -411,14 +422,14 @@ def participation(action):
                      'activity_id': activity_id[0]['id']},
                     role=request.form['role']
                 )
-                return frontend.redirect(data, activity_name, action)
+                return frontend.redirect(data, 'participation', activity_name, action)
             elif action == 'delete':
                 storage.database['student_activity'].delete(
                 {'student_id': student_id[0]['id'],
                  'activity_id': activity_id[0]['id']}
             )
             
-            return frontend.redirect(data, activity_name)
+            return frontend.redirect(data, 'participation', activity_name, action)
 
     elif action == 'display':
         '''Form to choose activity which you want to add people into'''
