@@ -10,8 +10,8 @@ def redirect(data: dict, form, name=None, action="change") -> None:
     '''Redirects to a success (confirmation) page'''
     return render_template('redirect.html',
                           form_data=data,
-                           form=form,
-                           action=action,
+                          form=form,
+                          action=action,
                           name=name)
 
 # view functions
@@ -90,8 +90,7 @@ def view_activity(data: list, message="") -> None:
                                {"label": "Activity Name", "value": "name"},
                                {"label": "Activity Start Date", "value": "start_date"},
                                {"label": "Activity End Date", "value": "end_date"},
-                               {"label": "Activity Description", "value": "description"},
-                               {"label": "Coordinator", "value": "coordinator"}],
+                               {"label": "Activity Description", "value": "description"}],
                            data=data,
                            message=message)
 

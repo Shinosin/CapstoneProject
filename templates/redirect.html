@@ -22,41 +22,41 @@ Success
 </table>
 <br>
 {% if form == "cca" %}
-<form action="/view/ccas" method="GET">
-    <input
-        type="hidden"
-        name="cca_name"
-        value="{{ cca_name }}"
-    >
-    <input type="submit" value="View Updated Database">
-</form>
+    <form action="/view/ccas" method="GET">
+        <input
+            type="hidden"
+            name="cca_name"
+            value="{{ name }}"
+        >
+        <input type="submit" value="View Updated Database">
+    </form>
 {% elif form == "activity" %}
-<form action="/view/activities" method="GET">
-    <input
-        type="hidden"
-        name="activity_name"
-        value="{{ activity_name }}"
-    >
-    <input type="submit" value="View Updated Database">
-</form>
+    <form action="/view/activities" method="GET">
+        <input
+            type="hidden"
+            name="activity_name"
+            value="{{ name }}"
+        >
+        <input type="submit" value="View Updated Database">
+    </form>
 {% elif form == "membership" %}
-<form action="/view/membership" method="GET">
-    <input
-        type="hidden"
-        name="cca_name"
-        value="{{ cca_name }}"
-    >
-    <input type="submit" value="View Updated Database">
-</form>
+    <form action="/view/membership" method="GET">
+        <input
+            type="hidden"
+            name="cca_name"
+            value="{{ name }}"
+        >
+        <input type="submit" value="View Updated Database">
+    </form>
 {% elif form == "participation" %}
-<form action="/view/participation" method="GET">
-    <input
-        type="hidden"
-        name="activity_name"
-        value="{{ activity_name }}"
-    >
-    <input type="submit" value="View Updated Database">
-</form>
+    <form action="/view/participation" method="GET">
+        <input
+            type="hidden"
+            name="activity_name"
+            value="{{ name }}"
+        >
+        <input type="submit" value="View Updated Database">
+    </form>
 {% endif %}
 <form action="/index" method="GET">
     <input type="submit" value="Return to Homepage">
