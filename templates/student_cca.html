@@ -86,7 +86,6 @@ Membership
         <tr>
             <td>{{ record['name'] }}</td>
             <td>{{ record['class'] }}</td>
-            <td>{{ record['role'] }}</td>
             <td>
                 <form action="/membership/edit?edit" method="POST">
                     <input
@@ -135,12 +134,11 @@ Membership
     </form>
 
     {% elif page_type == 'edit' %}
-    <h2>Edit Details for {{ form_data['name'] }}</h2>
-    {% for name, value in form_data %}
-    <p>{{ name }}</p>
-    <p>{{ value }}</p>
+    {% for record in form_data %}
+    <h2>Edit Details for {{ record['name'] }}</h2>
+    {% for name, value in record.items() %}
+    <p>{{ name }}: {{value}}</p>
     {% endfor %}
-    
     <form action="{{ form_meta['action'] }}" method="{{ form_meta['method'] }}">
     <label for="role">Role:</label>
     <input
@@ -155,19 +153,18 @@ Membership
     <input
         type="hidden"
         name="name"
-        value="{{ form_data['name'] }}"
+        value="{{ record['name'] }}"
         >
     <input
         type="hidden"
         name="class"
-        value="{{ form_data['class'] }}"
+        value="{{ record['class'] }}"
         >
     <input
         type="hidden"
         name="cca_name"
         value="{{ cca_name }}"
         >
-        
     <input type="submit" value="Save Changes">
     </form>
     <form action="/view/membership" method="GET">
@@ -178,6 +175,7 @@ Membership
             >
         <input type="submit" value="Return without saving">
     </form>
+    {% endfor %}
     <p id="fail">{{ message }}</p>
 
     {% elif page_type == 'confirm' %}
