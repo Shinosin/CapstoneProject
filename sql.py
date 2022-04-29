@@ -258,7 +258,7 @@ NOT_IN_ACTIVITY = '''
         WHERE id NOT IN (
             SELECT student_id
             FROM student_activity
-            WHERE activity_id = ?
+            WHERE activity_id = ?;
         )
     )
 '''
@@ -271,4 +271,3 @@ DISPLAY_PARTICIPATION = '''
     student.student_class = "class".id;
 '''
 #i ditched coordinator cos its just a number :D
-
