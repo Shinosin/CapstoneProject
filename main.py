@@ -208,15 +208,6 @@ def add_activity():
         return frontend.add_activity()
 
 
-
-
-
-
-
-
-
-
-
 @app.route('/membership/<action>', methods=['POST', 'GET'])
 def membership(action):
 
