@@ -124,8 +124,6 @@ def view(form):
         return frontend.view_subject(student_name=student_name[0], data=data)
     
     elif form == 'membership': # GET
- #########       # SELECT ROLE OSO
-        
         cca_id = storage.database['ccas'].find(
             {'name': request.args['cca_name']},
             column='id'
