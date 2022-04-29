@@ -211,13 +211,53 @@ DELETE_STUDENT_CCA = '''
 
 UPDATE_STUDENT_CCA = '''
     UPDATE student_cca
-    SET role = ?;
+    SET role = ?
+    WHERE student_id = ? NAD
+    cca_id = ?;
 '''
-
-FIND_BY_STUDENTID = '''
+SELECT_BY_STUDENT_ID = '''
     SELECT student.id, student.name, class.name AS class
     FROM student
     JOIN class
     ON student.student_class = class.id
     WHERE student.id = ?;
 '''
+
+DELETE_STUDENT_ACTIVITY = '''
+    DELETE FROM student_activity
+    WHERE student_id = ? AND
+    activity_id = ?;
+'''
+
+DISPLAY_MEMBERSHIP = '''
+    SELECT student.name, class.name AS class, student_cca.role
+    FROM student, class, student_cca
+    WHERE student_cca.cca_id = ? AND
+    student_cca.student_id = student.id AND
+    student.student_class = "class".id;
+'''
+
+IN_ACTIVITY = '''
+    SELECT student.id, student.name, class.name AS class
+    FROM student, class, student_activity
+    WHERE student_activity.activity_id = ? AND
+    student_activity.student_id = student.id AND
+    student.student_class = "class".id;
+'''
+
+NOT_IN_ACTIVITY = '''
+    SELECT student.id, student.name, class.name AS class
+    FROM student
+    LEFT JOIN student_activity
+    ON student.id = student_activity.student_id
+    LEFT JOIN class
+    ON student.student_class = class.id
+    WHERE student.id IN (
+        SELECT id
+        FROM student
+        WHERE id NOT IN (
+            SELECT student_id
+            FROM student_activity
+            WHERE activity_id = ?
+        )
+    )

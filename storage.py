@@ -50,6 +50,7 @@ class Table:
 
         sql_statement = sql_statement.strip(' AND')
         sql_statement += ';' 
+        
         return self.execute(sql_statement, values)
 
     def get_all(self, column='*') -> list:
@@ -67,31 +68,31 @@ class Table:
         else:
             return False #record exists in database, cannot insert
 
-    def update(self, record:dict, new_record:dict) -> bool:
-        if self.find(record) == False:
-            return False #cannot update, record not found
-        else: #record found, all columns in record are valid
-            keys = '' #column(s) to be updated
-            values = [] #values to be updated
-            for key1 in record:
-                for key2 in new_record:
-                    if key1 == key2: #validate keys in new_record
-                        keys += key1 + ','
-                        values += new_record[key2] 
+    # def update(self, record:dict, new_record:dict) -> bool:
+    #     if self.find(record) == False:
+    #         return False #cannot update, record not found
+    #     else: #record found, all columns in record are valid
+    #         keys = '' #column(s) to be updated
+    #         values = [] #values to be updated
+    #         for key1 in record:
+    #             for key2 in new_record:
+    #                 if key1 == key2: #validate keys in new_record
+    #                     keys += key1 + ','
+    #                     values += new_record[key2] 
                         
-            keys = keys.strip(',')
+    #         keys = keys.strip(',')
             
-            sql_statement = 'UPDATE ' + self.__table + ' SET ' 
+    #         sql_statement = 'UPDATE ' + self.__table + ' SET ' 
 
-            for key in keys:
-                sql_statement += f'{key} = ? AND '
+    #         for key in keys:
+    #             sql_statement += f'{key} = ? AND '
 
-            sql_statement = sql_statement.strip('AND ')
-            #idk what exactly this function takes in so um ...
-            #also this code only works for tables with id (subject and other tables with two primary keys will not work :D)
-            sql_statement += f'WHERE {"id"} = {record["id"]};'
+    #         sql_statement = sql_statement.strip('AND ')
+    #         #idk what exactly this function takes in so um ...
+    #         #also this code only works for tables with id (subject and other tables with two primary keys will not work :D)
+    #         sql_statement += f'WHERE {"id"} = {record["id"]};'
             
-            return self.execute(sql_statement, values)
+    #         return self.execute(sql_statement, values)
                 
 class Student(Table):
 
@@ -198,7 +199,7 @@ class Student_CCA(Table):
     def update_role(self, record:dict, role:str) -> bool:
         #record = {'student_id':int, 'cca_id':int}
         if super().find(record) != []:
-            super().execute(sql.UPDATE_STUDENT_CCA, (role.upper(),))
+            super().execute(sql.UPDATE_STUDENT_CCA, (role.upper(),record['student_id'],record['cca_id'],))
             return True #record updated
         else:
             return False #cannot update, record does not exist
@@ -210,20 +211,26 @@ class Student_CCA(Table):
         return super().execute(sql.NOT_IN_CCA, (cca_id,))
 
     def add_members(self, student_ids:list, cca_id:int) -> bool:
-        #student_ids is a list of students who are not in the cca
+        '''
+        add_members adds members who do not belong in the cca 
+        student_ids is a list of students who are not in the cca
+        '''
         for student_id in student_ids:
             record = {'student_id':student_id,
                      'cca_id':cca_id,
-                     'role':'member'}
+                     'role':'MEMBER'}
             self.insert(record)
 
-    def select_by_student_id(self, student_ids: list) -> list:
+    def select_by_student_id(self, student_ids:list) -> list:
         data = []
         for student_id in student_ids:
             data.extend(self.execute(
-                sql.FIND_BY_STUDENTID,
+                sql.SELECT_BY_STUDENT_ID,
                 (student_id, )))
         return data
+
+    def display_membership(self, cca_id:int) -> list:
+        return super().execute(sql.DISPLAY_MEMBERSHIP, (cca_id,))
                 
 class Student_Activity(Table):
     def __init__(self, database:str) -> None:
@@ -235,14 +242,78 @@ class Student_Activity(Table):
 
     def delete(self, record:dict) -> bool:
         #record = {'student_id':int, 'activity_id':int}
-        pass
+        if super().find(record) != []: #record is in student_activity
+            super().execute(sql.DELETE_STUDENT_ACTIVITY, (record['student_id'], record['activity_id'],))
+            return True #record deleted
+        else: 
+            return False #cannot delete, record does not exist
 
     def update(self, record:dict, new_record:dict) -> bool:
-        #record = {'student_id':int, 'cca_id':int}
-        #e.g. new_record = {'category':str, 'role':str, 'award':str}
-        pass
-        
+        '''
+        record = {'student_id':int, 'activity_id':int}
+        new_record is a dictionary that can take in the activity category, role, award, hours, coordinator
+        e.g. new_record = {'category':str, 'role':str, 'award':str}
+        '''
+        if super().find(record) != []:
+            sql_statement = 'UPDATE student_activity SET '
+            columns_to_update = new_record.keys()
+            valid_columns = [] 
+            data = [] #data to be updated in valid_columns
 
+            for column in columns_to_update:
+                if column in self.__columns:
+                    valid_columns.append(column)
+
+            if valid_columns == []:
+                return False #cannot update, no valid columns
+
+            for column in valid_columns:
+                sql_statement += f' {column} = ? AND '
+                if type(new_record[column]) == str:
+                    data.append(new_record[column]).upper() #captialise values 
+                else:
+                    data.append(new_record[column])
+
+            sql_statement = sql_statement.strip('AND ')
+            sql_statement += f'WHERE student_id = {record["student_id"]} AND {record["activity_id"]};'
+                
+            super().execute(sql_statement, data)
+            return True #record updated
+        else:
+            return False #cannot update, record does not exist
+
+    def existing_participants(self, activity_id:int) -> list:
+        return super().execute(sql.IN_ACTIVITY, (activity_id,))
+
+    def not_in_activity(self, activity_id:int) -> list:
+        return super().execute(sql.NOT_IN_ACTIVITY, (activity_id,))
+
+    def add_participants(self, student_ids:list, activity_id:int) -> bool:
+        '''
+        add_participants adds participants who are not recorded in the activity yet
+        student_ids is a list of students who are not recorded in the activity
+        '''
+        for student_id in student_ids:
+            #WHAT DO CATEGORY, AWARD AND HOURS TAKE IN 
+            record = {'student_id':student_id,
+                     'activity_id':activity_id,
+                     'category':'',
+                     'role':'PARTICIPANT',
+                     'award':'',
+                     'hours':''}
+            self.insert(record)
+
+    def select_by_student_id(self, student_ids:list) -> list:
+        data = []
+        for student_id in student_ids:
+            data.extend(self.execute(
+                sql.SELECT_BY_STUDENT_ID,
+                (student_id, )))
+        return data
+
+    def display_participation(self, activity_id:int) -> list:
+        return super().execute(sql.DISPLAY_PARTICIPATION, (activity_id,))
+        
 database = {
     'students': Student('database.db'), 
     'classes': Class('database.db'),
