@@ -314,66 +314,144 @@ def confirm_membership(action, data: list, cca_name) -> None:
 
 # participation - student-activity
 '''
-A form for students to enter a student id and activity id, to add a student into an activity
+A form for students to select an activity and students, to add a student into an activity
 
 Arguments:
 - student_id: int
 - activity_id: int
+- activity_name: str
 - category: str
 - role: str
 - award: str
 - hours: int
 - coordinator: int
+
+- activity_names: list of dicts
+- in_activity: list of dicts
+- out_activity: list of dicts
+- message: str
 '''
-def add_participation(student_ids: list, activity_ids: list, message="") -> None:
-    return render_template(
+def activity_participation(action, activity_names: list, message="") -> None:
+    # action: add / edit
+    if action == "add":
+        return render_template(
+            "student_activity.html",
+            page_type="activity",
+            form_meta={
+                "action": "/participation/add?choose",
+                "method": "POST",
+            },
+            form_data={
+                "activity_name": ""
+            },
+            activity_names=activity_names,
+            message=message
+        )
+    elif action == "edit":
+        return render_template(
         "student_activity.html",
-        page_type="new",
+        page_type="activity",
         form_meta={
-            "action": "/edit_participation?confirm",
-            "method": "POST",
+            "action": "/view/participation",
+            "method": "GET",
         },
         form_data={
-            "student_id": "",
-            "activity_id": "",
-            "category": "",
-            "role": "Participant",
-            "award": "",
-            "hours": "",
-            "coordinator": ""
+            "activity_name": ""
         },
-        student_ids=student_ids,
-        activity_ids=activity_ids,
-        message=message)
-        
-def edit_participation(student_ids: list, activity_ids: list, message="") -> None:
+        activity_names=activity_names,
+        message=message
+    )
+
+def choose_participation(out_activity: list, in_activity: list, activity_name: str, message="") -> None:
+    return render_template(
+        "student_activity.html",
+        page_type="add",
+    form_meta={
+        "action": "/participation/add?confirm",
+        "method": "POST"
+    },
+        activity_name=activity_name,
+        out_activity=out_activity,
+        in_activity=in_activity,
+        headers=[
+            {"label": "Student Name", "value": "name"},
+            {"label": "Student Class", "value": "class"}
+        ],
+        message=message
+    )
+   
+def view_participation(in_activity: list, activity_name, message="") -> None:
+    return render_template(
+        "student_activity.html",
+        page_type="view",
+        activity_name=activity_name,
+        in_activity=in_activity,
+        headers=[
+            {"label": "Student Name", "value": "name"},
+            {"label": "Student Class", "value": "class"},
+            {"label": "Coordinator", "value": "coordinator"},
+            {"label": "Category", "value": "category"},
+            {"label": "Role", "value": "role"},
+            {"label": "Award", "value": "award"},
+            {"label": "Hours", "value": "hours"}
+        ],
+        message=message
+    )
+
+def edit_participation(data: dict, activity_name) -> None:
+    # data: student_name & class_name
     return render_template(
         "student_activity.html",
         page_type="edit",
         form_meta={
-            "action": "/edit_participation?confirm",
-            "method": "POST",
-        },
-        form_data={
-            "student_id": "",
-            "activity_id": "",
-            "category": "",
-            "role": "Participant",
-            "award": "",
-            "hours": "",
-            "coordinator": ""
-        },
-        student_ids=student_ids,
-        activity_ids=activity_ids,
-        message=message)
-
-def confirm_participation(data: dict) -> None:
-    return render_template(
-        "student_activity.html",
-        page_type="confirm",
-        form_meta={
-            "action": "/edit_participation?verify",
+            "action": "/participation/edit?verify",
             "method": "POST"
         },
-        form_data=data
+        form_data=data,
+        activity_name=activity_name
     )
+
+def confirm_participation(action, data: list, activity_name) -> None:
+    # action: add / edit / delete
+    # data: student_name, class_name, things that were changed
+    if action == "add":
+        return render_template(
+            "student_activity.html",
+            page_type="confirm",
+            form_meta={
+                "action_yes": "/participation/add?verify",
+                "action_no": "/participation/add",
+                "method": "POST"
+            },
+            form_data=data,
+            action=action,
+            activity_name=activity_name
+        )
+
+    elif action == "edit":
+        return render_template(
+            "student_activity.html",
+            page_type="confirm",
+            form_meta={
+                "action_yes": "/participation/edit?verify",
+                "action_no": "/view/participation",
+                "method": "POST"
+            },
+            form_data=data,
+            action=action,
+            activity_name=activity_name
+        )
+
+    elif action == "delete":
+        return render_template(
+            "student_activity.html",
+            page_type="confirm",
+            form_meta={
+                "action_yes": "/participation/delete?verify",
+                "action_no": "/view/participation",
+                "method": "POST"
+            },
+            form_data=data,
+            action=action,
+            activity_name=activity_name
+        )

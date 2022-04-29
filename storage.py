@@ -225,7 +225,7 @@ class Student_CCA(Table):
         data = []
         for student_id in student_ids:
             data.extend(self.execute(
-                sql.SELECT_BY_STUDENT_ID, (student_id['id'], )
+                sql.SELECT_BY_STUDENT_ID, (student_id, )
             )
         )
         return data
@@ -308,7 +308,7 @@ class Student_Activity(Table):
     def select_by_student_id(self, student_ids:list) -> list:
         data = []
         for student_id in student_ids:
-            data.extend(self.execute(sql.SELECT_BY_STUDENT_ID_P,(student_id['id'], )))
+            data.extend(self.execute(sql.SELECT_BY_STUDENT_ID,(student_id['id'], )))
         return data
 
     def display_participation(self, activity_id:int) -> list:

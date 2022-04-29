@@ -263,6 +263,7 @@ def membership(action):
             Display success page
             '''
             student_id = request.form.getlist('id')
+            
             storage.database['student_cca'].add_members(
                 student_id,
                 cca_id[0]['id']
@@ -291,8 +292,7 @@ def membership(action):
             return frontend.confirm_membership(action, data, cca_name)
 
         elif 'edit' in request.args:
-            print(student_id)
-            data = storage.database['student_cca'].select_by_student_id(student_id)
+            data = storage.database['student_cca'].select_by_student_id([student_id[0]['id']])
             return frontend.edit_membership(data, cca_name)
         
         elif 'verify' in request.args:
@@ -321,7 +321,7 @@ def membership(action):
 
 
 
-@app.route('/participation', methods=['POST', 'GET'])
+@app.route('/participation/<action>', methods=['POST', 'GET'])
 def participation(action):
     if action == 'add':
         """Modify Participation
@@ -343,7 +343,7 @@ def participation(action):
         if request.method == 'GET':
             '''Form to choose activity which you want to add people into'''
             activity_name = storage.database['activities'].get_all(column='name') # list of dict
-            return frontend.cca_membership(action="add", activity_names=activity_name)
+            return frontend.activity_participation(action="add", activity_names=activity_name)
 
         elif 'choose' in request.args:
             '''
@@ -423,7 +423,7 @@ def participation(action):
     elif action == 'display':
         '''Form to choose activity which you want to add people into'''
         activity_name = storage.database['activities'].get_all(column='name') # list of dict
-        return frontend.activity_membership(action="edit", activity_names=activity_name)
+        return frontend.activity_participation(action="edit", activity_names=activity_name)
 
     
 # Future Functions

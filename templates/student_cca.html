@@ -17,7 +17,11 @@ Membership
             <option value="{{ cca['name'] }}">{{ cca['name'] }}</option>
             {% endfor %}
         </select>
+        <br>
         <input type="submit" value="Next"> 
+    </form>
+    <form action="/index" method="GET">
+        <input type="submit" value="Return to Homepage">
     </form>
 
     {% elif page_type == 'add' %}
